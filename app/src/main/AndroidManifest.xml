@@ -13,6 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Zero"
         tools:targetApi="31">
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -25,5 +26,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

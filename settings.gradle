@@ -13,4 +13,7 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Zero"
+
 include ':app'
+include ':data'
+include ':common'
