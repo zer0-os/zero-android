@@ -10,33 +10,28 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.zero.android.ui.theme.ZeroTheme
+import com.zero.android.common.ui.theme.ZeroTheme
 
 class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            ZeroTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    Greeting("Android")
-                }
-            }
-        }
-    }
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		setContent {
+			ZeroTheme {
+				Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
+					Greeting("Android")
+				}
+			}
+		}
+	}
 }
 
 @Composable
 fun Greeting(name: String) {
-    Text(text = "Hello $name!")
+	Text(text = "Hello $name!")
 }
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    ZeroTheme {
-        Greeting("Android")
-    }
+	ZeroTheme { Greeting("Android") }
 }

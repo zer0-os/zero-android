@@ -1,0 +1,42 @@
+spotless {
+	kotlin {
+		target '**/*.kt'
+		trimTrailingWhitespace()
+		endWithNewline()
+
+		ktfmt()
+		ktlint(versions.ktlint).userData([
+			"indent_style"        : 'tab',
+			'max_line_length'     : '120',
+			'insert_final_newline': 'true',
+			'disabled_rules'      : 'no-wildcard-imports'
+		])
+	}
+	groovyGradle {
+		target '**/*.gradle'
+		greclipse()
+	}
+	format("misc") {
+		// Define the files to apply misc to
+		target("*.gradle", "*.md", ".gitignore") // <-- HERE
+
+		indentWithTabs()
+		trimTrailingWhitespace()
+		endWithNewline()
+	}
+}
+
+task createSpotlessPreCommitHook() {
+	def gitHooksDirectory = new File("$project.rootDir/.git/hooks/")
+	if (!gitHooksDirectory.exists()) gitHooksDirectory.mkdirs()
+	new File("$project.rootDir/.git/hooks", "pre-commit").text = """
+	#!/bin/bash
+	echo "Running spotless check"
+	./gradlew spotlessApply
+"""
+	"chmod +x .git/hooks/pre-commit".execute()
+}
+
+if (project.hasProperty("kapt")) {
+	kapt { useBuildCache = true }
+}

@@ -1,31 +1,35 @@
 android {
-    compileSdk application.compileSdk
+	compileSdk application.compileSdk
 
-    defaultConfig {
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles "consumer-rules.pro"
-    }
+	defaultConfig {
+		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+		consumerProguardFiles "consumer-rules.pro"
+	}
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
+	buildTypes {
+		release {
+			minifyEnabled false
+			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+		}
+	}
 
-    buildFeatures {
-        compose true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion versions.compose
-    }
-    compileOptions {
-        sourceCompatibility versions.java
-        targetCompatibility versions.java
-    }
-    kotlinOptions {
-        jvmTarget = versions.jvm
-    }
+	buildFeatures {
+		compose true
+	}
+	composeOptions {
+		kotlinCompilerExtensionVersion versions.compose
+	}
+	compileOptions {
+		sourceCompatibility versions.java
+		targetCompatibility versions.java
+	}
+	kotlinOptions {
+		jvmTarget = versions.jvm
+	}
+}
+
+dependencies {
+	implementation "com.jakewharton.timber:timber:${versions.timber}"
 }
 
 apply from: "../test_dependencies.gradle"

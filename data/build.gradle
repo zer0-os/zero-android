@@ -1,10 +1,10 @@
 plugins {
-    id 'com.android.library'
-    id 'org.jetbrains.kotlin.android'
+	id 'com.android.library'
+	id 'org.jetbrains.kotlin.android'
 }
 
 apply from: '../module.gradle'
 
 dependencies {
-    implementation "androidx.core:core-ktx:${versions.coreKtx}"
+	implementation "androidx.core:core-ktx:${versions.coreKtx}"
 }
