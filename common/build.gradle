@@ -7,9 +7,4 @@ apply from: '../module.gradle'
 
 dependencies {
 	implementation "androidx.core:core-ktx:${versions.coreKtx}"
-
-	// UI
-	implementation "androidx.compose.ui:ui:${versions.compose}"
-	implementation "androidx.compose.material:material:${versions.compose}"
-	implementation "androidx.compose.ui:ui-tooling-preview:${versions.compose}"
 }

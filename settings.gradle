@@ -17,3 +17,5 @@ rootProject.name = "Zero"
 include ':app'
 include ':data'
 include ':common'
+include ':network'
+include ':ui'

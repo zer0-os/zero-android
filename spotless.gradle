@@ -24,6 +24,10 @@ spotless {
 	groovyGradle {
 		target '**/*.gradle'
 		greclipse()
+
+		trimTrailingWhitespace()
+		endWithNewline()
+		indentWithTabs()
 	}
 	format("misc") {
 		// Define the files to apply misc to

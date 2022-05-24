@@ -13,14 +13,22 @@ buildscript {
 	ext.versions = [
 		"java"           : JavaVersion.VERSION_1_8,
 		"jvm"            : '1.8',
-		'ktlint'         : '0.43.2',
+		"ktlint"         : '0.43.2',
 
+		"coreKtx"        : '1.7.0',
+		"lifecycle"      : '2.4.1',
+		"hilt"           : '2.41.1',
+
+		// UI
 		"compose"        : '1.2.0-beta02',
 		"composeActivity": '1.4.0',
-		"coreKtx"        : '1.7.0',
 
-		"lifecycle"      : '2.4.1',
+		// Data
+		"retrofit"       : "2.9.0",
+		"okhttp"         : "4.9.3",
+		"moshi"          : "1.13.0",
 
+		// System/Misc
 		"timber"         : '5.0.1',
 
 		// Testing
