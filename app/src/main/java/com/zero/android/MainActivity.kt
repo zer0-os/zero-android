@@ -3,35 +3,29 @@ package com.zero.android
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.zero.android.common.ui.theme.ZeroTheme
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
+import androidx.core.view.WindowCompat
+import com.zero.android.di.components.DaggerMainComponent
+import com.zero.android.di.dependencies.UtilDependencies
+import com.zero.android.ui.AppLayout
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.EntryPointAccessors
 
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContent {
-			ZeroTheme {
-				Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-					Greeting("Android")
-				}
-			}
-		}
+		WindowCompat.setDecorFitsSystemWindows(window, false)
+		setContent { AppLayout(calculateWindowSizeClass(this)) }
+
+		DaggerMainComponent.builder()
+			.context(this)
+			.appDependencies(
+				EntryPointAccessors.fromApplication(applicationContext, UtilDependencies::class.java)
+			)
+			.build()
+			.inject(this)
 	}
-}
-
-@Composable
-fun Greeting(name: String) {
-	Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-	ZeroTheme { Greeting("Android") }
 }

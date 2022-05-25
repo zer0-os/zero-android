@@ -1,6 +1,8 @@
 plugins {
 	id 'com.android.application'
 	id 'org.jetbrains.kotlin.android'
+	id 'dagger.hilt.android.plugin'
+	id 'kotlin-kapt'
 }
 
 apply from: "../test_dependencies.gradle"
@@ -49,16 +51,24 @@ android {
 
 dependencies {
 	implementation project(":common")
+	implementation project(":ui")
+
+	// Features
+	implementation project(":feature-auth")
 
 	implementation "androidx.core:core-ktx:${versions.coreKtx}"
-	implementation "androidx.lifecycle:lifecycle-runtime-ktx:${versions.lifecycle}"
 	implementation "androidx.activity:activity-compose:${versions.composeActivity}"
+	implementation "com.google.dagger:hilt-android:${versions.hilt}"
+	kapt "com.google.dagger:hilt-compiler:${versions.hilt}"
 
 	// UI
 	implementation "androidx.compose.ui:ui:${versions.compose}"
-	implementation "androidx.compose.material:material:${versions.compose}"
+	implementation "androidx.compose.material3:material3:${versions.material3}"
+	implementation "androidx.compose.material3:material3-window-size-class:${versions.material3}"
+	implementation "androidx.navigation:navigation-compose:${versions.navigation}"
 	implementation "androidx.compose.ui:ui-tooling-preview:${versions.compose}"
+	implementation "androidx.lifecycle:lifecycle-runtime-ktx:${versions.lifecycle}"
 
-	// System/Misc
+	// Misc
 	implementation "com.jakewharton.timber:timber:${versions.timber}"
 }

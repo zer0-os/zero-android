@@ -10,9 +10,9 @@ dependencies {
 	implementation "com.google.dagger:hilt-android:${versions.hilt}"
 	kapt "com.google.dagger:hilt-compiler:${versions.hilt}"
 
-	// Network
+	// Data
 	implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
 	implementation "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}"
-
+	implementation "com.squareup.retrofit2:converter-moshi:${versions.moshiConverter}"
 	implementation "com.squareup.moshi:moshi-kotlin:${versions.moshi}"
 }
