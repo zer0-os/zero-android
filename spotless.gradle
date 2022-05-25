@@ -1,23 +1,22 @@
 spotless {
 	kotlin {
 		target '**/*.kt'
-		trimTrailingWhitespace()
-		endWithNewline()
 
 		ktfmt()
-		ktlint(versions.ktlint).userData([
-			"indent_style"        : 'tab',
-			'max_line_length'     : '120',
-			'insert_final_newline': 'true',
-			'disabled_rules'      : 'no-wildcard-imports',
+		ktlint(versions.ktlint).setUseExperimental(true).userData([
+			"indent_style"                              : 'tab',
+			'max_line_length'                           : '120',
+			'insert_final_newline'                      : 'true',
+			'disabled_rules'                            : 'no-wildcard-imports',
+			'trim_trailing_whitespace'                  : 'true',
 
 			// According to https://kotlinlang.org/docs/reference/coding-conventions.html#names-for-test-methods it is acceptable to write method names
 			// in natural language. When using natural language, the description tends to be longer. Allow lines containing an identifier between
 			// backticks to be longer than the maximum line length.
-			'ktlint_ignore_back_ticked_identifier': 'true',
+			'ktlint_ignore_back_ticked_identifier'      : 'true',
 
-			'ij_kotlin_packages_to_use_import_on_demand':'java.util.*', // allow java.util.* as wildcard import
-			'ij_kotlin_packages_to_use_import_on_demand':'org.junit.Assert.*', // allow org.junit.Assert.* as wildcard import
+			'ij_kotlin_packages_to_use_import_on_demand': 'java.util.*', // allow java.util.* as wildcard import
+			'ij_kotlin_packages_to_use_import_on_demand': 'org.junit.Assert.*', // allow org.junit.Assert.* as wildcard import
 			'ij_kotlin_packages_to_use_import_on_demand': 'io.ktor.**' // allow wildcard import from io.ktor.* and all subpackages
 		])
 	}

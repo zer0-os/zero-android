@@ -29,6 +29,9 @@ android {
 }
 
 dependencies {
+	implementation "javax.inject:javax.inject:${versions.inject}"
+
+	// Misc
 	implementation "com.jakewharton.timber:timber:${versions.timber}"
 }
 
