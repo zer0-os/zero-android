@@ -1,0 +1,21 @@
+plugins {
+	id 'com.android.library'
+	id 'org.jetbrains.kotlin.android'
+	id 'kotlin-kapt'
+}
+
+apply from: "../module.gradle"
+
+dependencies {
+	implementation "androidx.core:core-ktx:${versions.coreKtx}"
+	implementation "com.google.dagger:hilt-android:${versions.hilt}"
+	kapt "com.google.dagger:hilt-compiler:${versions.hilt}"
+
+	// Data
+	implementation "androidx.room:room-runtime:${versions.room}"
+	annotationProcessor "androidx.room:room-compiler:${versions.room}"
+	implementation "androidx.datastore:datastore-preferences:${versions.datastore}"
+
+	// Testing
+	testImplementation "androidx.room:room-testing:${versions.room}"
+}

@@ -6,6 +6,12 @@ plugins {
 
 apply from: "../module.gradle"
 
+android {
+	buildFeatures {
+		compose true
+	}
+}
+
 dependencies {
 	implementation project(":common")
 

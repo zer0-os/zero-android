@@ -54,8 +54,6 @@ android {
 dependencies {
 	implementation project(":common")
 	implementation project(":ui")
-
-	// Features
 	implementation project(":feature-auth")
 
 	implementation "androidx.core:core-ktx:${versions.coreKtx}"
