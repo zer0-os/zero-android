@@ -21,6 +21,8 @@ android {
 		vectorDrawables {
 			useSupportLibrary true
 		}
+
+		manifestPlaceholders = [auth0Domain: "@string/com_auth0_domain", auth0Scheme: "https"]
 	}
 
 	buildTypes {

@@ -34,6 +34,7 @@ buildscript {
 		"okhttp"           : "4.9.3",
 		"moshiConverter"   : "2.4.0",
 		"moshi"            : "1.13.0",
+		"lock"             : "3.2.0",
 
 		// Misc
 		"timber"           : '5.0.1',

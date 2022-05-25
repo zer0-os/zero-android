@@ -9,4 +9,6 @@ apply from: '../feature_module.gradle'
 dependencies {
 	implementation project(":ui")
 	implementation project(":network")
+
+	implementation "com.auth0.android:lock:${versions.lock}"
 }
