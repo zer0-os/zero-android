@@ -6,7 +6,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ConsoleLogger @Inject constructor() : Logger {
+internal class ConsoleLogger @Inject constructor() : Logger {
 
 	override fun setup(debug: Boolean) {
 		Timber.plant(Timber.asTree())

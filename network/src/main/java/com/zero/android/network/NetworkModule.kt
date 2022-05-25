@@ -1,7 +1,5 @@
-package com.zero.android.di.modules
+package com.zero.android.network
 
-import com.zero.android.common.system.Logger
-import com.zero.android.system.logger.ConsoleLogger
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -10,8 +8,8 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object UtilModule {
+object NetworkModule {
 
 	@Singleton @Provides
-	fun logger(): Logger = ConsoleLogger()
+	fun retrofit() = Retrofit()
 }
