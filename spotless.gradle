@@ -40,13 +40,13 @@ spotless {
 
 task createSpotlessPreCommitHook() {
 	def gitHooksDirectory = new File("$project.rootDir/.git/hooks/")
+	def isWindows = System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')
 	if (!gitHooksDirectory.exists()) gitHooksDirectory.mkdirs()
-	new File("$project.rootDir/.git/hooks", "pre-commit").text = """
-	#!/bin/bash
+	new File("$project.rootDir/.git/hooks", "pre-commit").text = """${isWindows ? "#!/bin/sh" : "#!/bin/bash"}
 	echo "Running spotless check"
 	./gradlew spotlessApply
 """
-	"chmod +x .git/hooks/pre-commit".execute()
+	if (!isWindows) "chmod +x .git/hooks/pre-commit".execute()
 }
 
 if (project.hasProperty("kapt")) {
