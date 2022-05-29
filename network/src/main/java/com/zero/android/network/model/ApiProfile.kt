@@ -1,6 +1,10 @@
 package com.zero.android.network.model
 
-class ApiProfile(
+import kotlinx.datetime.LocalDateTime
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class ApiProfile(
 	val id: String,
 	val userId: String?,
 	val fullName: String?,
@@ -9,14 +13,14 @@ class ApiProfile(
 	val gender: String?,
 	val guild: String?,
 	val summary: String?,
-	val skills: List<Skill>?,
-	val values: List<Value>?,
-	val passions: List<Passion>?,
-	val languages: List<Language>?,
-	val primaryCity: City?,
-	val secondaryCity: City?,
-	val hometownCity: City?,
-	val createdAt: Date?,
+	val skills: List<ApiValuable>?,
+	val values: List<ApiValuable>?,
+	val passions: List<ApiValuable>?,
+	val languages: List<ApiValuable>?,
+	val primaryCity: ApiCity?,
+	val secondaryCity: ApiCity?,
+	val hometownCity: ApiCity?,
+	val createdAt: LocalDateTime?,
 	val primaryEmail: String?,
 	val secondaryEmail: String?,
 	val primaryPhone: String?,
@@ -54,11 +58,11 @@ class ApiProfile(
 	val whatsapp: String?,
 
 	// Extra info
-	val experiences: List<Experience>?,
-	val investments: List<Investment>?,
-	val educationRecords: List<Education>?,
-	val rawAvatarURL: URL?,
-	private val _wallpaperURL: URL?
+	val experiences: List<ApiExperience>?,
+	val investments: List<ApiInvestment>?,
+	val educationRecords: List<ApiEducation>?,
+	val rawAvatarURL: String?,
+	private val _wallpaperURL: String?
 ) {
 
 	val displayName: String
