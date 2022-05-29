@@ -56,6 +56,9 @@ dependencies {
 	implementation project(":ui")
 	implementation project(":feature-auth")
 
+	// Features
+	implementation project(":feature-auth")
+
 	implementation "androidx.core:core-ktx:${versions.coreKtx}"
 	implementation "androidx.activity:activity-compose:${versions.composeActivity}"
 	implementation "com.google.dagger:hilt-android:${versions.hilt}"
