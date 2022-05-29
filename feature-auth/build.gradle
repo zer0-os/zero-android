@@ -6,6 +6,15 @@ plugins {
 
 apply from: '../feature_module.gradle'
 
+def localProperties = getLocalProperties()
+
+android {
+	defaultConfig {
+		buildConfigField("String", "com_auth0_client_id", "\"" + localProperties['com_auth0_client_id'] + "\"")
+		buildConfigField("String", "com_auth0_domain", "\"" + localProperties['com_auth0_domain'] + "\"")
+	}
+}
+
 dependencies {
 	implementation project(":ui")
 	implementation project(":network")

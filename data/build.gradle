@@ -7,5 +7,10 @@ plugins {
 apply from: '../module.gradle'
 
 dependencies {
+	implementation project(":network")
+	implementation project(":database")
+
 	implementation "androidx.core:core-ktx:${versions.coreKtx}"
+	implementation "com.google.dagger:hilt-android:${versions.hilt}"
+	kapt "com.google.dagger:hilt-compiler:${versions.hilt}"
 }

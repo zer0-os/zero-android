@@ -1,6 +1,5 @@
 package com.zero.android.feature.auth
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.auth0.android.authentication.AuthenticationException
 import com.auth0.android.lock.AuthenticationCallback
@@ -9,7 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class AuthViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : ViewModel() {
+class AuthViewModel @Inject constructor() : ViewModel() {
 
 	val authCallback =
 		object : AuthenticationCallback() {

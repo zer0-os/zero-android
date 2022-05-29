@@ -9,13 +9,9 @@ import javax.inject.Singleton
 @Singleton
 class Retrofit {
 
-	companion object {
-		private const val BASE_URL = "https://zero.com"
-	}
-
-	val api =
+	val api: Retrofit =
 		Retrofit.Builder()
-			.baseUrl(BASE_URL)
+			.baseUrl(BuildConfig.BASE_API_URL)
 			.client(
 				OkHttpClient.Builder()
 					.addInterceptor(

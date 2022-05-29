@@ -6,6 +6,19 @@ plugins {
 
 apply from: '../module.gradle'
 
+def localProperties = getLocalProperties()
+
+android {
+	buildTypes {
+		debug {
+			buildConfigField "String", "BASE_API_URL", "\"${localProperties["api_dev"]}\""
+		}
+		release {
+			buildConfigField "String", "BASE_API_URL", "\"${localProperties["api_prod"]}\""
+		}
+	}
+}
+
 dependencies {
 	implementation "com.google.dagger:hilt-android:${versions.hilt}"
 	kapt "com.google.dagger:hilt-compiler:${versions.hilt}"

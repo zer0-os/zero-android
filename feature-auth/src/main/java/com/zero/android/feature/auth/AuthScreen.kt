@@ -24,6 +24,16 @@ fun AuthScreen(
 	val context = LocalContext.current
 	val lock =
 		Lock.newBuilder(Auth0(context), authCallback)
+			.allowedConnections(
+				mutableListOf(
+					"facebook",
+					"twitter",
+					"google-oauth2",
+					"apple",
+					"Username-Password-Authentication"
+				)
+			)
+			.withScope("openid profile offline_access")
 			.closable(false)
 			.allowLogIn(true)
 			.allowSignUp(true)
