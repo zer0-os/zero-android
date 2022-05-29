@@ -28,6 +28,7 @@ buildscript {
 		"hiltNavigation"   : "1.0.0",
 		"lifecycle"        : "2.5.0-rc01",
 		"splashscreen"     : "1.0.0-rc01",
+		"constraintlayout" : "1.1.0-alpha02",
 
 		// Data
 		"retrofit"         : "2.9.0",
