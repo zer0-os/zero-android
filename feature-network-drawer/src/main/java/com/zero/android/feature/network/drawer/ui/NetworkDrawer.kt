@@ -4,13 +4,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.zero.android.feature.network.drawer.misc.NetworkWorld
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun NetworkDrawerRoute(
@@ -18,7 +23,7 @@ fun NetworkDrawerRoute(
     modifier: Modifier = Modifier,
     viewModel: NetworkDrawerViewModel = hiltViewModel()
 ) {
-    NetworkDrawer(windowSizeClass = windowSizeClass, modifier = modifier)
+    //NetworkDrawer(windowSizeClass = windowSizeClass, modifier = modifier)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -26,33 +31,43 @@ fun NetworkDrawerRoute(
 fun NetworkDrawer(
     windowSizeClass: WindowSizeClass,
     modifier: Modifier = Modifier,
+    drawerState: DrawerState,
+    coroutineScope: CoroutineScope,
 ) {
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-
     ModalNavigationDrawer(
         drawerState = drawerState,
         gesturesEnabled = drawerState.isOpen,
         drawerContainerColor = MaterialTheme.colorScheme.background,
-        drawerContent = { DrawerContent() }
+        drawerContent = {
+            DrawerContent(
+                drawerState = drawerState,
+                coroutineScope = coroutineScope
+            )
+        }
     ) {
 
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DrawerContent(
     modifier: Modifier = Modifier,
     currentWorld: NetworkWorld = NetworkWorld(),
     networkWorlds: List<NetworkWorld> = emptyList(),
+    drawerState: DrawerState,
+    coroutineScope: CoroutineScope,
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         // Header
         NetworkDrawerHeader(
             item = currentWorld,
             onSettingsClick = {
+                coroutineScope.launch { drawerState.close() }
                 //TODO: navigation to settings screen
             },
             onInviteClick = {
+                coroutineScope.launch { drawerState.close() }
                 //TODO: navigation to invite members screen
             }
         )
@@ -63,7 +78,7 @@ fun DrawerContent(
                 DrawerItem(
                     item = networkWorld,
                     onItemClick = {
-
+                        coroutineScope.launch { drawerState.close() }
                     }
                 )
             }
@@ -72,6 +87,7 @@ fun DrawerContent(
         //Footer
         NetworkDrawerFooter(
             onCreateWorldClick = {
+                coroutineScope.launch { drawerState.close() }
                 //TODO: navigation to create new world screen
             }
         )

@@ -1,12 +1,18 @@
 package com.zero.android.feature.channel.ui
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.zero.android.feature.network.drawer.misc.NetworkWorld
+import com.zero.android.feature.network.drawer.ui.NetworkDrawer
+import kotlinx.coroutines.launch
 
 @Composable
 fun ChannelRoute(
@@ -17,6 +23,7 @@ fun ChannelRoute(
     ChannelScreen(windowSizeClass = windowSizeClass, modifier = modifier, viewModel = viewModel)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChannelScreen(
     windowSizeClass: WindowSizeClass,
@@ -27,6 +34,8 @@ fun ChannelScreen(
         modifier = Modifier
             .fillMaxSize()
     ) {
+        val drawerState = rememberDrawerState(DrawerValue.Closed)
+        val coroutineScope = rememberCoroutineScope()
         val (appBar, content, bottomBar) = createRefs()
 
         ChannelAppBar(
@@ -36,7 +45,9 @@ fun ChannelScreen(
                 top.linkTo(parent.top)
                 bottom.linkTo(content.top)
             },
-            openDrawer = { /*TODO*/ },
+            openDrawer = {
+                coroutineScope.launch { drawerState.open() }
+            },
             networkWorld = NetworkWorld(),
             onProfileClick = { /*TODO*/ }) {
         }
@@ -57,6 +68,12 @@ fun ChannelScreen(
             },
             onNavigateToTopLevelDestination = {},
             currentDestination = null
+        )
+        NetworkDrawer(
+            windowSizeClass = windowSizeClass,
+            modifier = Modifier.fillMaxSize(),
+            drawerState = drawerState,
+            coroutineScope = coroutineScope
         )
     }
 }

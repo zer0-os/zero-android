@@ -18,4 +18,6 @@ dependencies {
 	implementation "androidx.lifecycle:lifecycle-runtime-ktx:${versions.lifecycle}"
 	implementation "androidx.lifecycle:lifecycle-viewmodel-compose:${versions.lifecycle}"
 	implementation "androidx.constraintlayout:constraintlayout-compose:${versions.constraintlayout}"
+	implementation "com.google.accompanist:accompanist-pager:${versions.pager}"
+	implementation "com.google.accompanist:accompanist-pager-indicators:${versions.pager}"
 }
