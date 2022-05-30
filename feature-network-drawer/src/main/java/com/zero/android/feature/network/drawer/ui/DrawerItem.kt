@@ -17,6 +17,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import coil.compose.rememberAsyncImagePainter
+import com.zero.android.feature.network.drawer.misc.NetworkWorld
 import com.zero.android.ui.theme.ZeroExtendedTheme
 
 @Composable
@@ -35,7 +37,7 @@ fun DrawerItem(
                 .padding(12.dp)
         )
         Image(
-            //painter = painterResource(),
+            painter = rememberAsyncImagePainter(item.icon),
             contentDescription = item.title,
             contentScale = ContentScale.Fit,
             modifier = Modifier

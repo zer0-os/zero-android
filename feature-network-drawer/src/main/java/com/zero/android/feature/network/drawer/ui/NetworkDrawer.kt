@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.zero.android.feature.network.drawer.misc.NetworkWorld
 
 @Composable
 fun NetworkDrawerRoute(
@@ -25,7 +26,6 @@ fun NetworkDrawerRoute(
 fun NetworkDrawer(
     windowSizeClass: WindowSizeClass,
     modifier: Modifier = Modifier,
-    networkWorlds: List<NetworkWorld> = emptyList(),
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 

@@ -1,8 +1,5 @@
-package com.zero.android.feature.network.drawer.ui
+package com.zero.android.feature.network.drawer.misc
 
-/**
- * NetworkWorld class for dynamic navigation drawer menu items
- */
 data class NetworkWorld(
     val id: Long,
     val route: String,

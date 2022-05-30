@@ -21,15 +21,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import coil.compose.rememberAsyncImagePainter
 import com.zero.android.feature.network.drawer.R
+import com.zero.android.feature.network.drawer.misc.NetworkWorld
 import com.zero.android.ui.theme.ZeroExtendedTheme
 
 @Composable
 fun NetworkDrawerHeader(
     modifier: Modifier = Modifier,
     item: NetworkWorld,
-    onSettingsClick: (Unit) -> Unit,
-    onInviteClick: (Unit) -> Unit,
+    onSettingsClick: () -> Unit,
+    onInviteClick: () -> Unit,
 ) {
     ConstraintLayout(
         modifier = Modifier
@@ -43,7 +45,7 @@ fun NetworkDrawerHeader(
                 .padding(12.dp)
         )
         Image(
-            //painter = painterResource(),
+            painter = rememberAsyncImagePainter(item.icon),
             contentDescription = item.title,
             contentScale = ContentScale.Fit,
             modifier = Modifier
@@ -89,10 +91,10 @@ fun NetworkDrawerHeader(
                     end.linkTo(textTop.start)
                 }
                 .wrapContentSize()
-                .clickable { onSettingsClick.invoke(Unit) }
+                .clickable(onClick = onSettingsClick)
         )
         OutlinedButton(
-            onClick = { onInviteClick.invoke(Unit) },
+            onClick = onInviteClick,
             modifier = Modifier.constrainAs(inviteButton) {
                 top.linkTo(imageStart.bottom, margin = 16.dp)
                 start.linkTo(imageStart.start)

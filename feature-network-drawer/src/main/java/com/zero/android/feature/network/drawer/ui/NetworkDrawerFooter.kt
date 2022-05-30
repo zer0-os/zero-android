@@ -20,7 +20,7 @@ import com.zero.android.ui.theme.ZeroExtendedTheme
 @Composable
 fun NetworkDrawerFooter(
     modifier: Modifier = Modifier,
-    onCreateWorldClick: (Unit) -> Unit,
+    onCreateWorldClick: () -> Unit,
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -44,7 +44,7 @@ fun NetworkDrawerFooter(
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .wrapContentSize()
-                    .clickable { onCreateWorldClick.invoke(Unit) }
+                    .clickable(onClick = onCreateWorldClick)
             )
             Text(
                 stringResource(R.string.create_a_world),

@@ -18,6 +18,7 @@ buildscript {
 		"coreKtx"          : '1.7.0',
 		"hilt"             : '2.41',
 		"inject"           : "1",
+		"coil"             : "2.0.0-rc01",
 
 		// UI
 		"compose"          : '1.2.0-beta02',
