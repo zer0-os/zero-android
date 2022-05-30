@@ -4,12 +4,16 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
+import com.zero.android.common.navigation.TOP_LEVEL_DESTINATIONS
+import com.zero.android.common.navigation.TopLevelDestination
 
 @Composable
-private fun NiaBottomBar(
+fun ChannelBottomBar(
+    modifier: Modifier = Modifier,
     onNavigateToTopLevelDestination: (TopLevelDestination) -> Unit,
     currentDestination: NavDestination?
 ) {
@@ -42,4 +46,10 @@ private fun NiaBottomBar(
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun ChannelBottomBarPreview() {
+
 }
