@@ -1,4 +1,4 @@
-package com.zero.android.network.services
+package com.zero.android.network.service
 
 import com.zero.android.network.model.ApiUser
 import com.zero.android.network.util.Response

@@ -1,7 +1,7 @@
 package com.zero.android.data
 
-import com.zero.android.data.repositories.UserRepository
-import com.zero.android.data.repositories.UserRepositoryImpl
+import com.zero.android.data.repository.UserRepository
+import com.zero.android.data.repository.UserRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

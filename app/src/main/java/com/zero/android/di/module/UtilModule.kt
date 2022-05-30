@@ -1,4 +1,4 @@
-package com.zero.android.di.modules
+package com.zero.android.di.module
 
 import com.zero.android.common.system.Logger
 import com.zero.android.system.logger.ConsoleLogger

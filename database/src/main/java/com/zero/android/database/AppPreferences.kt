@@ -17,7 +17,5 @@ class AppPreferences(private val dataStore: DataStore<Preferences>) {
 
 	suspend fun token() = dataStore.data.map { preferences -> preferences[TOKEN] }.firstOrNull()
 
-	suspend fun setToken(token: String) {
-		dataStore.edit { preferences -> preferences[TOKEN] = token }
-	}
+	suspend fun setToken(token: String) = dataStore.edit { preferences -> preferences[TOKEN] = token }
 }

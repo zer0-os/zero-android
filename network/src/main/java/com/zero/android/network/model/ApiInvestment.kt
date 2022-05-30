@@ -1,12 +1,13 @@
 package com.zero.android.network.model
 
-import kotlinx.datetime.LocalDateTime
+import com.zero.android.network.model.serializers.InstantSerializer
+import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class ApiInvestment(
 	val round: String?,
-	val investmentDate: LocalDateTime?,
+	@Serializable(InstantSerializer::class) val investmentDate: Instant?,
 	val amount: String?,
 	val description: String?,
 	val organizationId: String?,

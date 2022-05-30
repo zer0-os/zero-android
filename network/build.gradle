@@ -22,6 +22,7 @@ android {
 
 dependencies {
 	implementation project(":database")
+	implementation project(":models")
 
 	implementation "com.google.dagger:hilt-android:${versions.hilt}"
 	kapt "com.google.dagger:hilt-compiler:${versions.hilt}"

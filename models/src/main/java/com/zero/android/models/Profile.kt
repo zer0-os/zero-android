@@ -1,11 +1,8 @@
-package com.zero.android.network.model
+package com.zero.android.models
 
-import com.zero.android.network.model.serializers.InstantSerializer
 import kotlinx.datetime.Instant
-import kotlinx.serialization.Serializable
 
-@Serializable
-data class ApiProfile(
+data class Profile(
 	val id: String,
 	val userId: String?,
 	val fullName: String?,
@@ -14,14 +11,14 @@ data class ApiProfile(
 	val gender: String?,
 	val guild: String?,
 	val summary: String?,
-	val skills: List<ApiValuable>?,
-	val values: List<ApiValuable>?,
-	val passions: List<ApiValuable>?,
-	val languages: List<ApiValuable>?,
-	val primaryCity: ApiCity?,
-	val secondaryCity: ApiCity?,
-	val hometownCity: ApiCity?,
-	@Serializable(InstantSerializer::class) val createdAt: Instant?,
+	val skills: List<Valuable>?,
+	val values: List<Valuable>?,
+	val passions: List<Valuable>?,
+	val languages: List<Valuable>?,
+	val primaryCity: City?,
+	val secondaryCity: City?,
+	val hometownCity: City?,
+	val createdAt: Instant?,
 	val primaryEmail: String?,
 	val secondaryEmail: String?,
 	val primaryPhone: String?,
@@ -59,9 +56,19 @@ data class ApiProfile(
 	val whatsapp: String?,
 
 	// Extra info
-	val experiences: List<ApiExperience>?,
-	val investments: List<ApiInvestment>?,
-	val educationRecords: List<ApiEducation>?,
+	val experiences: List<Experience>?,
+	val investments: List<Investment>?,
+	val educationRecords: List<Education>?,
 	val rawAvatarURL: String?,
 	private val _wallpaperURL: String?
-)
+) {
+
+	val displayName: String
+		get() = run {
+			if (!fullName.isNullOrBlank()) {
+				return fullName
+			} else {
+				return "$firstName $lastName"
+			}
+		}
+}

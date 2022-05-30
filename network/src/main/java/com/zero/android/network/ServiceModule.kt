@@ -1,8 +1,8 @@
 package com.zero.android.network
 
-import com.zero.android.network.services.AccountService
-import com.zero.android.network.services.ProfileService
-import com.zero.android.network.services.UserService
+import com.zero.android.network.service.AccountService
+import com.zero.android.network.service.ProfileService
+import com.zero.android.network.service.UserService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
