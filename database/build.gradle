@@ -1,12 +1,16 @@
 plugins {
 	id 'com.android.library'
 	id 'org.jetbrains.kotlin.android'
+	id 'dagger.hilt.android.plugin'
 	id 'kotlin-kapt'
+	id 'kotlinx-serialization'
 }
 
 apply from: "../module.gradle"
 
 dependencies {
+	implementation project(":models")
+
 	implementation "androidx.core:core-ktx:${versions.coreKtx}"
 	implementation "com.google.dagger:hilt-android:${versions.hilt}"
 	kapt "com.google.dagger:hilt-compiler:${versions.hilt}"
@@ -15,6 +19,9 @@ dependencies {
 	implementation "androidx.room:room-runtime:${versions.room}"
 	kapt "androidx.room:room-compiler:${versions.room}"
 	implementation "androidx.datastore:datastore-preferences:${versions.datastore}"
+
+	// Misc
+	implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:${versions.json}"
 
 	// Testing
 	testImplementation "androidx.room:room-testing:${versions.room}"

@@ -10,6 +10,5 @@ data class ApiInvestment(
 	@Serializable(InstantSerializer::class) val investmentDate: Instant?,
 	val amount: String?,
 	val description: String?,
-	val organizationId: String?,
 	val organization: ApiOrganization?
 )

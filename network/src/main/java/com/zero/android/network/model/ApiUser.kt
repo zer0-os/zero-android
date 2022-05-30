@@ -1,12 +1,12 @@
 package com.zero.android.network.model
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class ApiUser(
 	val id: String,
-	val profileId: String,
+	val profile: ApiProfile,
 	val handle: String,
-	val isNetworkAdmin: Boolean,
-	val profile: ApiProfile
+	@SerialName("isANetworkAdmin") val isNetworkAdmin: Boolean
 )

@@ -39,4 +39,9 @@ object DatabaseModule {
 	@Provides
 	@Singleton
 	fun providePreferences(dataStore: DataStore<Preferences>) = AppPreferences(dataStore)
+
+	@Provides
+	@Singleton
+	fun provideAppCleaner(database: AppDatabase, dataStore: DataStore<Preferences>) =
+		AppCleaner(database, dataStore)
 }

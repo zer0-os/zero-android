@@ -8,6 +8,5 @@ data class Education(
 	val degree: String?,
 	val field: String?,
 	val description: String?,
-	val organization: Organization?,
-	val organizationId: String?
+	val organization: Organization?
 )

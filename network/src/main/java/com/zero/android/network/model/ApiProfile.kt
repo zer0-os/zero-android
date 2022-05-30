@@ -63,5 +63,5 @@ data class ApiProfile(
 	val investments: List<ApiInvestment>?,
 	val educationRecords: List<ApiEducation>?,
 	val rawAvatarURL: String?,
-	private val _wallpaperURL: String?
+	val _wallpaperURL: String?
 )

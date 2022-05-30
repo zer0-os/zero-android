@@ -11,6 +11,5 @@ data class ApiEducation(
 	val degree: String?,
 	val field: String?,
 	val description: String?,
-	val organization: ApiOrganization?,
-	val organizationId: String?
+	val organization: ApiOrganization?
 )

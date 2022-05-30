@@ -9,6 +9,5 @@ data class Experience(
 	val city: String?,
 	val description: String?,
 	val organization: Organization?,
-	val organizationId: String?,
 	val isCurrent: Boolean?
 )

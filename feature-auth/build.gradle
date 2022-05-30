@@ -1,6 +1,7 @@
 plugins {
 	id 'com.android.library'
 	id 'org.jetbrains.kotlin.android'
+	id 'dagger.hilt.android.plugin'
 	id 'kotlin-kapt'
 }
 
@@ -16,8 +17,8 @@ android {
 }
 
 dependencies {
-	implementation project(":ui")
-	implementation project(":network")
+	implementation project(":data")
+	implementation project(":models")
 
 	implementation "com.auth0.android:lock:${versions.lock}"
 }

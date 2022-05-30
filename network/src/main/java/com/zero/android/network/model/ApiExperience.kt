@@ -12,6 +12,5 @@ data class ApiExperience(
 	val city: String?,
 	val description: String?,
 	val organization: ApiOrganization?,
-	val organizationId: String?,
 	val isCurrent: Boolean?
 )

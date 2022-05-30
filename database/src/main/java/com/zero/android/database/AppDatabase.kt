@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.zero.android.database.dao.UserDao
 
 @Database(entities = [], version = 1, exportSchema = true)
 abstract class AppDatabase : RoomDatabase() {
@@ -20,4 +21,6 @@ abstract class AppDatabase : RoomDatabase() {
 				.fallbackToDestructiveMigration()
 				.build()
 	}
+
+	abstract fun userDao(): UserDao
 }

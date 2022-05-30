@@ -1,10 +1,14 @@
 plugins {
 	id 'com.android.library'
 	id 'org.jetbrains.kotlin.android'
+	id 'kotlinx-serialization'
 }
 
 apply from: "../module.gradle"
 
 dependencies {
 	implementation project(":common")
+
+	// Misc
+	implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:${versions.json}"
 }
