@@ -4,6 +4,7 @@
     <string name="cd_ic_circle_add">@string/create_a_world</string>
 
     <string name="invite_members">Invite Members</string>
+    <string name="my_worlds">My Worlds</string>
     <string name="create_a_world">Create a World</string>
 
 </resources>
