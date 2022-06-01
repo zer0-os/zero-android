@@ -1,12 +1,22 @@
 package com.zero.android.database.model
 
-import androidx.room.Embedded
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 import com.zero.android.models.*
 import kotlinx.datetime.Instant
 
-@Entity(tableName = "profiles")
+@Entity(
+	tableName = "profiles",
+	foreignKeys =
+	[
+		ForeignKey(
+			entity = ProfileEntity::class,
+			parentColumns = ["id"],
+			childColumns = ["userId"],
+			onDelete = ForeignKey.CASCADE
+		)
+	],
+	indices = [Index(value = ["userId"])]
+)
 data class ProfileEntity(
 	@PrimaryKey val id: String,
 	val userId: String?,
@@ -16,13 +26,13 @@ data class ProfileEntity(
 	val gender: String?,
 	val guild: String?,
 	val summary: String?,
-	@Embedded val skills: List<Valuable>?,
-	@Embedded val values: List<Valuable>?,
-	@Embedded val passions: List<Valuable>?,
-	@Embedded val languages: List<Valuable>?,
-	@Embedded val primaryCity: City?,
-	@Embedded val secondaryCity: City?,
-	@Embedded val hometownCity: City?,
+	val skills: List<Valuable>?,
+	val values: List<Valuable>?,
+	val passions: List<Valuable>?,
+	val languages: List<Valuable>?,
+	@Embedded(prefix = "primary_city_") val primaryCity: City?,
+	@Embedded(prefix = "secondary_city_") val secondaryCity: City?,
+	@Embedded(prefix = "home_city_") val hometownCity: City?,
 	val createdAt: Instant?,
 	val primaryEmail: String?,
 	val secondaryEmail: String?,
@@ -61,9 +71,9 @@ data class ProfileEntity(
 	val whatsapp: String?,
 
 	// Extra info
-	@Embedded val experiences: List<Experience>?,
-	@Embedded val investments: List<Investment>?,
-	@Embedded val educationRecords: List<Education>?,
+	val experiences: List<Experience>?,
+	val investments: List<Investment>?,
+	val educationRecords: List<Education>?,
 	val rawAvatarURL: String?,
 	val _wallpaperURL: String?
 )

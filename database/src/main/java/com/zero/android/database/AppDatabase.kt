@@ -4,9 +4,17 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.zero.android.database.converter.DateConverters
+import com.zero.android.database.converter.EnumConverters
+import com.zero.android.database.converter.ListConverters
+import com.zero.android.database.dao.ProfileDao
 import com.zero.android.database.dao.UserDao
+import com.zero.android.database.model.ProfileEntity
+import com.zero.android.database.model.UserEntity
 
-@Database(entities = [], version = 1, exportSchema = true)
+@Database(entities = [UserEntity::class, ProfileEntity::class], version = 1, exportSchema = false)
+@TypeConverters(DateConverters::class, EnumConverters::class, ListConverters::class)
 abstract class AppDatabase : RoomDatabase() {
 
 	companion object {
@@ -23,4 +31,6 @@ abstract class AppDatabase : RoomDatabase() {
 	}
 
 	abstract fun userDao(): UserDao
+
+	abstract fun profileDao(): ProfileDao
 }

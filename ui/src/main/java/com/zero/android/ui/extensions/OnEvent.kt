@@ -1,4 +1,4 @@
-package com.zero.android.common.extensions
+package com.zero.android.ui.extensions
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect

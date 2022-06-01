@@ -9,7 +9,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.auth0.android.Auth0
 import com.auth0.android.lock.AuthenticationCallback
 import com.auth0.android.lock.Lock
-import com.zero.android.common.extensions.OnEvent
+import com.zero.android.ui.extensions.OnEvent
 
 @Composable
 fun AuthRoute(viewModel: AuthViewModel = hiltViewModel()) {

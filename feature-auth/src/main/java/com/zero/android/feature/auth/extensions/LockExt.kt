@@ -2,6 +2,7 @@ package com.zero.android.feature.auth.extensions
 
 import com.auth0.android.result.Credentials
 import com.zero.android.models.AuthCredentials
+import kotlinx.datetime.Instant
 
 fun Credentials.toAuthCredentials() =
 	AuthCredentials(
@@ -9,5 +10,5 @@ fun Credentials.toAuthCredentials() =
 		accessToken = accessToken,
 		type = type,
 		refreshToken = refreshToken,
-		expiresAt = expiresAt
+		expiresAt = Instant.fromEpochMilliseconds(expiresAt.time)
 	)

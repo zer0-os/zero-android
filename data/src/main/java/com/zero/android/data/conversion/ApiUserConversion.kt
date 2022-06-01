@@ -8,9 +8,4 @@ internal fun ApiUser.toModel() =
 	User(id = id, profile = profile.toModel(), handle = handle, isNetworkAdmin = isNetworkAdmin)
 
 internal fun ApiUser.toEntity() =
-	UserEntity(
-		id = id,
-		profile = profile.toEntity(),
-		handle = handle,
-		isNetworkAdmin = isNetworkAdmin
-	)
+	UserEntity(id = id, handle = handle, isNetworkAdmin = isNetworkAdmin)

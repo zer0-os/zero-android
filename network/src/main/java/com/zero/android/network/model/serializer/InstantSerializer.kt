@@ -1,4 +1,4 @@
-package com.zero.android.network.model.serializers
+package com.zero.android.network.model.serializer
 
 import kotlinx.datetime.Instant
 import kotlinx.datetime.toInstant

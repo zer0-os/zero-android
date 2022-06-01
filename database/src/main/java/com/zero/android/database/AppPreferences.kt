@@ -28,8 +28,9 @@ class AppPreferences(private val dataStore: DataStore<Preferences>) {
 		return Json.decodeFromString<AuthCredentials>(json)
 	}
 
-	suspend fun setAuthCredentials(credentials: AuthCredentials) =
+	suspend fun setAuthCredentials(credentials: AuthCredentials) {
 		dataStore.edit { preferences ->
 			preferences[AUTH_CREDENTIALS] = Json.encodeToString(credentials)
 		}
+	}
 }

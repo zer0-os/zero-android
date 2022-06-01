@@ -1,6 +1,6 @@
 package com.zero.android.network.model
 
-import com.zero.android.network.model.serializers.InstantSerializer
+import com.zero.android.network.model.serializer.InstantSerializer
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 
