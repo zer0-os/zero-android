@@ -23,7 +23,6 @@ fun AppLayout(
 			navBackStackEntry.value?.destination?.route ?: viewModel.startDestination.route
 
 		ZeroNavHost(
-			windowSizeClass = windowSizeClass,
 			navController = navController,
 			modifier = modifier.systemBarsPadding(),
 			startDestination = currentRoute

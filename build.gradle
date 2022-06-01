@@ -23,7 +23,7 @@ buildscript {
 		// UI
 		"compose"          : '1.2.0-beta02',
 		"composeActivity"  : '1.4.0',
-		"material3"        : "1.0.0-alpha12",
+		"material"         : "1.0.0-alpha12",
 		"composeFoundation": "1.2.0-beta02",
 		"navigation"       : "2.4.2",
 		"hiltNavigation"   : "1.0.0",
