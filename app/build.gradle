@@ -52,8 +52,9 @@ android {
 }
 
 dependencies {
-	implementation project(":common")
 	implementation project(":ui")
+	implementation project(":common")
+	implementation project(":database")
 	implementation project(":feature-auth")
 
 	// Features

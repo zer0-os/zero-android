@@ -16,7 +16,13 @@ dependencies {
 	implementation project(":common")
 
 	// UI
-	implementation "androidx.compose.ui:ui:${versions.compose}"
-	implementation "androidx.compose.material:material:${versions.compose}"
-	implementation "androidx.compose.ui:ui-tooling-preview:${versions.compose}"
+	api "androidx.compose.ui:ui:${versions.compose}"
+	api "androidx.compose.material3:material3:${versions.material3}"
+	api "androidx.compose.material3:material3-window-size-class:${versions.material3}"
+	api "androidx.compose.foundation:foundation:${versions.composeFoundation}"
+	api "androidx.compose.ui:ui-tooling-preview:${versions.compose}"
+	api "androidx.lifecycle:lifecycle-runtime-ktx:${versions.lifecycle}"
+	api "androidx.lifecycle:lifecycle-viewmodel-compose:${versions.lifecycle}"
+	api "androidx.navigation:navigation-compose:${versions.navigation}"
+	api "androidx.hilt:hilt-navigation-compose:${versions.hiltNavigation}"
 }
