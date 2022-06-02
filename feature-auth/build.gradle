@@ -21,5 +21,7 @@ dependencies {
 	implementation project(":data")
 	implementation project(":models")
 
+	implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}"
+
 	implementation "com.auth0.android:lock:${versions.lock}"
 }

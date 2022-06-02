@@ -15,6 +15,6 @@ fun ZeroNavHost(
 	startDestination: String = AuthDestination.route
 ) {
 	NavHost(navController = navController, startDestination = startDestination, modifier = modifier) {
-		authGraph()
+		authGraph(onLogin = { navController.popBackStack() })
 	}
 }

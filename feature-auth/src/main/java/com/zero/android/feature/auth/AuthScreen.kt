@@ -1,6 +1,8 @@
 package com.zero.android.feature.auth
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -9,10 +11,15 @@ import androidx.lifecycle.LifecycleOwner
 import com.auth0.android.Auth0
 import com.auth0.android.lock.AuthenticationCallback
 import com.auth0.android.lock.Lock
+import com.zero.android.feature.auth.AuthViewModel.AuthScreenUIState
 import com.zero.android.ui.extensions.OnEvent
 
 @Composable
-fun AuthRoute(viewModel: AuthViewModel = hiltViewModel()) {
+fun AuthRoute(viewModel: AuthViewModel = hiltViewModel(), onLogin: () -> Unit) {
+	val uiState: AuthScreenUIState by viewModel.uiState.collectAsState()
+
+	if (uiState == AuthScreenUIState.LOGIN) onLogin()
+
 	AuthScreen(authCallback = viewModel.authCallback)
 }
 

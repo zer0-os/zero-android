@@ -19,6 +19,7 @@ buildscript {
 		"coreKtx"          : '1.7.0',
 		"hilt"             : '2.41',
 		"inject"           : "1",
+		"coroutines"       : "1.6.2",
 
 		// UI
 		"compose"          : '1.2.0-beta02',

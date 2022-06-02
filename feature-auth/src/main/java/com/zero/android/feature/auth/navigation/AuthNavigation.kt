@@ -10,6 +10,6 @@ object AuthDestination : NavDestination {
 	override val destination = "login_destination"
 }
 
-fun NavGraphBuilder.authGraph() {
-	composable(route = AuthDestination.route) { AuthRoute() }
+fun NavGraphBuilder.authGraph(onLogin: () -> Unit) {
+	composable(route = AuthDestination.route) { AuthRoute(onLogin = onLogin) }
 }

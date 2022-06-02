@@ -68,4 +68,5 @@ dependencies {
 
 	// Misc
 	implementation "com.jakewharton.timber:timber:${versions.timber}"
+	implementation "org.jetbrains.kotlinx:kotlinx-datetime:${versions.datetime}"
 }
