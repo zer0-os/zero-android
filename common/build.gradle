@@ -8,4 +8,5 @@ apply from: '../module.gradle'
 
 dependencies {
 	implementation "androidx.core:core-ktx:${versions.coreKtx}"
+	implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}"
 }

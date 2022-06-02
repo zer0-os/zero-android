@@ -21,6 +21,8 @@ android {
 		vectorDrawables {
 			useSupportLibrary true
 		}
+
+		manifestPlaceholders = [auth0Domain: "@string/com_auth0_domain", auth0Scheme: "https"]
 	}
 
 	buildTypes {
@@ -50,10 +52,10 @@ android {
 }
 
 dependencies {
-	implementation project(":common")
 	implementation project(":ui")
-
-	// Features
+	implementation project(":common")
+	implementation project(":models")
+	implementation project(":database")
 	implementation project(":feature-auth")
 
 	implementation "androidx.core:core-ktx:${versions.coreKtx}"
@@ -62,15 +64,9 @@ dependencies {
 	kapt "com.google.dagger:hilt-compiler:${versions.hilt}"
 
 	// UI
-	implementation "androidx.compose.ui:ui:${versions.compose}"
-	implementation "androidx.compose.material3:material3:${versions.material3}"
-	implementation "androidx.compose.material3:material3-window-size-class:${versions.material3}"
-	implementation "androidx.compose.foundation:foundation:${versions.composeFoundation}"
-	implementation "androidx.navigation:navigation-compose:${versions.navigation}"
-	implementation "androidx.compose.ui:ui-tooling-preview:${versions.compose}"
-	implementation "androidx.lifecycle:lifecycle-runtime-ktx:${versions.lifecycle}"
 	implementation "androidx.core:core-splashscreen:${versions.splashscreen}"
 
 	// Misc
 	implementation "com.jakewharton.timber:timber:${versions.timber}"
+	implementation "org.jetbrains.kotlinx:kotlinx-datetime:${versions.datetime}"
 }

@@ -1,11 +1,19 @@
 plugins {
 	id 'com.android.library'
 	id 'org.jetbrains.kotlin.android'
+	id 'dagger.hilt.android.plugin'
 	id 'kotlin-kapt'
 }
 
 apply from: '../module.gradle'
 
 dependencies {
+	implementation project(":common")
+	implementation project(":models")
+	implementation project(":network")
+	implementation project(":database")
+
 	implementation "androidx.core:core-ktx:${versions.coreKtx}"
+	implementation "com.google.dagger:hilt-android:${versions.hilt}"
+	kapt "com.google.dagger:hilt-compiler:${versions.hilt}"
 }
