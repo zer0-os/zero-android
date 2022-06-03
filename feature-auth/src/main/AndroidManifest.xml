@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.zero.android.feature.auth">
 
+    <application>
+        <activity
+            android:name="com.auth0.android.lock.LockActivity"
+            android:theme="@style/Theme.Auth"
+            tools:replace="android:theme" />
+    </application>
 </manifest>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.Auth" parent="Lock.Theme">
+        <item name="Auth0.HeaderLogo">@drawable/logo</item>
+        <item name="Auth0.HeaderTitle">@string/app_name</item>
+        <item name="Auth0.HeaderTitleColor">@color/com_auth0_lock_text</item>
+        <item name="Auth0.HeaderBackground">@color/com_auth0_lock_header_background</item>
+        <item name="Auth0.PrimaryColor">@color/accent</item>
+        <item name="Auth0.DarkPrimaryColor">@color/accent_dark</item>
+    </style>
+</resources>

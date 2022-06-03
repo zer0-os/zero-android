@@ -4,10 +4,9 @@ import kotlinx.datetime.Instant
 
 data class Profile(
 	val id: String,
-	val userId: String?,
-	val fullName: String?,
 	val firstName: String?,
 	val lastName: String?,
+	val profileImage: String?,
 	val gender: String?,
 	val guild: String?,
 	val summary: String?,
@@ -64,11 +63,5 @@ data class Profile(
 ) {
 
 	val displayName: String
-		get() = run {
-			if (!fullName.isNullOrBlank()) {
-				return fullName
-			} else {
-				return "$firstName $lastName"
-			}
-		}
+		get() = "$firstName $lastName"
 }

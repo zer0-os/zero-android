@@ -36,7 +36,7 @@ constructor(
 
 		userService.getUser().data.let { user ->
 			userDao.insert(user.toEntity())
-			profileDao.insert(user.profile.toEntity())
+			profileDao.insert(user.profile.toEntity(user.id))
 			emit(user.toModel())
 		}
 	}

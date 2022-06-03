@@ -14,3 +14,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+dev*.properties
+stag*.properties
+prod*.properties
+qa.prioerties

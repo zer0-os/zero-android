@@ -8,9 +8,9 @@ import kotlinx.serialization.Serializable
 data class ApiProfile(
 	val id: String,
 	val userId: String?,
-	val fullName: String?,
 	val firstName: String?,
 	val lastName: String?,
+	val profileImage: String?,
 	val gender: String?,
 	val guild: String?,
 	val summary: String?,
