@@ -7,10 +7,9 @@ import com.zero.android.network.model.ApiProfile
 internal fun ApiProfile.toModel() =
 	Profile(
 		id = id,
-		userId = userId,
-		fullName = fullName,
 		firstName = firstName,
 		lastName = lastName,
+		profileImage = profileImage,
 		gender = gender,
 		guild = guild,
 		summary = summary,
@@ -66,13 +65,13 @@ internal fun ApiProfile.toModel() =
 		_wallpaperURL = _wallpaperURL
 	)
 
-internal fun ApiProfile.toEntity() =
+internal fun ApiProfile.toEntity(userId: String) =
 	ProfileEntity(
 		id = id,
 		userId = userId,
-		fullName = fullName,
 		firstName = firstName,
 		lastName = lastName,
+		profileImage = profileImage,
 		gender = gender,
 		guild = guild,
 		summary = summary,

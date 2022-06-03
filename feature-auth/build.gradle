@@ -7,12 +7,20 @@ plugins {
 
 apply from: '../feature_module.gradle'
 
-def localProperties = getLocalProperties()
-
 android {
-	defaultConfig {
-		resValue "string", "com_auth0_client_id", localProperties['com_auth0_client_id']
-		resValue "string", "com_auth0_domain", localProperties['com_auth0_domain']
+	buildTypes {
+		debug {
+			def properties = getEnv("development")
+			resValue "string", "com_auth0_client_id", properties['com_auth0_client_id']
+			resValue "string", "com_auth0_domain", properties['com_auth0_domain']
+			buildConfigField "String", "AUTH0_AUDIENCE", "\"${properties["com_auth0_audience"]}\""
+		}
+		release {
+			def properties = getEnv("production")
+			resValue "string", "com_auth0_client_id", properties['com_auth0_client_id']
+			resValue "string", "com_auth0_domain", properties['com_auth0_domain']
+			buildConfigField "String", "AUTH0_AUDIENCE", "\"${properties["com_auth0_audience"]}\""
+		}
 	}
 }
 

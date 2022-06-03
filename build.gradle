@@ -72,10 +72,10 @@ plugins {
 apply from: "spotless.gradle"
 
 
-project.ext.getLocalProperties = {
+project.ext.getEnv = { env ->
 	def localProperties = new Properties()
 	try {
-		localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+		localProperties.load(new FileInputStream(rootProject.file("${env}.properties")))
 	} catch (Exception ex) {
 		println("$ex")
 	}

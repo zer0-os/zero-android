@@ -8,15 +8,15 @@ plugins {
 
 apply from: '../module.gradle'
 
-def localProperties = getLocalProperties()
-
 android {
 	buildTypes {
 		debug {
-			buildConfigField "String", "BASE_API_URL", "\"${localProperties["api_dev"]}\""
+			def properties = getEnv("development")
+			buildConfigField "String", "BASE_API_URL", "\"${properties["api_url"]}\""
 		}
 		release {
-			buildConfigField "String", "BASE_API_URL", "\"${localProperties["api_prod"]}\""
+			def properties = getEnv("production")
+			buildConfigField "String", "BASE_API_URL", "\"${properties["api_url"]}\""
 		}
 	}
 }

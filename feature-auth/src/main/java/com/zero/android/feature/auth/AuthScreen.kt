@@ -40,6 +40,7 @@ fun AuthScreen(
 					"Username-Password-Authentication"
 				)
 			)
+			.withAudience(BuildConfig.AUTH0_AUDIENCE)
 			.withScope("openid profile offline_access")
 			.closable(false)
 			.allowLogIn(true)

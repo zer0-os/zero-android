@@ -7,6 +7,10 @@ plugins {
 apply from: "../module.gradle"
 
 android {
+	defaultConfig {
+		minSdk application.minSdk
+	}
+
 	buildFeatures {
 		compose true
 	}
