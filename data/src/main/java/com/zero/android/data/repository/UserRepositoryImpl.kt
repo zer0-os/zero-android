@@ -26,7 +26,12 @@ constructor(
 
 	override suspend fun login(credentials: AuthCredentials) {
 		preferences.setAuthCredentials(credentials)
-		getUser().last()
+		try {
+			val user = getUser().last()
+			preferences.setUserId(user.id)
+		} catch (e: Exception) {
+			preferences.setAuthCredentials(null)
+		}
 	}
 
 	override suspend fun logout() = appCleaner.clean()

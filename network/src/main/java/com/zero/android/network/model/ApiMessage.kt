@@ -1,6 +1,6 @@
 package com.zero.android.network.model
 
-import com.zero.android.models.MessageType
+import com.zero.android.models.enums.MessageType
 import com.zero.android.network.model.serializer.InstantSerializer
 import com.zero.android.network.model.serializer.MessageTypeSerializer
 import kotlinx.datetime.Instant

@@ -14,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.zero.android.feature.network.drawer.NetworkDrawerViewModel
 import com.zero.android.feature.network.drawer.R
 import com.zero.android.feature.network.drawer.misc.NetworkWorld
 import kotlinx.coroutines.CoroutineScope

@@ -1,5 +1,7 @@
 package com.zero.android.data
 
+import com.zero.android.data.repository.NetworkRepository
+import com.zero.android.data.repository.NetworkRepositoryImpl
 import com.zero.android.data.repository.UserRepository
 import com.zero.android.data.repository.UserRepositoryImpl
 import dagger.Binds
@@ -12,4 +14,6 @@ import dagger.hilt.components.SingletonComponent
 interface DataModule {
 
 	@Binds fun bindUserRepository(userRepository: UserRepositoryImpl): UserRepository
+
+	@Binds fun bindNetworkRepository(networkRepository: NetworkRepositoryImpl): NetworkRepository
 }

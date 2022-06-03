@@ -1,5 +1,6 @@
 package com.zero.android.database
 
+import com.zero.android.database.dao.NetworkDao
 import com.zero.android.database.dao.ProfileDao
 import com.zero.android.database.dao.UserDao
 import dagger.Module
@@ -11,7 +12,9 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 object DaoModule {
 
-	@Provides fun providesUserDao(database: AppDatabase): UserDao = database.userDao()
+	@Provides fun provideUserDao(database: AppDatabase): UserDao = database.userDao()
 
-	@Provides fun providesProfileDao(database: AppDatabase): ProfileDao = database.profileDao()
+	@Provides fun provideProfileDao(database: AppDatabase): ProfileDao = database.profileDao()
+
+	@Provides fun provideNetworkDao(database: AppDatabase): NetworkDao = database.networkDao()
 }

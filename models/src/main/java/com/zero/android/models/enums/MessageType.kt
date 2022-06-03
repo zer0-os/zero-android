@@ -1,4 +1,4 @@
-package com.zero.android.models
+package com.zero.android.models.enums
 
 enum class MessageType(val serializedName: String) {
 	TEXT("text"),

@@ -16,6 +16,7 @@ import javax.inject.Singleton
 class AppPreferences(private val dataStore: DataStore<Preferences>) {
 
 	companion object {
+		private val USER_ID = stringPreferencesKey("USER_ID")
 		private val AUTH_CREDENTIALS = stringPreferencesKey("AUTH_CREDENTIALS")
 	}
 
@@ -28,9 +29,15 @@ class AppPreferences(private val dataStore: DataStore<Preferences>) {
 		return Json.decodeFromString<AuthCredentials>(json)
 	}
 
-	suspend fun setAuthCredentials(credentials: AuthCredentials) {
+	suspend fun setAuthCredentials(credentials: AuthCredentials?) {
 		dataStore.edit { preferences ->
 			preferences[AUTH_CREDENTIALS] = Json.encodeToString(credentials)
 		}
+	}
+
+	suspend fun userId() = dataStore.data.map { preferences -> preferences[USER_ID] }.firstOrNull()
+
+	suspend fun setUserId(id: String) {
+		dataStore.edit { preferences -> preferences[USER_ID] = id }
 	}
 }
