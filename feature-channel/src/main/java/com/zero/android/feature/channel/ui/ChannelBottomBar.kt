@@ -15,65 +15,57 @@ import com.zero.android.ui.theme.ZeroExtendedTheme
 
 @Composable
 fun ChannelBottomBar(
-    modifier: Modifier = Modifier,
-    onNavigateToTopLevelDestination: (TopLevelDestination) -> Unit,
-    currentDestination: NavDestination?
+	modifier: Modifier = Modifier,
+	onNavigateToTopLevelDestination: (TopLevelDestination) -> Unit,
+	currentDestination: NavDestination?
 ) {
-    Surface(color = MaterialTheme.colorScheme.surface) {
-        NavigationBar(
-            modifier = Modifier.windowInsetsPadding(
-                WindowInsets.safeDrawing.only(
-                    WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
-                )
-            ),
-            tonalElevation = 0.dp
-        ) {
-            TOP_LEVEL_DESTINATIONS.forEach { destination ->
-                val selected =
-                    currentDestination?.hierarchy?.any { it.route == destination.route } == true
-                NavigationBarItem(
-                    selected = selected,
-                    onClick = { onNavigateToTopLevelDestination(destination) },
-                    icon = {
-                        val showBadgeCount = true
-                        if (showBadgeCount) {
-                            BadgedBox(badge = {
-                                Badge(
-                                    containerColor = MaterialTheme.colorScheme.primary,
-                                    contentColor = ZeroExtendedTheme.colors.colorTextPrimary
-                                ) {
-                                    Text("01")
-                                }
-                            }) {
-                                BottomBarIcon(isSelected = selected, destination = destination)
-                            }
-                        } else {
-                            BottomBarIcon(isSelected = selected, destination = destination)
-                        }
-                    },
-                )
-            }
-        }
-    }
+	Surface(color = MaterialTheme.colorScheme.surface) {
+		NavigationBar(
+			modifier =
+			Modifier.windowInsetsPadding(
+				WindowInsets.safeDrawing.only(
+					WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
+				)
+			),
+			tonalElevation = 0.dp
+		) {
+			TOP_LEVEL_DESTINATIONS.forEach { destination ->
+				val selected = currentDestination?.hierarchy?.any { it.route == destination.route } == true
+				NavigationBarItem(
+					selected = selected,
+					onClick = { onNavigateToTopLevelDestination(destination) },
+					icon = {
+						val showBadgeCount = true
+						if (showBadgeCount) {
+							BadgedBox(
+								badge = {
+									Badge(
+										containerColor = MaterialTheme.colorScheme.primary,
+										contentColor = ZeroExtendedTheme.colors.colorTextPrimary
+									) { Text("01") }
+								}
+							) { BottomBarIcon(isSelected = selected, destination = destination) }
+						} else {
+							BottomBarIcon(isSelected = selected, destination = destination)
+						}
+					}
+				)
+			}
+		}
+	}
 }
 
 @Composable
-fun BottomBarIcon(
-    isSelected: Boolean,
-    destination: TopLevelDestination
-) {
-    Icon(
-        if (isSelected) {
-            painterResource(destination.selectedIcon)
-        } else {
-            painterResource(destination.unselectedIcon)
-        },
-        contentDescription = null
-    )
+fun BottomBarIcon(isSelected: Boolean, destination: TopLevelDestination) {
+	Icon(
+		if (isSelected) {
+			painterResource(destination.selectedIcon)
+		} else {
+			painterResource(destination.unselectedIcon)
+		},
+		contentDescription = null
+	)
 }
 
-@Preview
-@Composable
-fun ChannelBottomBarPreview() {
-
-}
+@Preview @Composable
+fun ChannelBottomBarPreview() {}

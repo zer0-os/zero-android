@@ -7,10 +7,8 @@ val Purple500 = Color(0xFF6200EE)
 val Purple700 = Color(0xFF3700B3)
 val Teal200 = Color(0xFF03DAC5)
 
-/**
- * Colors from Zero Color palette from figma
- */
-//DARK Mode Colors
+/** Colors from Zero Color palette from figma */
+// DARK Mode Colors
 val PersianIndigo = Color(0xFF31156F)
 val RussianViolet = Color(0xFF1C0945)
 val CetaceanBlue = Color(0xFF10052E)
@@ -26,7 +24,7 @@ val EmeraldGreen = Color(0xFF58C573)
 val Red300 = Color(0xFFF6677C)
 val BlueViolet = Color(0xFF50207B)
 
-//LIGHT Mode Colors
+// LIGHT Mode Colors
 val CadetBlue = Color(0xFFB8AFCB)
 val Rhythm = Color(0xFF796E97)
 val Argent = Color(0xFFBFBFBF)

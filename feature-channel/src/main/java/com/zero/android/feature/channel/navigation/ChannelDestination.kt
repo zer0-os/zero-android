@@ -7,10 +7,10 @@ import com.zero.android.common.navigation.NavDestination
 import com.zero.android.feature.channel.ui.ChannelRoute
 
 object ChannelDestination : NavDestination {
-    override val route = "channel_route"
-    override val destination = "channel_destination"
+	override val route = "channel_route"
+	override val destination = "channel_destination"
 }
 
 fun NavGraphBuilder.authGraph(windowSizeClass: WindowSizeClass) {
-    composable(route = ChannelDestination.route) { ChannelRoute(windowSizeClass) }
+	composable(route = ChannelDestination.route) { ChannelRoute(windowSizeClass) }
 }

@@ -21,89 +21,77 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun NetworkDrawerRoute(
-    windowSizeClass: WindowSizeClass,
-    modifier: Modifier = Modifier,
-    viewModel: NetworkDrawerViewModel = hiltViewModel()
+	windowSizeClass: WindowSizeClass,
+	modifier: Modifier = Modifier,
+	viewModel: NetworkDrawerViewModel = hiltViewModel()
 ) {
-    //NetworkDrawer(windowSizeClass = windowSizeClass, modifier = modifier)
+	// NetworkDrawer(windowSizeClass = windowSizeClass, modifier = modifier)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NetworkDrawer(
-    windowSizeClass: WindowSizeClass,
-    modifier: Modifier = Modifier,
-    drawerState: DrawerState,
-    coroutineScope: CoroutineScope,
+	windowSizeClass: WindowSizeClass,
+	modifier: Modifier = Modifier,
+	drawerState: DrawerState,
+	coroutineScope: CoroutineScope
 ) {
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        gesturesEnabled = drawerState.isOpen,
-        drawerContainerColor = MaterialTheme.colorScheme.background,
-        drawerContent = {
-            DrawerContent(
-                drawerState = drawerState,
-                coroutineScope = coroutineScope
-            )
-        }
-    ) {
-
-    }
+	ModalNavigationDrawer(
+		drawerState = drawerState,
+		gesturesEnabled = drawerState.isOpen,
+		drawerContainerColor = MaterialTheme.colorScheme.background,
+		drawerContent = {
+			DrawerContent(drawerState = drawerState, coroutineScope = coroutineScope)
+		}
+	) {}
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DrawerContent(
-    modifier: Modifier = Modifier,
-    currentWorld: NetworkWorld = NetworkWorld(),
-    networkWorlds: List<NetworkWorld> = emptyList(),
-    drawerState: DrawerState,
-    coroutineScope: CoroutineScope,
+	modifier: Modifier = Modifier,
+	currentWorld: NetworkWorld = NetworkWorld(),
+	networkWorlds: List<NetworkWorld> = emptyList(),
+	drawerState: DrawerState,
+	coroutineScope: CoroutineScope
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
-        // Header
-        NetworkDrawerHeader(
-            item = currentWorld,
-            onSettingsClick = {
-                coroutineScope.launch { drawerState.close() }
-                //TODO: navigation to settings screen
-            },
-            onInviteClick = {
-                coroutineScope.launch { drawerState.close() }
-                //TODO: navigation to invite members screen
-            }
-        )
+	Column(modifier = Modifier.fillMaxSize()) {
+		// Header
+		NetworkDrawerHeader(
+			item = currentWorld,
+			onSettingsClick = {
+				coroutineScope.launch { drawerState.close() }
+				// TODO: navigation to settings screen
+			},
+			onInviteClick = {
+				coroutineScope.launch { drawerState.close() }
+				// TODO: navigation to invite members screen
+			}
+		)
 
-        Text(
-            text = stringResource(R.string.my_worlds),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp)
-        )
-        //world items
-        LazyRow() {
-            items(items = networkWorlds, key = { item -> item.id }) { networkWorld ->
-                DrawerItem(
-                    item = networkWorld,
-                    onItemClick = {
-                        coroutineScope.launch { drawerState.close() }
-                    }
-                )
-            }
-        }
+		Text(
+			text = stringResource(R.string.my_worlds),
+			modifier = Modifier.fillMaxWidth().padding(12.dp)
+		)
+		// world items
+		LazyRow {
+			items(items = networkWorlds, key = { item -> item.id }) { networkWorld ->
+				DrawerItem(
+					item = networkWorld,
+					onItemClick = { coroutineScope.launch { drawerState.close() } }
+				)
+			}
+		}
 
-        //Footer
-        NetworkDrawerFooter(
-            onCreateWorldClick = {
-                coroutineScope.launch { drawerState.close() }
-                //TODO: navigation to create new world screen
-            }
-        )
-    }
+		// Footer
+		NetworkDrawerFooter(
+			onCreateWorldClick = {
+				coroutineScope.launch { drawerState.close() }
+				// TODO: navigation to create new world screen
+			}
+		)
+	}
 }
 
-@Preview
-@Composable
-fun NetworkDrawerPreview() {
-
-}
+@Preview @Composable
+fun NetworkDrawerPreview() {}

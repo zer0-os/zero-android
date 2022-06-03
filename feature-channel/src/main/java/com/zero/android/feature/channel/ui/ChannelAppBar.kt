@@ -15,43 +15,40 @@ import com.zero.android.feature.network.drawer.misc.NetworkWorld
 
 @Composable
 fun ChannelAppBar(
-    modifier: Modifier = Modifier,
-    openDrawer: () -> Unit,
-    networkWorld: NetworkWorld,
-    onProfileClick: () -> Unit,
-    onCreateWorldClick: () -> Unit,
+	modifier: Modifier = Modifier,
+	openDrawer: () -> Unit,
+	networkWorld: NetworkWorld,
+	onProfileClick: () -> Unit,
+	onCreateWorldClick: () -> Unit
 ) {
-    CenterAlignedTopAppBar(
-        title = {
-            Text(networkWorld.title)
-        },
-        navigationIcon = {
-            IconButton(onClick = openDrawer) {
-                Icon(
-                    painter = rememberAsyncImagePainter(networkWorld.icon),
-                    contentDescription = networkWorld.title
-                )
-            }
-        },
-        actions = {
-            IconButton(onClick = onProfileClick) {
-                Icon(
-                    painter = painterResource(com.zero.android.feature.channel.R.drawable.img_profile_avatar),
-                    contentDescription = stringResource(com.zero.android.feature.channel.R.string.profile),
-                )
-            }
-            IconButton(onClick = onCreateWorldClick) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_circle_add),
-                    contentDescription = stringResource(R.string.cd_ic_circle_add),
-                )
-            }
-        }
-    )
+	CenterAlignedTopAppBar(
+		title = { Text(networkWorld.title) },
+		navigationIcon = {
+			IconButton(onClick = openDrawer) {
+				Icon(
+					painter = rememberAsyncImagePainter(networkWorld.icon),
+					contentDescription = networkWorld.title
+				)
+			}
+		},
+		actions = {
+			IconButton(onClick = onProfileClick) {
+				Icon(
+					painter =
+					painterResource(com.zero.android.feature.channel.R.drawable.img_profile_avatar),
+					contentDescription =
+					stringResource(com.zero.android.feature.channel.R.string.profile)
+				)
+			}
+			IconButton(onClick = onCreateWorldClick) {
+				Icon(
+					painter = painterResource(R.drawable.ic_circle_add),
+					contentDescription = stringResource(R.string.cd_ic_circle_add)
+				)
+			}
+		}
+	)
 }
 
-@Preview
-@Composable
-fun ChannelAppBarPreview() {
-
-}
+@Preview @Composable
+fun ChannelAppBarPreview() {}

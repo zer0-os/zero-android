@@ -7,10 +7,10 @@ import com.zero.android.common.navigation.NavDestination
 import com.zero.android.feature.network.drawer.ui.NetworkDrawerRoute
 
 object NetworkDrawerDestination : NavDestination {
-    override val route = "network_drawer_route"
-    override val destination = "network_drawer_destination"
+	override val route = "network_drawer_route"
+	override val destination = "network_drawer_destination"
 }
 
 fun NavGraphBuilder.authGraph(windowSizeClass: WindowSizeClass) {
-    composable(route = NetworkDrawerDestination.route) { NetworkDrawerRoute(windowSizeClass) }
+	composable(route = NetworkDrawerDestination.route) { NetworkDrawerRoute(windowSizeClass) }
 }

@@ -18,45 +18,36 @@ import com.zero.android.feature.network.drawer.R
 import com.zero.android.ui.theme.ZeroExtendedTheme
 
 @Composable
-fun NetworkDrawerFooter(
-    modifier: Modifier = Modifier,
-    onCreateWorldClick: () -> Unit,
-) {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
-    ) {
-        Divider(
-            color = ZeroExtendedTheme.colors.buttonSecondary,
-            modifier = Modifier
-                .fillMaxWidth(),
-            thickness = 1.dp
-        )
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            Image(
-                painter = painterResource(R.drawable.ic_circle_add),
-                contentDescription = stringResource(R.string.cd_ic_circle_add),
-                contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .wrapContentSize()
-                    .clickable(onClick = onCreateWorldClick)
-            )
-            Text(
-                stringResource(R.string.create_a_world),
-                fontSize = 16.sp,
-                color = ZeroExtendedTheme.colors.buttonSecondary
-            )
-        }
-    }
+fun NetworkDrawerFooter(modifier: Modifier = Modifier, onCreateWorldClick: () -> Unit) {
+	Column(
+		modifier = Modifier.fillMaxWidth(),
+		horizontalAlignment = Alignment.CenterHorizontally,
+		verticalArrangement = Arrangement.SpaceBetween
+	) {
+		Divider(
+			color = ZeroExtendedTheme.colors.buttonSecondary,
+			modifier = Modifier.fillMaxWidth(),
+			thickness = 1.dp
+		)
+		Row(
+			modifier = Modifier.fillMaxWidth(),
+			verticalAlignment = Alignment.CenterVertically,
+			horizontalArrangement = Arrangement.SpaceEvenly
+		) {
+			Image(
+				painter = painterResource(R.drawable.ic_circle_add),
+				contentDescription = stringResource(R.string.cd_ic_circle_add),
+				contentScale = ContentScale.Fit,
+				modifier = Modifier.wrapContentSize().clickable(onClick = onCreateWorldClick)
+			)
+			Text(
+				stringResource(R.string.create_a_world),
+				fontSize = 16.sp,
+				color = ZeroExtendedTheme.colors.buttonSecondary
+			)
+		}
+	}
 }
 
-@Preview
-@Composable
-fun NetworkDrawerFooterPreview() {
-
-}
+@Preview @Composable
+fun NetworkDrawerFooterPreview() {}

@@ -13,9 +13,6 @@ android {
 		}
 	}
 
-	buildFeatures {
-		compose true
-	}
 	composeOptions {
 		kotlinCompilerExtensionVersion versions.compose
 	}
@@ -33,6 +30,7 @@ dependencies {
 
 	// Misc
 	implementation "com.jakewharton.timber:timber:${versions.timber}"
+	implementation "org.jetbrains.kotlinx:kotlinx-datetime:${versions.datetime}"
 }
 
 apply from: "../test_dependencies.gradle"

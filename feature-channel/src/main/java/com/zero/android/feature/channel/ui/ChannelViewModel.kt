@@ -6,5 +6,4 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class ChannelViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : ViewModel() {
-}
+class ChannelViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : ViewModel()

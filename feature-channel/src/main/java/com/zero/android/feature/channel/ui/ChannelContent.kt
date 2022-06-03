@@ -19,72 +19,51 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun ChannelContent(
-    modifier: Modifier = Modifier,
-    cTypes: List<CType> = emptyList()
-) {
-    val coroutineScope = rememberCoroutineScope()
-    val pagerState = rememberPagerState()
-    //TabView
-    TabRow(
-        selectedTabIndex = pagerState.currentPage,
-        modifier = Modifier.padding(10.dp),
-        indicator = { tabPositions ->
-            TabRowDefaults.Indicator(
-                Modifier.pagerTabIndicatorOffset(pagerState, tabPositions)
-            )
-        }
-    ) {
-        cTypes.forEachIndexed { index, cType ->
-            val showBadgeCount = cType.count > 0
-            if (showBadgeCount) {
-                BadgedBox(badge = {
-                    Badge(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = ZeroExtendedTheme.colors.colorTextPrimary
-                    ) {
-                        Text(cType.count.toString())
-                    }
-                }) {
-                    CTypeTab(isSelected = pagerState.currentPage == index, text = cType.title) {
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(index)
-                        }
-                    }
-                }
-            } else {
-                CTypeTab(isSelected = pagerState.currentPage == index, text = cType.title) {
-                    coroutineScope.launch {
-                        pagerState.animateScrollToPage(index)
-                    }
-                }
-            }
-        }
-    }
-    //Viewpager
-    HorizontalPager(
-        count = cTypes.size,
-        state = pagerState,
-    ) { page ->
-        // TODO: page content
-    }
+fun ChannelContent(modifier: Modifier = Modifier, cTypes: List<CType> = emptyList()) {
+	val coroutineScope = rememberCoroutineScope()
+	val pagerState = rememberPagerState()
+	// TabView
+	TabRow(
+		selectedTabIndex = pagerState.currentPage,
+		modifier = Modifier.padding(10.dp),
+		indicator = { tabPositions ->
+			TabRowDefaults.Indicator(Modifier.pagerTabIndicatorOffset(pagerState, tabPositions))
+		}
+	) {
+		cTypes.forEachIndexed { index, cType ->
+			val showBadgeCount = cType.count > 0
+			if (showBadgeCount) {
+				BadgedBox(
+					badge = {
+						Badge(
+							containerColor = MaterialTheme.colorScheme.primary,
+							contentColor = ZeroExtendedTheme.colors.colorTextPrimary
+						) {
+							Text(cType.count.toString())
+						}
+					}
+				) {
+					CTypeTab(isSelected = pagerState.currentPage == index, text = cType.title) {
+						coroutineScope.launch { pagerState.animateScrollToPage(index) }
+					}
+				}
+			} else {
+				CTypeTab(isSelected = pagerState.currentPage == index, text = cType.title) {
+					coroutineScope.launch { pagerState.animateScrollToPage(index) }
+				}
+			}
+		}
+	}
+	// Viewpager
+	HorizontalPager(count = cTypes.size, state = pagerState) { page ->
+		// TODO: page content
+	}
 }
 
 @Composable
-fun CTypeTab(
-    isSelected: Boolean,
-    text: String,
-    onClick: () -> Unit
-) {
-    Tab(
-        selected = isSelected,
-        onClick = onClick,
-        text = { Text(text) }
-    )
+fun CTypeTab(isSelected: Boolean, text: String, onClick: () -> Unit) {
+	Tab(selected = isSelected, onClick = onClick, text = { Text(text) })
 }
 
-@Preview
-@Composable
-fun ChannelContentPreview() {
-
-}
+@Preview @Composable
+fun ChannelContentPreview() {}
