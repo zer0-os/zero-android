@@ -1,3 +1,5 @@
+package com.zero.android.models.enums
+
 enum class InviteMode(val serializedName: String) {
 	NONE("none"),
 	UNLIMITED("unlimitedUse")

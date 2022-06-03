@@ -1,11 +1,11 @@
 package com.zero.android.database.model
 
-import InviteMode
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.zero.android.models.Network
 import com.zero.android.models.NetworkPermissions
+import com.zero.android.models.enums.InviteMode
 
 @Entity(tableName = "networks")
 data class NetworkEntity(
@@ -19,7 +19,8 @@ data class NetworkEntity(
 	val locationShareType: String?,
 	val disabledApps: List<String>?,
 	val inviteMode: InviteMode,
-	@Embedded(prefix = "permissions_") val permissions: NetworkPermissions?
+	@Embedded(prefix = "permissions_") val permissions: NetworkPermissions?,
+	val unreadCount: Int = 0
 )
 
 fun NetworkEntity.toModel() =
@@ -34,5 +35,6 @@ fun NetworkEntity.toModel() =
 		locationShareType = locationShareType,
 		disabledApps = disabledApps,
 		inviteMode = inviteMode,
-		permissions = permissions
+		permissions = permissions,
+		unreadCount = unreadCount
 	)

@@ -65,6 +65,9 @@ dependencies {
 
 	// UI
 	implementation "androidx.core:core-splashscreen:${versions.splashscreen}"
+	implementation "io.coil-kt:coil-compose:${versions.coil}"
+	implementation "com.google.accompanist:accompanist-pager:${versions.pager}"
+	implementation "com.google.accompanist:accompanist-pager-indicators:${versions.pager}"
 
 	// Misc
 	implementation "com.jakewharton.timber:timber:${versions.timber}"

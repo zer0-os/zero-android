@@ -1,5 +1,6 @@
 package com.zero.android.models
 
+import com.zero.android.models.enums.MessageType
 import kotlinx.datetime.Instant
 
 data class ApiMessage(

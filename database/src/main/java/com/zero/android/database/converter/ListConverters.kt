@@ -42,4 +42,11 @@ class ListConverters {
 	@TypeConverter
 	fun experienceListToString(value: List<Experience>?): String? =
 		value?.let { Json.encodeToString(value) }
+
+	@TypeConverter
+	fun stringToStringList(value: String?): List<String>? =
+		value?.let { Json.decodeFromString<List<String>>(value) }
+
+	@TypeConverter
+	fun stringListToString(value: List<String>?): String? = value?.let { Json.encodeToString(value) }
 }

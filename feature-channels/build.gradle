@@ -5,13 +5,3 @@ plugins {
 }
 
 apply from: '../feature_module.gradle'
-
-dependencies {
-	implementation project(":ui")
-	implementation project(":network")
-	implementation project(":feature-network-drawer")
-
-	// UI
-	implementation "com.google.accompanist:accompanist-pager:${versions.pager}"
-	implementation "com.google.accompanist:accompanist-pager-indicators:${versions.pager}"
-}

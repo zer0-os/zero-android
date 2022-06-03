@@ -7,10 +7,6 @@ plugins {
 apply from: "../module.gradle"
 
 android {
-	defaultConfig {
-		minSdk application.minSdk
-	}
-
 	buildFeatures {
 		compose true
 	}
@@ -30,4 +26,5 @@ dependencies {
 	api "androidx.navigation:navigation-compose:${versions.navigation}"
 	api "androidx.hilt:hilt-navigation-compose:${versions.hiltNavigation}"
 	api "androidx.constraintlayout:constraintlayout-compose:${versions.constraintlayout}"
+	debugApi "androidx.compose.ui:ui-tooling:${versions.compose}"
 }

@@ -1,6 +1,6 @@
 package com.zero.android.network.model
 
-import InviteMode
+import com.zero.android.models.enums.InviteMode
 import com.zero.android.network.model.serializer.InviteModeSerializer
 import kotlinx.serialization.Serializable
 

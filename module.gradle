@@ -2,6 +2,10 @@ android {
 	compileSdk application.compileSdk
 
 	defaultConfig {
+		minSdk application.minSdk
+	}
+
+	defaultConfig {
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 		consumerProguardFiles "consumer-rules.pro"
 	}

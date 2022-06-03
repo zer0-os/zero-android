@@ -6,7 +6,6 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.zero.android.database.converter.DateConverters
-import com.zero.android.database.converter.EnumConverters
 import com.zero.android.database.converter.ListConverters
 import com.zero.android.database.dao.NetworkDao
 import com.zero.android.database.dao.ProfileDao
@@ -20,7 +19,7 @@ import com.zero.android.database.model.UserEntity
 	version = 1,
 	exportSchema = false
 )
-@TypeConverters(DateConverters::class, EnumConverters::class, ListConverters::class)
+@TypeConverters(DateConverters::class, ListConverters::class)
 abstract class AppDatabase : RoomDatabase() {
 
 	companion object {
