@@ -7,5 +7,5 @@ object FakeData {
 	fun Network(id: String = "id") =
 		Network(id = id, name = "display.name", displayName = "Display Name", isPublic = true)
 
-	fun Networks() = listOf(Network("one"), Network("two"), Network("three"))
+	fun networks() = listOf(Network("one"), Network("two"), Network("three"))
 }

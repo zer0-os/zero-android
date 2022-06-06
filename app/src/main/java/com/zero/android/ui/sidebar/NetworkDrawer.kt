@@ -86,13 +86,18 @@ fun DrawerContent(
 	}
 }
 
+interface DrawerNavigator {
+	fun onSettingsClick()
+	fun onInviteClick()
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun NetworkDrawerPreview() = Preview {
 	NetworkDrawer(
 		currentNetwork = FakeData.Network(),
-		networks = FakeData.Networks(),
+		networks = FakeData.networks(),
 		drawerState = rememberDrawerState(initialValue = DrawerValue.Open),
 		coroutineScope = CoroutineScope(Dispatchers.Default)
 	)

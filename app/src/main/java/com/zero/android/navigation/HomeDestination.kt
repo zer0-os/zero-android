@@ -1,6 +1,5 @@
 package com.zero.android.navigation
 
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.zero.android.common.navigation.NavDestination
@@ -11,6 +10,6 @@ object HomeDestination : NavDestination {
 	override val destination = "home_destination"
 }
 
-fun NavGraphBuilder.homeGraph(windowSizeClass: WindowSizeClass) {
-	composable(route = HomeDestination.route) { HomeRoute(windowSizeClass) }
+internal fun NavGraphBuilder.homeGraph(onLogout: () -> Unit) {
+	composable(route = HomeDestination.route) { HomeRoute() }
 }
