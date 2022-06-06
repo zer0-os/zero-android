@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.zero.android.common.navigation.NavDestination
 import com.zero.android.database.AppPreferences
 import com.zero.android.feature.auth.navigation.AuthDestination
+import com.zero.android.navigation.HomeDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -20,6 +21,6 @@ class AppViewModel @Inject constructor(private val preferences: AppPreferences) 
 
 	private fun checkAuthOnLaunch() {
 		val isLoggedIn = runBlocking(Dispatchers.IO) { preferences.authCredentials() != null }
-		startDestination = if (isLoggedIn) AuthDestination else AuthDestination
+		startDestination = if (isLoggedIn) HomeDestination else AuthDestination
 	}
 }

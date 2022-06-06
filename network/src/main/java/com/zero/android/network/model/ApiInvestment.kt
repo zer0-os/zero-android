@@ -6,9 +6,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ApiInvestment(
-	val round: String?,
-	@Serializable(InstantSerializer::class) val investmentDate: Instant?,
-	val amount: String?,
-	val description: String?,
-	val organization: ApiOrganization?
+	val round: String? = null,
+	@Serializable(InstantSerializer::class) val investmentDate: Instant? = null,
+	val amount: String? = null,
+	val description: String? = null,
+	val organization: ApiOrganization? = null
 )

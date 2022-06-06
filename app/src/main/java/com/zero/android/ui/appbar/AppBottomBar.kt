@@ -13,26 +13,26 @@ import com.zero.android.feature.account.navigation.NotificationsDestination
 import com.zero.android.feature.channels.navigation.ChannelsDestination
 import com.zero.android.feature.feed.navigation.FeedDestination
 import com.zero.android.feature.messages.navigation.MessagesDestination
-import com.zero.android.navigation.HomeDestination
+import com.zero.android.feature.people.navigation.MembersDestination
 import com.zero.android.ui.extensions.Preview
 import com.zero.android.ui.theme.ZeroExtendedTheme
 
 val HOME_DESTINATIONS =
 	listOf(
-		AppBarNavigation(
-			ChannelsDestination.route,
+		AppBarItem(
+			ChannelsDestination,
 			R.drawable.ic_channel_selected,
 			R.drawable.ic_channel_unselected
 		),
-		AppBarNavigation("{ROUTE_PEOPLE}", R.drawable.ic_people, R.drawable.ic_people),
-		AppBarNavigation(FeedDestination.route, R.drawable.ic_feeds, R.drawable.ic_feeds),
-		AppBarNavigation(
-			NotificationsDestination.route,
+		AppBarItem(MembersDestination, R.drawable.ic_people, R.drawable.ic_people),
+		AppBarItem(FeedDestination, R.drawable.ic_feeds, R.drawable.ic_feeds),
+		AppBarItem(
+			NotificationsDestination,
 			R.drawable.ic_notification_selected,
 			R.drawable.ic_notification_unselected
 		),
-		AppBarNavigation(
-			MessagesDestination.route,
+		AppBarItem(
+			MessagesDestination,
 			R.drawable.ic_direct_chat_selected,
 			R.drawable.ic_direct_chat_unselected
 		)
@@ -42,23 +42,23 @@ val HOME_DESTINATIONS =
 fun AppBottomBar(
 	modifier: Modifier = Modifier,
 	currentDestination: NavDestination?,
-	onNavigateToTopLevelDestination: (AppBarNavigation) -> Unit
+	onNavigateToHomeDestination: (NavDestination) -> Unit
 ) {
 	Surface(color = MaterialTheme.colorScheme.surface) {
 		NavigationBar(
 			modifier =
-			Modifier.windowInsetsPadding(
+			modifier.windowInsetsPadding(
 				WindowInsets.safeDrawing.only(
 					WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
 				)
 			),
 			tonalElevation = 0.dp
 		) {
-			HOME_DESTINATIONS.forEach { destination ->
-				val selected = currentDestination?.route == destination.route
+			HOME_DESTINATIONS.forEach { item ->
+				val selected = currentDestination?.route == item.destination.route
 				NavigationBarItem(
 					selected = selected,
-					onClick = { onNavigateToTopLevelDestination(destination) },
+					onClick = { onNavigateToHomeDestination(item.destination) },
 					icon = {
 						val showBadgeCount = true
 						if (showBadgeCount) {
@@ -69,9 +69,9 @@ fun AppBottomBar(
 										contentColor = ZeroExtendedTheme.colors.colorTextPrimary
 									) { Text("01") }
 								}
-							) { BottomBarIcon(isSelected = selected, destination = destination) }
+							) { BottomBarIcon(isSelected = selected, item = item) }
 						} else {
-							BottomBarIcon(isSelected = selected, destination = destination)
+							BottomBarIcon(isSelected = selected, item = item)
 						}
 					}
 				)
@@ -81,18 +81,15 @@ fun AppBottomBar(
 }
 
 @Composable
-fun BottomBarIcon(isSelected: Boolean, destination: AppBarNavigation) {
+fun BottomBarIcon(isSelected: Boolean, item: AppBarItem) {
 	Icon(
 		painter =
-		if (isSelected) {
-			painterResource(destination.selectedIcon)
-		} else {
-			painterResource(destination.unselectedIcon)
-		},
+		if (isSelected) painterResource(item.selectedIcon)
+		else painterResource(item.unselectedIcon),
 		contentDescription = null
 	)
 }
 
 @Preview
 @Composable
-fun AppBottomBarPreview() = Preview { AppBottomBar(currentDestination = HomeDestination) {} }
+fun AppBottomBarPreview() = Preview { AppBottomBar(currentDestination = FeedDestination) {} }

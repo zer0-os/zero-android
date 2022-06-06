@@ -13,6 +13,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.zero.android.common.R.string
+import com.zero.android.common.navigation.NavDestination
+import com.zero.android.feature.account.navigation.ProfileDestination
 import com.zero.android.models.Network
 import com.zero.android.models.fake.FakeData
 import com.zero.android.ui.extensions.Preview
@@ -26,7 +28,9 @@ fun NetworkDrawer(
 	currentNetwork: Network,
 	networks: List<Network>,
 	drawerState: DrawerState,
-	coroutineScope: CoroutineScope
+	coroutineScope: CoroutineScope,
+	onNetworkSelected: (Network) -> Unit,
+	onNavigateToTopLevelDestination: (NavDestination) -> Unit
 ) {
 	ModalNavigationDrawer(
 		drawerState = drawerState,
@@ -37,7 +41,9 @@ fun NetworkDrawer(
 				drawerState = drawerState,
 				coroutineScope = coroutineScope,
 				currentNetwork = currentNetwork,
-				networks = networks
+				networks = networks,
+				onNetworkSelected = onNetworkSelected,
+				onNavigateToTopLevelDestination = onNavigateToTopLevelDestination
 			)
 		}
 	) {}
@@ -49,7 +55,9 @@ fun DrawerContent(
 	currentNetwork: Network,
 	networks: List<Network>,
 	drawerState: DrawerState,
-	coroutineScope: CoroutineScope
+	coroutineScope: CoroutineScope,
+	onNetworkSelected: (Network) -> Unit,
+	onNavigateToTopLevelDestination: (NavDestination) -> Unit
 ) {
 	Column(modifier = Modifier.fillMaxSize()) {
 		// Header
@@ -57,21 +65,25 @@ fun DrawerContent(
 			item = currentNetwork,
 			onSettingsClick = {
 				coroutineScope.launch { drawerState.close() }
-				// TODO: navigation to settings screen
+				onNavigateToTopLevelDestination(ProfileDestination)
 			},
 			onInviteClick = {
 				coroutineScope.launch { drawerState.close() }
-				// TODO: navigation to invite members screen
+				onNavigateToTopLevelDestination(ProfileDestination)
 			}
 		)
 
 		Text(text = stringResource(string.my_worlds), modifier = Modifier.fillMaxWidth().padding(12.dp))
-		// world items
+
+		// Networks
 		LazyRow {
-			items(items = networks, key = { item -> item.id }) { networkWorld ->
+			items(items = networks, key = { item -> item.id }) { network ->
 				DrawerItem(
-					item = networkWorld,
-					onItemClick = { coroutineScope.launch { drawerState.close() } }
+					item = network,
+					onItemClick = {
+						onNetworkSelected(network)
+						coroutineScope.launch { drawerState.close() }
+					}
 				)
 			}
 		}
@@ -80,15 +92,10 @@ fun DrawerContent(
 		AppDrawerFooter(
 			onCreateWorldClick = {
 				coroutineScope.launch { drawerState.close() }
-				// TODO: navigation to create new world screen
+				onNavigateToTopLevelDestination(ProfileDestination)
 			}
 		)
 	}
-}
-
-interface DrawerNavigator {
-	fun onSettingsClick()
-	fun onInviteClick()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -99,6 +106,8 @@ fun NetworkDrawerPreview() = Preview {
 		currentNetwork = FakeData.Network(),
 		networks = FakeData.networks(),
 		drawerState = rememberDrawerState(initialValue = DrawerValue.Open),
-		coroutineScope = CoroutineScope(Dispatchers.Default)
+		coroutineScope = CoroutineScope(Dispatchers.Default),
+		onNetworkSelected = {},
+		onNavigateToTopLevelDestination = {}
 	)
 }

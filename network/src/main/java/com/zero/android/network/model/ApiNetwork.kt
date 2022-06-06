@@ -9,14 +9,14 @@ data class ApiNetwork(
 	val id: String,
 	val name: String,
 	val displayName: String,
-	val logo: String?,
-	val backgroundImageUrl: String?,
-	val lightModeBackgroundImageUrl: String?,
+	val logo: String? = null,
+	val backgroundImageUrl: String? = null,
+	val lightModeBackgroundImageUrl: String? = null,
 	val isPublic: Boolean,
-	val locationShareType: String?,
-	val disabledApps: List<String>?,
+	val locationShareType: String? = null,
+	val disabledApps: List<String>? = null,
 	@Serializable(InviteModeSerializer::class) val inviteMode: InviteMode,
-	val permissions: ApiNetworkPermissions?
+	val permissions: ApiNetworkPermissions? = null
 )
 
 @Serializable data class ApiNetworkPermissions(val invite: Boolean)

@@ -9,7 +9,7 @@ import kotlinx.datetime.Instant
 	foreignKeys =
 	[
 		ForeignKey(
-			entity = ProfileEntity::class,
+			entity = UserEntity::class,
 			parentColumns = ["id"],
 			childColumns = ["userId"],
 			onDelete = ForeignKey.CASCADE

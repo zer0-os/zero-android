@@ -1,5 +1,6 @@
 package com.zero.android.ui.home
 
+import android.annotation.SuppressLint
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.DrawerState
@@ -11,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.zero.android.common.navigation.NavDestination
+import com.zero.android.feature.account.navigation.ProfileDestination
 import com.zero.android.models.fake.FakeData
 import com.zero.android.navigation.HomeDestination
 import com.zero.android.navigation.HomeNavHost
@@ -18,12 +20,14 @@ import com.zero.android.ui.HomeViewModel
 import com.zero.android.ui.appbar.AppBottomBar
 import com.zero.android.ui.appbar.AppTopBar
 import com.zero.android.ui.sidebar.NetworkDrawer
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeRoute(modifier: Modifier = Modifier, viewModel: HomeViewModel = hiltViewModel()) {
 	HomeScreen(modifier = modifier, currentScreen = HomeDestination)
 }
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier, currentScreen: NavDestination) {
@@ -34,14 +38,23 @@ fun HomeScreen(modifier: Modifier = Modifier, currentScreen: NavDestination) {
 	val topBar: @Composable () -> Unit = {
 		AppTopBar(
 			network = FakeData.Network(),
-			openDrawer = {},
-			onProfileClick = {},
-			onCreateWorldClick = {}
+			openDrawer = { coroutineScope.launch { scaffoldState.drawerState.open() } },
+			onProfileClick = { navController.navigate(ProfileDestination.route) },
+			onCreateWorldClick = { navController.navigate(ProfileDestination.route) }
 		)
 	}
 
 	val bottomBar: @Composable () -> Unit = {
-		AppBottomBar(currentDestination = currentScreen, onNavigateToTopLevelDestination = {})
+		AppBottomBar(
+			currentDestination = currentScreen,
+			onNavigateToHomeDestination = {
+				coroutineScope.launch { scaffoldState.drawerState.close() }
+				navController.navigate(it.route) {
+					popUpTo(navController.graph.startDestinationId)
+					launchSingleTop = true
+				}
+			}
+		)
 	}
 
 	Scaffold(
@@ -58,11 +71,15 @@ fun HomeScreen(modifier: Modifier = Modifier, currentScreen: NavDestination) {
 				) {
 					true
 				},
-				coroutineScope = coroutineScope
+				coroutineScope = coroutineScope,
+				onNetworkSelected = {},
+				onNavigateToTopLevelDestination = {
+					navController.navigate(it.route) { popUpTo(navController.graph.startDestinationId) }
+				}
 			)
 		},
 		drawerGesturesEnabled = scaffoldState.drawerState.isOpen
-	) { _ ->
+	) {
 		HomeNavHost(navController = navController)
 	}
 }

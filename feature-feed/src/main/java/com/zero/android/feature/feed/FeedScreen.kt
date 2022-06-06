@@ -12,5 +12,5 @@ fun FeedRoute(viewModel: FeedViewModel = hiltViewModel()) {
 
 @Composable
 fun FeedScreen() {
-	Column { Text(text = "Channels Screen") }
+	Column { Text(text = "Feed Screen") }
 }

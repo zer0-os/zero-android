@@ -22,7 +22,7 @@ constructor(
 		networkDao.getAll().firstOrNull()?.let { networks -> emit(networks.map { it.toModel() }) }
 
 		val userId = preferences.userId() ?: throw IllegalStateException("missing user id")
-		networkService.getNetworks(userId).data.let { networks ->
+		networkService.getNetworks(userId).let { networks ->
 			networkDao.insert(*networks.map { it.toEntity() }.toTypedArray())
 			emit(networks.map { it.toModel() })
 		}

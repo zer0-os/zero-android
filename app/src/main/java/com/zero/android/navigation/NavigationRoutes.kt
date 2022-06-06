@@ -17,8 +17,8 @@ import com.zero.android.feature.people.MembersRoute
 import com.zero.android.feature.people.navigation.MembersDestination
 
 internal fun NavGraphBuilder.onboardGraph(controller: NavController) {
-	authGraph(onLogin = { controller.navigate(HomeDestination.route) })
-	homeGraph(onLogout = { controller.navigate(AuthDestination.route) })
+	authGraph(onLogin = { controller.navigate(HomeDestination.route) { popUpTo(0) } })
+	homeGraph(onLogout = { controller.navigate(AuthDestination.route) { popUpTo(0) } })
 }
 
 internal fun NavGraphBuilder.appGraph(controller: NavController) {

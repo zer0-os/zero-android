@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class ApiOrganization(
 	val id: String,
 	val name: String,
-	val avatarURL: String?,
-	val backgroundImageURL: String?,
-	val summary: String?
+	val avatarURL: String? = null,
+	val backgroundImageURL: String? = null,
+	val summary: String? = null
 )
