@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.zero.android.common.R.string
 import com.zero.android.common.navigation.NavDestination
+import com.zero.android.common.ui.Result
 import com.zero.android.feature.account.navigation.ProfileDestination
 import com.zero.android.models.Network
 import com.zero.android.models.fake.FakeData
@@ -26,7 +27,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun NetworkDrawer(
 	currentNetwork: Network,
-	networks: List<Network>,
+	networks: Result<List<Network>>,
 	drawerState: DrawerState,
 	coroutineScope: CoroutineScope,
 	onNetworkSelected: (Network) -> Unit,
@@ -53,7 +54,7 @@ fun NetworkDrawer(
 @Composable
 fun DrawerContent(
 	currentNetwork: Network,
-	networks: List<Network>,
+	networks: Result<List<Network>>,
 	drawerState: DrawerState,
 	coroutineScope: CoroutineScope,
 	onNetworkSelected: (Network) -> Unit,
@@ -77,14 +78,16 @@ fun DrawerContent(
 
 		// Networks
 		LazyRow {
-			items(items = networks, key = { item -> item.id }) { network ->
-				DrawerItem(
-					item = network,
-					onItemClick = {
-						onNetworkSelected(network)
-						coroutineScope.launch { drawerState.close() }
-					}
-				)
+			if (networks is Result.Success) {
+				items(items = networks.data, key = { item -> item.id }) { network ->
+					DrawerItem(
+						item = network,
+						onItemClick = {
+							onNetworkSelected(network)
+							coroutineScope.launch { drawerState.close() }
+						}
+					)
+				}
 			}
 		}
 
@@ -104,7 +107,7 @@ fun DrawerContent(
 fun NetworkDrawerPreview() = Preview {
 	NetworkDrawer(
 		currentNetwork = FakeData.Network(),
-		networks = FakeData.networks(),
+		networks = Result.Success(FakeData.networks()),
 		drawerState = rememberDrawerState(initialValue = DrawerValue.Open),
 		coroutineScope = CoroutineScope(Dispatchers.Default),
 		onNetworkSelected = {},

@@ -7,14 +7,16 @@ import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
-import com.zero.android.common.navigation.NavDestination
+import com.zero.android.common.ui.Result
 import com.zero.android.feature.account.navigation.ProfileDestination
+import com.zero.android.models.Network
 import com.zero.android.models.fake.FakeData
-import com.zero.android.navigation.HomeDestination
 import com.zero.android.navigation.HomeNavHost
 import com.zero.android.ui.HomeViewModel
 import com.zero.android.ui.appbar.AppBottomBar
@@ -24,16 +26,19 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun HomeRoute(modifier: Modifier = Modifier, viewModel: HomeViewModel = hiltViewModel()) {
-	HomeScreen(modifier = modifier, currentScreen = HomeDestination)
+	HomeScreen(modifier = modifier, viewModel = viewModel)
 }
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier, currentScreen: NavDestination) {
+fun HomeScreen(modifier: Modifier = Modifier, viewModel: HomeViewModel) {
 	val navController = rememberNavController()
 	val scaffoldState = rememberScaffoldState()
 	val coroutineScope = rememberCoroutineScope()
+
+	val currentScreen = viewModel.currentScreen
+	val networks: Result<List<Network>> by viewModel.networks.collectAsState()
 
 	val topBar: @Composable () -> Unit = {
 		AppTopBar(
@@ -64,7 +69,7 @@ fun HomeScreen(modifier: Modifier = Modifier, currentScreen: NavDestination) {
 		drawerContent = {
 			NetworkDrawer(
 				currentNetwork = FakeData.Network(),
-				networks = FakeData.networks(),
+				networks = networks,
 				drawerState =
 				DrawerState(
 					DrawerValue.valueOf(scaffoldState.drawerState.currentValue.toString())
@@ -72,7 +77,7 @@ fun HomeScreen(modifier: Modifier = Modifier, currentScreen: NavDestination) {
 					true
 				},
 				coroutineScope = coroutineScope,
-				onNetworkSelected = {},
+				onNetworkSelected = viewModel::selectNetwork,
 				onNavigateToTopLevelDestination = {
 					navController.navigate(it.route) { popUpTo(navController.graph.startDestinationId) }
 				}
