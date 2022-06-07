@@ -20,7 +20,8 @@ data class NetworkEntity(
 	val disabledApps: List<String>?,
 	val inviteMode: InviteMode,
 	@Embedded(prefix = "permissions_") val permissions: NetworkPermissions?,
-	val unreadCount: Int = 0
+	val unreadCount: Int = 0,
+	val isSelected: Boolean = false
 )
 
 fun NetworkEntity.toModel() =

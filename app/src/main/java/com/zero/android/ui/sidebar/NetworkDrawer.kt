@@ -33,21 +33,14 @@ fun NetworkDrawer(
 	onNetworkSelected: (Network) -> Unit,
 	onNavigateToTopLevelDestination: (NavDestination) -> Unit
 ) {
-	ModalNavigationDrawer(
+	DrawerContent(
 		drawerState = drawerState,
-		gesturesEnabled = drawerState.isOpen,
-		drawerContainerColor = MaterialTheme.colorScheme.background,
-		drawerContent = {
-			DrawerContent(
-				drawerState = drawerState,
-				coroutineScope = coroutineScope,
-				currentNetwork = currentNetwork,
-				networks = networks,
-				onNetworkSelected = onNetworkSelected,
-				onNavigateToTopLevelDestination = onNavigateToTopLevelDestination
-			)
-		}
-	) {}
+		coroutineScope = coroutineScope,
+		currentNetwork = currentNetwork,
+		networks = networks,
+		onNetworkSelected = onNetworkSelected,
+		onNavigateToTopLevelDestination = onNavigateToTopLevelDestination
+	)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

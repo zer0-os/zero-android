@@ -30,10 +30,11 @@ class HomeViewModel @Inject constructor(private val networkRepository: NetworkRe
 		loadNetworks()
 	}
 
-	private fun loadNetworks() =
+	private fun loadNetworks() {
 		CoroutineScope(Dispatchers.IO).launch {
 			networkRepository.getNetworks().asResult().collectLatest { networks.emit(it) }
 		}
+	}
 
-	fun selectNetwork(network: Network) = viewModelScope.launch { selectedNetwork.emit(network) }
+	fun onNetworkSelected(network: Network) = viewModelScope.launch { selectedNetwork.emit(network) }
 }
