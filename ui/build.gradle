@@ -7,10 +7,6 @@ plugins {
 apply from: "../module.gradle"
 
 android {
-	defaultConfig {
-		minSdk application.minSdk
-	}
-
 	buildFeatures {
 		compose true
 	}
@@ -23,10 +19,12 @@ dependencies {
 	api "androidx.compose.ui:ui:${versions.compose}"
 	api "androidx.compose.material3:material3:${versions.material}"
 	api "androidx.compose.material3:material3-window-size-class:${versions.material}"
-	api "androidx.compose.foundation:foundation:${versions.composeFoundation}"
+	api "androidx.compose.foundation:foundation:${versions.compose}"
 	api "androidx.compose.ui:ui-tooling-preview:${versions.compose}"
 	api "androidx.lifecycle:lifecycle-runtime-ktx:${versions.lifecycle}"
 	api "androidx.lifecycle:lifecycle-viewmodel-compose:${versions.lifecycle}"
 	api "androidx.navigation:navigation-compose:${versions.navigation}"
 	api "androidx.hilt:hilt-navigation-compose:${versions.hiltNavigation}"
+	api "androidx.constraintlayout:constraintlayout-compose:${versions.constraintlayout}"
+	debugApi "androidx.compose.ui:ui-tooling:${versions.compose}"
 }

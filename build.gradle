@@ -22,14 +22,16 @@ buildscript {
 		"coroutines"       : "1.6.2",
 
 		// UI
-		"compose"          : '1.2.0-beta02',
+		"compose"          : '1.2.0-beta03',
 		"composeActivity"  : '1.4.0',
 		"material"         : "1.0.0-alpha12",
-		"composeFoundation": "1.2.0-beta02",
+		"material2"         : "1.2.0-beta03",
 		"navigation"       : "2.4.2",
 		"hiltNavigation"   : "1.0.0",
 		"lifecycle"        : "2.5.0-rc01",
 		"splashscreen"     : "1.0.0-rc01",
+		"constraintlayout" : "1.1.0-alpha02",
+		"coil"             : "2.0.0-rc01",
 
 		// Data
 		"retrofit"         : "2.9.0",
@@ -63,6 +65,7 @@ plugins {
 	id 'com.android.library' version '7.2.0' apply false
 	id 'org.jetbrains.kotlin.android' version '1.6.21' apply false
 	id 'com.diffplug.spotless' version '6.6.1'
+	id 'org.jetbrains.kotlin.jvm' version '1.6.21' apply false
 }
 
 apply from: "spotless.gradle"
@@ -71,7 +74,7 @@ apply from: "spotless.gradle"
 project.ext.getEnv = { env ->
 	def localProperties = new Properties()
 	try {
-		localProperties.load(new FileInputStream(rootProject.file("${env}.properties")))
+		localProperties.load(new FileInputStream(rootProject.file("production.properties")))
 	} catch (Exception ex) {
 		println("$ex")
 	}

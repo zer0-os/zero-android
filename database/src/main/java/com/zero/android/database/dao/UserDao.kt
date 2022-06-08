@@ -16,7 +16,9 @@ interface UserDao {
 	@Query("SELECT * FROM users WHERE id = :id")
 	fun getById(id: String): Flow<UserAndProfileRelation>
 
-	@Insert suspend fun insert(vararg users: UserEntity)
+	@Transaction @Insert
+	suspend fun insert(vararg users: UserEntity)
 
-	@Delete suspend fun delete(user: UserEntity)
+	@Transaction @Delete
+	suspend fun delete(user: UserEntity)
 }

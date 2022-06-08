@@ -14,5 +14,6 @@ interface ProfileDao {
 	@Query("SELECT * FROM profiles WHERE userId = :userId")
 	fun getByUser(userId: String): Flow<ProfileEntity>
 
-	@Insert suspend fun insert(vararg users: ProfileEntity)
+	@Transaction @Insert
+	suspend fun insert(vararg users: ProfileEntity)
 }

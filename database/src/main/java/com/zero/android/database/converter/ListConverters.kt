@@ -44,7 +44,9 @@ class ListConverters {
 		value?.let { Json.encodeToString(value) }
 
 	@TypeConverter
-	fun stringToList(value: String): List<Int> = Json.decodeFromString<List<Int>>(value)
+	fun stringToStringList(value: String?): List<String>? =
+		value?.let { Json.decodeFromString<List<String>>(value) }
 
-	@TypeConverter fun listToString(value: List<Int>): String = Json.encodeToString(value)
+	@TypeConverter
+	fun stringListToString(value: List<String>?): String? = value?.let { Json.encodeToString(value) }
 }

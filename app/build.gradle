@@ -55,8 +55,14 @@ dependencies {
 	implementation project(":ui")
 	implementation project(":common")
 	implementation project(":models")
+	implementation project(":data")
 	implementation project(":database")
 	implementation project(":feature-auth")
+	implementation project(":feature-account")
+	implementation project(":feature-channels")
+	implementation project(":feature-feed")
+	implementation project(":feature-messages")
+	implementation project(":feature-people")
 
 	implementation "androidx.core:core-ktx:${versions.coreKtx}"
 	implementation "androidx.activity:activity-compose:${versions.composeActivity}"
@@ -64,7 +70,9 @@ dependencies {
 	kapt "com.google.dagger:hilt-compiler:${versions.hilt}"
 
 	// UI
+	implementation "androidx.compose.material:material:${versions.material2}"
 	implementation "androidx.core:core-splashscreen:${versions.splashscreen}"
+	implementation "io.coil-kt:coil-compose:${versions.coil}"
 
 	// Misc
 	implementation "com.jakewharton.timber:timber:${versions.timber}"

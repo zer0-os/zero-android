@@ -7,14 +7,14 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ApiJob(
 	val id: String,
-	val title: String?,
-	val description: String?,
+	val title: String? = null,
+	val description: String? = null,
 	val coverPhotoURL: String,
-	val amount: Double?,
-	val startDate: String?,
-	@Serializable(InstantSerializer::class) val endDate: Instant?,
-	val location: String?,
-	val actionText: String?,
-	val interval: String?,
-	val currency: ApiCurrency?
+	val amount: Double? = null,
+	val startDate: String? = null,
+	@Serializable(InstantSerializer::class) val endDate: Instant? = null,
+	val location: String? = null,
+	val actionText: String? = null,
+	val interval: String? = null,
+	val currency: ApiCurrency? = null
 )

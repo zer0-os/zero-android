@@ -1,6 +1,7 @@
 package com.zero.android.network
 
 import com.zero.android.network.service.AccountService
+import com.zero.android.network.service.NetworkService
 import com.zero.android.network.service.ProfileService
 import com.zero.android.network.service.UserService
 import dagger.Module
@@ -25,4 +26,8 @@ object ServiceModule {
 	@Singleton
 	@Provides
 	fun provideProfileService(retrofit: Retrofit) = retrofit.create(ProfileService::class.java)
+
+	@Singleton
+	@Provides
+	fun provideNetworkService(retrofit: Retrofit) = retrofit.create(NetworkService::class.java)
 }

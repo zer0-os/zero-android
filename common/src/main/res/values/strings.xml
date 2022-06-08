@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Zero</string>
+    <string name="profile">Profile</string>
+    <string name="cd_channel_bottom_bar_divider">Bottom bar divider</string>
+    <string name="cd_ic_settings">Settings</string>
+    <string name="cd_ic_circle_add">@string/create_a_world</string>
+
+    <string name="invite_members">Invite Members</string>
+    <string name="my_worlds">My Worlds</string>
+    <string name="create_a_world">Create a World</string>
 </resources>

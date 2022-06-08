@@ -1,6 +1,7 @@
 package com.zero.android.feature.auth
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
@@ -18,9 +19,11 @@ import com.zero.android.ui.extensions.OnEvent
 fun AuthRoute(viewModel: AuthViewModel = hiltViewModel(), onLogin: () -> Unit) {
 	val uiState: AuthScreenUIState by viewModel.uiState.collectAsState()
 
-	if (uiState == AuthScreenUIState.LOGIN) onLogin()
-
-	AuthScreen(authCallback = viewModel.authCallback)
+	if (uiState == AuthScreenUIState.LOGIN) {
+		LaunchedEffect(Unit) { onLogin() }
+	} else {
+		AuthScreen(authCallback = viewModel.authCallback)
+	}
 }
 
 @Composable

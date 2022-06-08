@@ -13,6 +13,6 @@ fun UserAndProfileRelation.toModel() =
 	User(
 		id = user.id,
 		profile = profile.toModel(),
-		handle = user.handle,
+		name = user.name,
 		isNetworkAdmin = user.isNetworkAdmin
 	)
