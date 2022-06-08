@@ -21,7 +21,7 @@ internal fun NavGraphBuilder.onboardGraph(controller: NavController) {
 	homeGraph(onLogout = { controller.navigate(AuthDestination.route) { popUpTo(0) } })
 }
 
-internal fun NavGraphBuilder.appGraph(controller: NavController) {
+internal fun NavGraphBuilder.appBottomNavGraph(controller: NavController) {
 	composable(route = ChannelsDestination.route) { ChannelsRoute() }
 	composable(route = MembersDestination.route) { MembersRoute() }
 	composable(route = FeedDestination.route) { FeedRoute() }

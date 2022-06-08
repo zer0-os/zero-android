@@ -22,6 +22,7 @@ import com.zero.android.ui.HomeViewModel
 import com.zero.android.ui.appbar.AppBottomBar
 import com.zero.android.ui.appbar.AppTopBar
 import com.zero.android.ui.sidebar.NetworkDrawer
+import com.zero.android.ui.util.BackHandler
 import kotlinx.coroutines.launch
 
 @Composable
@@ -74,6 +75,10 @@ fun HomeScreen(
 		)
 	}
 
+	if (scaffoldState.drawerState.isOpen) {
+		BackHandler { coroutineScope.launch { scaffoldState.drawerState.close() } }
+	}
+
 	Scaffold(
 		topBar = { topBar() },
 		bottomBar = { bottomBar() },
@@ -89,8 +94,12 @@ fun HomeScreen(
 					true
 				},
 				coroutineScope = coroutineScope,
-				onNetworkSelected = onNetworkSelected,
+				onNetworkSelected = {
+					onNetworkSelected(it)
+					coroutineScope.launch { scaffoldState.drawerState.close() }
+				},
 				onNavigateToTopLevelDestination = {
+					coroutineScope.launch { scaffoldState.drawerState.close() }
 					navController.navigate(it.route) { popUpTo(navController.graph.startDestinationId) }
 				}
 			)

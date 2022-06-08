@@ -11,5 +11,5 @@ fun HomeNavHost(navController: NavController) {
 	NavHost(
 		navController = navController as NavHostController,
 		startDestination = FeedDestination.route
-	) { appGraph(navController) }
+	) { appBottomNavGraph(navController) }
 }
