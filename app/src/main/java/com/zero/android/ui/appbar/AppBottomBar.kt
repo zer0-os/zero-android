@@ -15,7 +15,7 @@ import com.zero.android.feature.feed.navigation.FeedDestination
 import com.zero.android.feature.messages.navigation.MessagesDestination
 import com.zero.android.feature.people.navigation.MembersDestination
 import com.zero.android.ui.extensions.Preview
-import com.zero.android.ui.theme.ZeroExtendedTheme
+import com.zero.android.ui.theme.AppTheme
 
 val HOME_DESTINATIONS =
 	listOf(
@@ -66,7 +66,7 @@ fun AppBottomBar(
 								badge = {
 									Badge(
 										containerColor = MaterialTheme.colorScheme.primary,
-										contentColor = ZeroExtendedTheme.colors.colorTextPrimary
+										contentColor = AppTheme.colors.colorTextPrimary
 									) { Text("01") }
 								}
 							) { BottomBarIcon(isSelected = selected, item = item) }

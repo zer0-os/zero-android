@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.zero.android.common.navigation.NavDestination
@@ -44,6 +45,7 @@ fun HomeRoute(viewModel: HomeViewModel = hiltViewModel()) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
+	modifier: Modifier = Modifier,
 	currentScreen: NavDestination,
 	currentNetwork: Network,
 	networks: Result<List<Network>>,
@@ -85,6 +87,7 @@ fun HomeScreen(
 		scaffoldState = scaffoldState,
 		drawerContent = {
 			NetworkDrawer(
+				modifier = modifier,
 				currentNetwork = currentNetwork,
 				networks = networks,
 				drawerState =

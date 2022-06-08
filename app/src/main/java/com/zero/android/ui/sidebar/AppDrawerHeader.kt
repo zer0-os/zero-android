@@ -22,122 +22,110 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.rememberAsyncImagePainter
-import com.zero.android.common.R.drawable
-import com.zero.android.common.R.string
+import com.zero.android.common.R
 import com.zero.android.models.Network
 import com.zero.android.models.fake.FakeData
 import com.zero.android.ui.extensions.Preview
-import com.zero.android.ui.theme.ZeroExtendedTheme
+import com.zero.android.ui.theme.AppTheme
+import com.zero.android.ui.theme.Typography
 
 @Composable
 fun AppDrawerHeader(
 	modifier: Modifier = Modifier,
-	item: Network,
+	network: Network,
 	onSettingsClick: () -> Unit,
 	onInviteClick: () -> Unit
 ) {
-	ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
-		val (imageStart, textTop, textBottom, imageEnd, inviteButton, divider) = createRefs()
-
-		Spacer(modifier = Modifier.fillMaxSize().padding(12.dp))
-		Image(
-			painter = rememberAsyncImagePainter(item.logo),
-			contentDescription = item.name,
-			contentScale = ContentScale.Fit,
-			modifier =
-			Modifier.constrainAs(imageStart) {
-				top.linkTo(parent.top)
-				bottom.linkTo(inviteButton.top)
-				start.linkTo(parent.start)
-				end.linkTo(textTop.start)
-			}
-				.size(42.dp)
-				.clip(CircleShape)
-		)
-		Text(
-			text = item.displayName,
-			modifier =
-			Modifier.constrainAs(textTop) {
-				top.linkTo(parent.top)
-				bottom.linkTo(textBottom.top)
-				start.linkTo(imageStart.end)
-				end.linkTo(imageEnd.start)
-			},
-			color = ZeroExtendedTheme.colors.colorTextPrimary,
-			fontSize = 20.sp
-		)
-		Text(
-			text = item.name,
-			modifier =
-			Modifier.constrainAs(textBottom) {
-				top.linkTo(textTop.bottom)
-				bottom.linkTo(inviteButton.top)
-				start.linkTo(textTop.start)
-				end.linkTo(textTop.end)
-			},
-			color = ZeroExtendedTheme.colors.colorTextSecondary
-		)
-		Image(
-			painter = painterResource(drawable.ic_settings),
-			contentDescription = stringResource(string.cd_ic_settings),
-			contentScale = ContentScale.Fit,
-			modifier =
-			Modifier.constrainAs(imageEnd) {
-				top.linkTo(parent.top)
-				bottom.linkTo(inviteButton.top)
-				start.linkTo(parent.start)
-				end.linkTo(textTop.start)
-			}
-				.wrapContentSize()
-				.clickable(onClick = onSettingsClick)
-		)
-		OutlinedButton(
-			onClick = onInviteClick,
-			modifier =
-			Modifier.constrainAs(inviteButton) {
-				top.linkTo(imageStart.bottom, margin = 16.dp)
-				start.linkTo(imageStart.start)
-				bottom.linkTo(divider.top)
-			},
-			border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-			shape = RoundedCornerShape(24.dp),
-			colors =
-			ButtonDefaults.outlinedButtonColors(
-				contentColor = ZeroExtendedTheme.colors.colorTextPrimary
-			)
+	Column(modifier = modifier.fillMaxWidth()) {
+		ConstraintLayout(
+			modifier = modifier.fillMaxWidth().wrapContentHeight().padding(DRAWER_PADDING.dp)
 		) {
-			Text(
-				text = stringResource(string.invite_members),
-				style =
-				TextStyle(
-					shadow =
-					Shadow(
-						color = MaterialTheme.colorScheme.primary,
-						offset = Offset(2f, 2f),
-						blurRadius = 10f
-					)
-				),
-				fontSize = 16.sp,
-				fontWeight = FontWeight.Medium
+			val (imageStart, textTop, textBottom, imageEnd, inviteButton) = createRefs()
+
+			Image(
+				painter = rememberAsyncImagePainter(network.logo),
+				contentDescription = network.name,
+				contentScale = ContentScale.Fit,
+				modifier =
+				Modifier.constrainAs(imageStart) {
+					top.linkTo(parent.top)
+					start.linkTo(parent.start)
+				}
+					.size(36.dp)
+					.clip(CircleShape)
 			)
-		}
-		Divider(
-			color = ZeroExtendedTheme.colors.buttonSecondary,
-			modifier =
-			Modifier.constrainAs(divider) {
-				start.linkTo(parent.start)
-				end.linkTo(parent.end)
-				bottom.linkTo(parent.bottom)
-				top.linkTo(inviteButton.bottom, margin = 12.dp)
+			Text(
+				text = network.displayName,
+				modifier =
+				Modifier.constrainAs(textTop) {
+					top.linkTo(imageStart.top)
+					bottom.linkTo(textBottom.top)
+					linkTo(start = imageStart.end, end = imageEnd.start, bias = 0f)
+				},
+				color = AppTheme.colors.colorTextPrimary,
+				style = Typography.bodyLarge
+			)
+			Text(
+				text = network.name,
+				modifier =
+				Modifier.constrainAs(textBottom) {
+					top.linkTo(textTop.bottom)
+					start.linkTo(textTop.start)
+					bottom.linkTo(imageStart.bottom)
+				},
+				color = AppTheme.colors.colorTextSecondary,
+				style = Typography.bodyMedium
+			)
+			Image(
+				painter = painterResource(R.drawable.ic_settings),
+				contentDescription = stringResource(R.string.cd_ic_settings),
+				contentScale = ContentScale.Fit,
+				modifier =
+				Modifier.constrainAs(imageEnd) {
+					top.linkTo(imageStart.top)
+					bottom.linkTo(imageStart.bottom)
+					end.linkTo(parent.end)
+				}
+					.wrapContentSize()
+					.clickable(onClick = onSettingsClick)
+			)
+			OutlinedButton(
+				onClick = onInviteClick,
+				modifier =
+				Modifier.constrainAs(inviteButton) {
+					top.linkTo(textBottom.bottom, margin = 16.dp)
+					start.linkTo(parent.start)
+				},
+				border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+				shape = RoundedCornerShape(24.dp),
+				colors =
+				ButtonDefaults.outlinedButtonColors(
+					contentColor = AppTheme.colors.colorTextPrimary
+				)
+			) {
+				Text(
+					text = stringResource(R.string.invite_members),
+					style =
+					TextStyle(
+						shadow =
+						Shadow(
+							color = MaterialTheme.colorScheme.primary,
+							offset = Offset(2f, 2f),
+							blurRadius = 10f
+						)
+					),
+					fontSize = 16.sp,
+					fontWeight = FontWeight.Medium
+				)
 			}
-				.fillMaxWidth(),
-			thickness = 1.dp
-		)
+		}
+
+		Divider(color = AppTheme.colors.divider, modifier = modifier.fillMaxWidth(), thickness = 1.dp)
 	}
 }
 
 @Preview
 @Composable
 fun AppDrawerHeaderPreview() = Preview {
-	AppDrawerHeader(item = FakeData.Network(), onSettingsClick = {}) {}
+	AppDrawerHeader(network = FakeData.Network(), onSettingsClick = {}) {}
 }

@@ -38,7 +38,8 @@ private val DarkExtendedColorPalette =
 		colorTextSecondary = TaupeGray,
 		colorTextSecondaryVariant = Black,
 		success = EmeraldGreen,
-		glow = BlueViolet
+		glow = BlueViolet,
+		divider = Gray
 	)
 
 private val LightExtendedColorPalette =
@@ -54,7 +55,8 @@ private val LightExtendedColorPalette =
 		colorTextSecondary = PhilippineSilver,
 		colorTextSecondaryVariant = OuterSpace,
 		success = EmeraldGreen,
-		glow = BlueViolet
+		glow = BlueViolet,
+		divider = Gray
 	)
 
 @Composable
@@ -71,7 +73,7 @@ fun ZeroTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable (
 	}
 }
 
-object ZeroExtendedTheme {
+object AppTheme {
 	val colors: ExtendedColor
 		@Composable get() = LocalExtendedColors.current
 }
