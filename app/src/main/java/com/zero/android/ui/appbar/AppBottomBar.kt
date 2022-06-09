@@ -14,8 +14,8 @@ import com.zero.android.feature.channels.navigation.ChannelsDestination
 import com.zero.android.feature.feed.navigation.FeedDestination
 import com.zero.android.feature.messages.navigation.MessagesDestination
 import com.zero.android.feature.people.navigation.MembersDestination
+import com.zero.android.ui.components.CountBadge
 import com.zero.android.ui.extensions.Preview
-import com.zero.android.ui.theme.AppTheme
 
 val HOME_DESTINATIONS =
 	listOf(
@@ -62,14 +62,9 @@ fun AppBottomBar(
 					icon = {
 						val showBadgeCount = true
 						if (showBadgeCount) {
-							BadgedBox(
-								badge = {
-									Badge(
-										containerColor = MaterialTheme.colorScheme.primary,
-										contentColor = AppTheme.colors.colorTextPrimary
-									) { Text("01") }
-								}
-							) { BottomBarIcon(isSelected = selected, item = item) }
+							BadgedBox(badge = { CountBadge(count = 1) }) {
+								BottomBarIcon(isSelected = selected, item = item)
+							}
 						} else {
 							BottomBarIcon(isSelected = selected, item = item)
 						}
@@ -83,6 +78,8 @@ fun AppBottomBar(
 @Composable
 fun BottomBarIcon(isSelected: Boolean, item: AppBarItem) {
 	Icon(
+		modifier =
+		if (item.destination is FeedDestination) Modifier.size(32.dp) else Modifier.size(24.dp),
 		painter =
 		if (isSelected) painterResource(item.selectedIcon)
 		else painterResource(item.unselectedIcon),

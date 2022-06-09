@@ -1,10 +1,10 @@
 package com.zero.android.feature.auth
 
-import androidx.lifecycle.ViewModel
 import com.auth0.android.authentication.AuthenticationException
 import com.auth0.android.lock.AuthenticationCallback
 import com.auth0.android.result.Credentials
 import com.zero.android.common.system.Logger
+import com.zero.android.common.ui.base.BaseViewModel
 import com.zero.android.data.repository.UserRepository
 import com.zero.android.feature.auth.extensions.toAuthCredentials
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel
 @Inject
-constructor(private val userRepository: UserRepository, private val logger: Logger) : ViewModel() {
+constructor(private val userRepository: UserRepository, private val logger: Logger) :
+	BaseViewModel() {
 
 	enum class AuthScreenUIState {
 		LOGIN,

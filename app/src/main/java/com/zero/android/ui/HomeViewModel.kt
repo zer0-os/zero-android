@@ -1,29 +1,28 @@
 package com.zero.android.ui
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zero.android.common.navigation.NavDestination
 import com.zero.android.common.ui.Result
 import com.zero.android.common.ui.asResult
+import com.zero.android.common.ui.base.BaseViewModel
 import com.zero.android.data.repository.NetworkRepository
 import com.zero.android.feature.feed.navigation.FeedDestination
 import com.zero.android.models.Network
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val networkRepository: NetworkRepository) :
-	ViewModel() {
+	BaseViewModel() {
 
-	val currentScreen: NavDestination = FeedDestination
+	val currentScreen = MutableStateFlow(FeedDestination)
 
-	val selectedNetwork = MutableSharedFlow<Network>(replay = 1)
+	private var allNetworks: List<Network>? = null
+	val selectedNetwork = MutableStateFlow<Network?>(null)
 	val networks = MutableStateFlow<Result<List<Network>>>(Result.Loading)
 
 	init {
@@ -31,10 +30,34 @@ class HomeViewModel @Inject constructor(private val networkRepository: NetworkRe
 	}
 
 	private fun loadNetworks() {
-		CoroutineScope(Dispatchers.IO).launch {
-			networkRepository.getNetworks().asResult().collectLatest { networks.emit(it) }
+		viewModelScope.launch(Dispatchers.IO + exceptionHandler) {
+			allNetworks = null
+			networkRepository.getNetworks().asResult().collectLatest { result ->
+				if (result is Result.Loading) {
+					if (allNetworks == null) networks.emit(result)
+					return@collectLatest
+				}
+
+				if (result is Result.Success && result.data.isNotEmpty()) {
+					allNetworks = result.data
+				}
+
+				val selected = selectedNetwork.firstOrNull()
+				if (selected == null) {
+					allNetworks?.takeIf { it.isNotEmpty() }?.let { onNetworkSelected(it[0]) }
+				} else {
+					onNetworkSelected(selected)
+				}
+			}
 		}
 	}
 
-	fun onNetworkSelected(network: Network) = viewModelScope.launch { selectedNetwork.emit(network) }
+	fun onNetworkSelected(network: Network) {
+		viewModelScope.launch {
+			selectedNetwork.emit(network)
+			allNetworks?.let { allNetworks ->
+				networks.emit(Result.Success(allNetworks.filter { it.id != network.id }))
+			}
+		}
+	}
 }

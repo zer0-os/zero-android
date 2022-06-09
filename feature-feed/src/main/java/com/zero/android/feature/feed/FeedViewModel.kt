@@ -1,7 +1,7 @@
 package com.zero.android.feature.feed
 
-import androidx.lifecycle.ViewModel
+import com.zero.android.common.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
-@HiltViewModel class FeedViewModel @Inject constructor() : ViewModel()
+@HiltViewModel class FeedViewModel @Inject constructor() : BaseViewModel()

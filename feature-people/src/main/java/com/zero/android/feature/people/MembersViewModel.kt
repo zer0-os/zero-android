@@ -1,7 +1,7 @@
 package com.zero.android.feature.people
 
-import androidx.lifecycle.ViewModel
+import com.zero.android.common.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
-@HiltViewModel class MembersViewModel @Inject constructor() : ViewModel()
+@HiltViewModel class MembersViewModel @Inject constructor() : BaseViewModel()

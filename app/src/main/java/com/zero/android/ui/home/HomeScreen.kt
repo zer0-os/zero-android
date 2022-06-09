@@ -17,20 +17,19 @@ import com.zero.android.common.navigation.NavDestination
 import com.zero.android.common.ui.Result
 import com.zero.android.feature.account.navigation.ProfileDestination
 import com.zero.android.models.Network
-import com.zero.android.models.fake.FakeData
 import com.zero.android.navigation.HomeNavHost
 import com.zero.android.ui.HomeViewModel
 import com.zero.android.ui.appbar.AppBottomBar
 import com.zero.android.ui.appbar.AppTopBar
-import com.zero.android.ui.sidebar.NetworkDrawer
+import com.zero.android.ui.components.Background
+import com.zero.android.ui.sidebar.NetworkDrawerContent
 import com.zero.android.ui.util.BackHandler
 import kotlinx.coroutines.launch
 
 @Composable
 fun HomeRoute(viewModel: HomeViewModel = hiltViewModel()) {
-	val currentScreen = viewModel.currentScreen
-	val currentNetwork: Network by
-	viewModel.selectedNetwork.collectAsState(initial = FakeData.Network())
+	val currentScreen: NavDestination by viewModel.currentScreen.collectAsState()
+	val currentNetwork: Network? by viewModel.selectedNetwork.collectAsState()
 	val networks: Result<List<Network>> by viewModel.networks.collectAsState()
 
 	HomeScreen(
@@ -47,7 +46,7 @@ fun HomeRoute(viewModel: HomeViewModel = hiltViewModel()) {
 fun HomeScreen(
 	modifier: Modifier = Modifier,
 	currentScreen: NavDestination,
-	currentNetwork: Network,
+	currentNetwork: Network?,
 	networks: Result<List<Network>>,
 	onNetworkSelected: (Network) -> Unit
 ) {
@@ -57,7 +56,7 @@ fun HomeScreen(
 
 	val topBar: @Composable () -> Unit = {
 		AppTopBar(
-			network = FakeData.Network(),
+			network = currentNetwork,
 			openDrawer = { coroutineScope.launch { scaffoldState.drawerState.open() } },
 			onProfileClick = { navController.navigate(ProfileDestination.route) },
 			onCreateWorldClick = { navController.navigate(ProfileDestination.route) }
@@ -86,7 +85,7 @@ fun HomeScreen(
 		bottomBar = { bottomBar() },
 		scaffoldState = scaffoldState,
 		drawerContent = {
-			NetworkDrawer(
+			NetworkDrawerContent(
 				modifier = modifier,
 				currentNetwork = currentNetwork,
 				networks = networks,
@@ -94,21 +93,21 @@ fun HomeScreen(
 				DrawerState(
 					DrawerValue.valueOf(scaffoldState.drawerState.currentValue.toString())
 				) {
+					coroutineScope.launch {
+						if (it == DrawerValue.Open) scaffoldState.drawerState.open()
+						else scaffoldState.drawerState.close()
+					}
 					true
 				},
 				coroutineScope = coroutineScope,
-				onNetworkSelected = {
-					onNetworkSelected(it)
-					coroutineScope.launch { scaffoldState.drawerState.close() }
-				},
+				onNetworkSelected = onNetworkSelected,
 				onNavigateToTopLevelDestination = {
-					coroutineScope.launch { scaffoldState.drawerState.close() }
 					navController.navigate(it.route) { popUpTo(navController.graph.startDestinationId) }
 				}
 			)
 		},
 		drawerGesturesEnabled = scaffoldState.drawerState.isOpen
 	) {
-		HomeNavHost(navController = navController)
+		Background { HomeNavHost(navController = navController) }
 	}
 }

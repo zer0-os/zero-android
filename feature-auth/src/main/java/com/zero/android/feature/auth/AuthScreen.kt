@@ -47,7 +47,7 @@ fun AuthScreen(
 			.withScope("openid profile offline_access")
 			.closable(false)
 			.allowLogIn(true)
-			.allowSignUp(true)
+			.allowSignUp(false)
 			.allowShowPassword(true)
 			.allowForgotPassword(true)
 			.loginAfterSignUp(true)

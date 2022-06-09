@@ -1,7 +1,7 @@
 package com.zero.android.feature.channels.ui.search
 
-import androidx.lifecycle.ViewModel
+import com.zero.android.common.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
-@HiltViewModel class SearchChannelViewModel @Inject constructor() : ViewModel()
+@HiltViewModel class SearchChannelViewModel @Inject constructor() : BaseViewModel()

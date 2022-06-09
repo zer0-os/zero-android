@@ -19,16 +19,24 @@ import com.zero.android.ui.extensions.Preview
 @Composable
 fun AppTopBar(
 	modifier: Modifier = Modifier,
-	network: Network,
+	network: Network?,
 	openDrawer: () -> Unit,
 	onProfileClick: () -> Unit,
 	onCreateWorldClick: () -> Unit
 ) {
 	CenterAlignedTopAppBar(
-		title = { Text(network.displayName) },
+		modifier = modifier,
+		title = { Text(network?.displayName ?: "") },
 		navigationIcon = {
 			IconButton(onClick = openDrawer) {
-				Icon(painter = rememberAsyncImagePainter(network.logo), contentDescription = network.name)
+				if (network?.logo != null) {
+					Icon(
+						painter = rememberAsyncImagePainter(network.logo),
+						contentDescription = network.name
+					)
+				} else {
+					Icon(painter = painterResource(id = drawable.ic_menu), contentDescription = "Menu Icon")
+				}
 			}
 		},
 		actions = {

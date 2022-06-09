@@ -3,7 +3,6 @@ package com.zero.android.ui.theme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 
@@ -16,15 +15,6 @@ private val DarkColorScheme =
 		error = Red300
 	)
 
-private val LightColorScheme =
-	lightColorScheme(
-		primary = Purple500,
-		secondary = Purple700,
-		tertiary = Teal200,
-		background = Argent,
-		error = Red300
-	)
-
 private val DarkExtendedColorPalette =
 	ExtendedColor(
 		chatBubblePrimary = PersianIndigo,
@@ -34,26 +24,9 @@ private val DarkExtendedColorPalette =
 		headerVariant = RaisinBlack,
 		buttonPrimary = RaisinBlack75,
 		buttonSecondary = Gray,
-		colorTextPrimary = RaisinBlack,
-		colorTextSecondary = TaupeGray,
-		colorTextSecondaryVariant = Black,
-		success = EmeraldGreen,
-		glow = BlueViolet,
-		divider = Gray
-	)
-
-private val LightExtendedColorPalette =
-	ExtendedColor(
-		chatBubblePrimary = CadetBlue,
-		chatBubblePrimaryVariant = Rhythm,
-		chatBubbleSecondary = CetaceanBlue,
-		header = ChineseBlack,
-		headerVariant = RaisinBlack,
-		buttonPrimary = RaisinBlack75,
-		buttonSecondary = Gray,
 		colorTextPrimary = White,
-		colorTextSecondary = PhilippineSilver,
-		colorTextSecondaryVariant = OuterSpace,
+		colorTextSecondary = TaupeGray,
+		colorTextSecondaryVariant = White,
 		success = EmeraldGreen,
 		glow = BlueViolet,
 		divider = Gray
@@ -61,8 +34,9 @@ private val LightExtendedColorPalette =
 
 @Composable
 fun ZeroTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
-	val colorsScheme = if (darkTheme) DarkColorScheme else LightColorScheme
-	val extendedColors = if (darkTheme) DarkExtendedColorPalette else LightExtendedColorPalette
+	val colorsScheme = DarkColorScheme
+	val extendedColors = DarkExtendedColorPalette
+
 	CompositionLocalProvider(LocalExtendedColors provides extendedColors) {
 		MaterialTheme(
 			colorScheme = colorsScheme,
