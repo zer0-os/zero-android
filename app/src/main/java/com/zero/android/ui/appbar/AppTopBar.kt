@@ -15,6 +15,7 @@ import com.zero.android.common.R.drawable
 import com.zero.android.models.Network
 import com.zero.android.models.fake.FakeData
 import com.zero.android.ui.extensions.Preview
+import com.zero.android.ui.theme.AppTheme
 
 @Composable
 fun AppTopBar(
@@ -29,13 +30,13 @@ fun AppTopBar(
 		title = { Text(network?.displayName ?: "") },
 		navigationIcon = {
 			IconButton(onClick = openDrawer) {
-				if (network?.logo != null) {
+				if (!network?.logo.isNullOrEmpty()) {
 					Icon(
-						painter = rememberAsyncImagePainter(network.logo),
-						contentDescription = network.name
+						painter = rememberAsyncImagePainter(network?.logo),
+						contentDescription = network?.name
 					)
 				} else {
-					Icon(painter = painterResource(id = drawable.ic_menu), contentDescription = "Menu Icon")
+					Icon(painter = painterResource(id = drawable.ic_menu), contentDescription = "Menu Icon", tint = AppTheme.colors.surface)
 				}
 			}
 		},
@@ -52,7 +53,7 @@ fun AppTopBar(
 					contentDescription = stringResource(R.string.cd_ic_circle_add)
 				)
 			}
-		}
+		},
 	)
 }
 
