@@ -23,6 +23,7 @@ val White = Color(0xFFFFFFFF)
 val EmeraldGreen = Color(0xFF58C573)
 val Red300 = Color(0xFFF6677C)
 val BlueViolet = Color(0xFF50207B)
+val LavenderIndigo = Color(0x99B14EFF)
 
 // LIGHT Mode Colors
 val CadetBlue = Color(0xFFB8AFCB)
