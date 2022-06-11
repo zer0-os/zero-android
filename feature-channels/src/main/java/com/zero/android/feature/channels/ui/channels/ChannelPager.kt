@@ -22,7 +22,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
-import com.zero.android.feature.channels.R
+import com.zero.android.common.R
 import com.zero.android.models.fake.ChannelTab
 import com.zero.android.models.fake.channel.ChannelRowMessage
 import com.zero.android.ui.theme.AppTheme
