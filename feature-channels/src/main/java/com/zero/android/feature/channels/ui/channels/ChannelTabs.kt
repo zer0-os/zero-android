@@ -10,8 +10,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import com.zero.android.models.fake.ChannelTab
@@ -48,15 +52,16 @@ fun ChannelTabLayout(
         containerColor = AppTheme.colors.surfaceInverse
     ) {
         tabs.forEachIndexed { index, item ->
+            val isSelectedTab = tabIndex == index
             Tab(
-                selected = tabIndex == index,
+                selected = isSelectedTab,
                 onClick = {
                     coroutineScope.launch {
                         pagerState.animateScrollToPage(index)
                     }
                 },
                 text = {
-                    TabItemWithBadge(item)
+                    TabItemWithBadge(item, isSelectedTab)
                 },
             )
         }
@@ -64,19 +69,38 @@ fun ChannelTabLayout(
 }
 
 @Composable
-fun TabItemWithBadge(channelTab: ChannelTab) {
+fun TabItemWithBadge(channelTab: ChannelTab, isSelectedTab: Boolean) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight(),
     ) {
-        Text(
-            text = channelTab.name,
-            color = AppTheme.colors.colorTextPrimary,
-            modifier = Modifier.align(Alignment.CenterVertically),
-            fontWeight = FontWeight.Medium,
-            style = Typography.bodyMedium
-        )
+        if (isSelectedTab) {
+            Text(
+                text = channelTab.name,
+                color = AppTheme.colors.colorTextPrimary,
+                modifier = Modifier.align(Alignment.CenterVertically),
+                fontWeight = FontWeight.Medium,
+                style =
+                TextStyle(
+                    shadow = Shadow(
+                        color = AppTheme.colors.glow,
+                        offset = Offset(2f, 2f),
+                        blurRadius = 50f
+                    ),
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 14.sp
+                ),
+            )
+        } else {
+            Text(
+                text = channelTab.name,
+                color = AppTheme.colors.colorTextPrimary,
+                modifier = Modifier.align(Alignment.CenterVertically),
+                fontWeight = FontWeight.Medium,
+                style = Typography.bodyMedium
+            )
+        }
         if (channelTab.unreadCount > 0) {
             Spacer(modifier = Modifier.padding(2.dp))
             Text(
