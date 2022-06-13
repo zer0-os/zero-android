@@ -1,9 +1,7 @@
 package com.zero.android.network
 
-import com.zero.android.network.service.AccountService
-import com.zero.android.network.service.NetworkService
-import com.zero.android.network.service.ProfileService
-import com.zero.android.network.service.UserService
+import com.zero.android.common.system.Logger
+import com.zero.android.network.chat.SendBirdService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,4 +28,7 @@ object ServiceModule {
 	@Singleton
 	@Provides
 	fun provideNetworkService(retrofit: Retrofit) = retrofit.create(NetworkService::class.java)
+
+	@Singleton @Provides
+	fun provideChatService(logger: Logger): ChatService = SendBirdService(logger)
 }

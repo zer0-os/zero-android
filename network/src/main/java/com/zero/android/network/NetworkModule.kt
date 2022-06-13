@@ -2,6 +2,7 @@ package com.zero.android.network
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.zero.android.database.AppPreferences
+import com.zero.android.network.chat.ChatProvider
 import com.zero.android.network.util.AuthInterceptor
 import dagger.Module
 import dagger.Provides
@@ -51,4 +52,8 @@ object NetworkModule {
 					.asConverterFactory("application/json".toMediaType())
 			)
 			.build()
+
+	@Singleton
+	@Provides
+	fun provideNetworkInitializer(chatProvider: ChatProvider) = NetworkInitializer(chatProvider)
 }

@@ -12,7 +12,7 @@ data class ApiMessage(
 	val content: String?,
 	val rawContent: String?,
 	val url: String?,
-	val mediaType: MessageType,
+	val type: MessageType,
 	val createdAt: Instant,
 	val updatedAt: Instant,
 	val inSync: Boolean,
