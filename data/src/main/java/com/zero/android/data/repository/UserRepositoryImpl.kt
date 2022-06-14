@@ -36,7 +36,7 @@ constructor(
 			val user = getUser().last()
 
 			preferences.setUserId(user.id)
-			preferences.setChatToken(getChatAccessToken(getChatAccessToken(credentials.accessToken)))
+			refreshChatAccessToken(credentials.accessToken)
 
 			connectionManager.connect()
 		} catch (e: Exception) {
@@ -51,9 +51,10 @@ constructor(
 		connectionManager.disconnect()
 	}
 
-	private suspend fun getChatAccessToken(accessToken: String): String {
-		val chatAccess = accessService.getChatAccessToken(hashMapOf("idToken" to accessToken))
-		return chatAccess.chatAccessToken
+	private suspend fun refreshChatAccessToken(accessToken: String) {
+		accessService.getChatAccessToken(hashMapOf("idToken" to accessToken)).let {
+			preferences.setChatToken(it.chatAccessToken)
+		}
 	}
 
 	override suspend fun getUser() = flow {

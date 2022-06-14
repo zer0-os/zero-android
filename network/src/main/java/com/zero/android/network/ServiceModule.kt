@@ -3,6 +3,13 @@ package com.zero.android.network
 import com.zero.android.common.system.Logger
 import com.zero.android.network.chat.sendbird.SendBirdChannelService
 import com.zero.android.network.chat.sendbird.SendBirdChatService
+import com.zero.android.network.service.AccessService
+import com.zero.android.network.service.AccountService
+import com.zero.android.network.service.ChannelService
+import com.zero.android.network.service.ChatService
+import com.zero.android.network.service.NetworkService
+import com.zero.android.network.service.ProfileService
+import com.zero.android.network.service.UserService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

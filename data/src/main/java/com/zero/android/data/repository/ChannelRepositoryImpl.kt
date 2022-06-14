@@ -21,7 +21,7 @@ class ChannelRepositoryImpl @Inject constructor(private val channelService: Chan
 	}
 
 	override suspend fun getGroupChannels(networkId: String): Flow<List<Channel>> {
-		return channelService.getChannels(networkId, ChannelType.OPEN).map { channels ->
+		return channelService.getChannels(networkId, ChannelType.GROUP).map { channels ->
 			channels.map { (it as ApiGroupChannel).toModel() }
 		}
 	}

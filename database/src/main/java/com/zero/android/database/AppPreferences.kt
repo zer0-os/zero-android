@@ -43,7 +43,8 @@ class AppPreferences(private val dataStore: DataStore<Preferences>) {
 		dataStore.edit { preferences -> preferences[USER_ID] = id }
 	}
 
-	suspend fun chatToken() = dataStore.data.map { preferences -> preferences[USER_ID] }.firstOrNull()
+	suspend fun chatToken() =
+		dataStore.data.map { preferences -> preferences[CHAT_TOKEN] }.firstOrNull()
 
 	suspend fun setChatToken(chatToken: String) {
 		dataStore.edit { preferences -> preferences[CHAT_TOKEN] = chatToken }
