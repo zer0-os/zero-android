@@ -1,25 +1,26 @@
 package com.zero.android.feature.messages.ui.conversation
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
-import coil.compose.rememberAsyncImagePainter
 import com.zero.android.common.R
+import com.zero.android.feature.messages.helper.ConversationUiState
+import com.zero.android.models.fake.FakeData
 import com.zero.android.ui.components.Background
+import com.zero.android.ui.extensions.Preview
 
 @Composable
 fun ConversationRoute(viewModel: ConversationViewModel = hiltViewModel()) {
@@ -31,24 +32,24 @@ fun ConversationRoute(viewModel: ConversationViewModel = hiltViewModel()) {
 @Composable
 fun ConversationScreen() {
     val navController = rememberNavController()
-
+    val conversationUiState = ConversationUiState(
+        channelMembers = 0,
+        channelName = "",
+        initialMessages = emptyList()
+    )
     val topBar: @Composable () -> Unit = {
         ConversationAppBar(
             scrollBehavior = null,
             onNavIconPressed = { navController.navigateUp() },
             title = { ConversationAppBarTitle() },
             actions = {
-                IconButton(onClick = {
-
-                }) {
+                IconButton(onClick = {}) {
                     Icon(
-                        imageVector = Icons.Filled.Search,
+                        painter = painterResource(R.drawable.ic_search),
                         contentDescription = "cd_search_message"
                     )
                 }
-                IconButton(onClick = {
-
-                }) {
+                IconButton(onClick = {}) {
                     Icon(
                         imageVector = Icons.Filled.MoreVert,
                         contentDescription = "cd_more_options"
@@ -57,11 +58,20 @@ fun ConversationScreen() {
             }
         )
     }
-    val bottomBar: @Composable () -> Unit = { ConversationBottomBar() }
     Scaffold(
-        topBar = { topBar() },
-        bottomBar = { bottomBar() },
-    ) {
-        Background {  }
+        modifier = Modifier
+            .systemBarsPadding()
+            .navigationBarsPadding()
+            .imePadding(),
+        topBar = { topBar() }) {
+        Background {
+            ConversationContent(uiState = conversationUiState)
+        }
     }
+}
+
+@Preview
+@Composable
+fun ConversationScreenPreview() = Preview {
+    ConversationScreen()
 }
