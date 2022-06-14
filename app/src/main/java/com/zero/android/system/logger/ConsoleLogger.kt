@@ -9,7 +9,7 @@ import javax.inject.Singleton
 internal class ConsoleLogger @Inject constructor() : Logger {
 
 	override fun setup(debug: Boolean) {
-		Timber.plant(Timber.asTree())
+		Timber.plant(if (debug) Timber.DebugTree() else Timber.asTree())
 	}
 
 	override fun v(message: String) = Timber.v(message)

@@ -1,34 +1,48 @@
 package com.zero.android.network.model
 
+import com.zero.android.models.enums.MessageMentionType
+import com.zero.android.models.enums.MessageStatus
 import com.zero.android.models.enums.MessageType
-import com.zero.android.network.model.serializer.InstantSerializer
+import com.zero.android.network.model.serializer.MessageMentionTypeSerializer
+import com.zero.android.network.model.serializer.MessageStatusSerializer
 import com.zero.android.network.model.serializer.MessageTypeSerializer
-import kotlinx.datetime.Instant
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class ApiMessage(
 	val id: String,
-	val feedItemId: String? = null,
-	val channelUrl: String? = null,
-	val author: ApiUser,
-	val authorId: String,
-	val content: String? = null,
-	val rawContent: String? = null,
-	val url: String? = null,
-	@Serializable(MessageTypeSerializer::class) val mediaType: MessageType,
-	@Serializable(InstantSerializer::class) val createdAt: Instant,
-	@Serializable(InstantSerializer::class) val updatedAt: Instant,
-	val inSync: Boolean,
-	val isUploading: Boolean,
-	val data: ApiMessageData? = null,
-	val parentMessageText: String? = null
+	@SerialName("channel_url") val channelUrl: String? = null,
+	val author: ApiMember,
+	val mentions: List<ApiMember> = emptyList(),
+	@Serializable(MessageTypeSerializer::class) val type: MessageType,
+	@Serializable(MessageMentionTypeSerializer::class) val mentionType: MessageMentionType,
+	@SerialName("created_at") val createdAt: Long,
+	@SerialName("updated_at") val updatedAt: Long,
+	@Serializable(MessageStatusSerializer::class) val status: MessageStatus,
+	val data: String? = null,
+	val parentMessage: ApiMessage? = null,
+	val isMuted: Boolean = false,
+	val fileUrl: String? = null,
+	val fileName: String? = null,
+	val fileThumbnails: List<ApiFileThumbnail>? = null,
+	val fileMimeType: String? = null,
+	val reactions: List<ApiMessageReaction>? = null
 )
 
 @Serializable
-data class ApiMessageData(
-	val url: String? = null,
-	val type: String? = null,
-	val width: Float? = null,
-	val height: Float?
+data class ApiFileThumbnail(
+	var maxWidth: Int = 0,
+	val maxHeight: Int = 0,
+	val realWidth: Int = 0,
+	val realHeight: Int = 0,
+	val url: String? = null
+)
+
+@Serializable
+data class ApiMessageReaction(
+	var messageId: Long,
+	val key: String,
+	val userId: String,
+	val updatedAt: Long
 )

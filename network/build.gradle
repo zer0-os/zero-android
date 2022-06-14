@@ -12,21 +12,27 @@ android {
 	buildTypes {
 		debug {
 			def properties = getEnv("development")
+			buildConfigField "String", "BASE_URL", "\"${properties["base_url"]}\""
 			buildConfigField "String", "BASE_API_URL", "\"${properties["api_url"]}\""
+			buildConfigField "String", "SEND_BIRD_ID", "\"${properties["sendbird_id"]}\""
 		}
 		release {
 			def properties = getEnv("production")
+			buildConfigField "String", "BASE_URL", "\"${properties["base_url"]}\""
 			buildConfigField "String", "BASE_API_URL", "\"${properties["api_url"]}\""
+			buildConfigField "String", "SEND_BIRD_ID", "\"${properties["sendbird_id"]}\""
 		}
 	}
 }
 
 dependencies {
+	implementation project(":common")
 	implementation project(":database")
 	implementation project(":models")
 
 	implementation "com.google.dagger:hilt-android:${versions.hilt}"
 	kapt "com.google.dagger:hilt-compiler:${versions.hilt}"
+	implementation "com.sendbird.sdk:sendbird-android-sdk:${versions.sendbird}"
 
 	// Data
 	implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"

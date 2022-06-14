@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.zero.android.models.AuthCredentials
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.decodeFromString
@@ -17,6 +18,7 @@ class AppPreferences(private val dataStore: DataStore<Preferences>) {
 
 	companion object {
 		private val USER_ID = stringPreferencesKey("USER_ID")
+		private val CHAT_TOKEN = stringPreferencesKey("CHAT_TOKEN")
 		private val AUTH_CREDENTIALS = stringPreferencesKey("AUTH_CREDENTIALS")
 	}
 
@@ -35,9 +37,16 @@ class AppPreferences(private val dataStore: DataStore<Preferences>) {
 		}
 	}
 
-	suspend fun userId() = dataStore.data.map { preferences -> preferences[USER_ID] }.firstOrNull()
+	suspend fun userId() = dataStore.data.map { preferences -> preferences[USER_ID] }.first()!!
 
 	suspend fun setUserId(id: String) {
 		dataStore.edit { preferences -> preferences[USER_ID] = id }
+	}
+
+	suspend fun chatToken() =
+		dataStore.data.map { preferences -> preferences[CHAT_TOKEN] }.firstOrNull()
+
+	suspend fun setChatToken(chatToken: String) {
+		dataStore.edit { preferences -> preferences[CHAT_TOKEN] = chatToken }
 	}
 }
