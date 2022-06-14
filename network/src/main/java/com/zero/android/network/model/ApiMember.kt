@@ -1,66 +1,23 @@
 package com.zero.android.network.model
 
-import com.sendbird.android.Member
-import com.sendbird.android.Sender
-import com.sendbird.android.User
-import com.sendbird.android.User.ConnectionStatus
+import com.zero.android.models.enums.ConnectionStatus
+import com.zero.android.network.model.serializer.ConnectionStatusSerializer
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class ApiMember(
-	var id: String,
-	var nickname: String? = null,
-	var profileUrl: String? = null,
-	var friendDiscoveryKey: String? = null,
-	var friendName: String? = null,
-	var metaData: Map<String?, String?>? = null,
-	var connectionStatus: ConnectionStatus? = null,
-	var lastSeenAt: Long = 0,
-	val isActive: Boolean = true,
-	val isBlockingMe: Boolean = false,
-	val isBlockedByMe: Boolean = false,
-	val isMuted: Boolean = false
+	@SerialName("user_id") var id: String,
+	@SerialName("nickname") var nickname: String? = null,
+	@SerialName("profile_url") var profileUrl: String? = null,
+	@SerialName("friend_discovery_key") var friendDiscoveryKey: String? = null,
+	@SerialName("friend_name") var friendName: String? = null,
+	@SerialName("metadata") var metadata: Map<String?, String?>? = null,
+	@Serializable(ConnectionStatusSerializer::class)
+	var status: ConnectionStatus = ConnectionStatus.NON_AVAILABLE,
+	@SerialName("last_seen_at") var lastSeenAt: Long = 0,
+	@SerialName("is_active") val isActive: Boolean = true,
+	@SerialName("is_blocking_me") val isBlockingMe: Boolean = false,
+	@SerialName("ic_blocked_by_me") val isBlockedByMe: Boolean = false,
+	@SerialName("is_muted") val isMuted: Boolean = false
 )
-
-internal fun User.toApi() =
-	ApiMember(
-		id = userId,
-		nickname = nickname,
-		profileUrl = profileUrl,
-		friendDiscoveryKey = friendDiscoveryKey,
-		friendName = friendName,
-		metaData = metaData,
-		connectionStatus = connectionStatus,
-		lastSeenAt = lastSeenAt,
-		isActive = isActive
-	)
-
-internal fun Member.toApi() =
-	ApiMember(
-		id = userId,
-		nickname = nickname,
-		profileUrl = profileUrl,
-		friendDiscoveryKey = friendDiscoveryKey,
-		friendName = friendName,
-		metaData = metaData,
-		connectionStatus = connectionStatus,
-		lastSeenAt = lastSeenAt,
-		isActive = isActive,
-		isBlockedByMe = isBlockedByMe,
-		isBlockingMe = isBlockingMe,
-		isMuted = isMuted
-	)
-
-internal fun Sender.toApi() =
-	ApiMember(
-		id = userId,
-		nickname = nickname,
-		profileUrl = profileUrl,
-		friendDiscoveryKey = friendDiscoveryKey,
-		friendName = friendName,
-		metaData = metaData,
-		connectionStatus = connectionStatus,
-		lastSeenAt = lastSeenAt,
-		isActive = isActive,
-		isBlockedByMe = isBlockedByMe
-	)
