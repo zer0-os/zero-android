@@ -20,25 +20,27 @@ internal class SendBirdProvider(private val logger: Logger) : ChatProvider {
 			true,
 			object : InitResultHandler {
 				override fun onMigrationStarted() {
-					logger.i("Called when there's an update in Sendbird server.")
+					logger.i("There's an update in Sendbird server.")
 				}
 
 				override fun onInitFailed(e: SendBirdException) {
-					logger.i(
-						"Called when initialize failed. SDK will still operate properly as if useLocalCaching is set to false."
+					logger.e(
+						"SendBird initialize failed. SDK will still operate properly as if useLocalCaching is set to false.",
+						e
 					)
 				}
 
 				override fun onInitSucceed() {
-					logger.i("Called when initialization is completed.")
+					logger.i("Initialization is completed.")
 				}
 			}
 		)
 	}
 
-	override suspend fun connect(userId: String) =
+	override suspend fun connect(userId: String, accessToken: String?) =
 		suspendCoroutine<Unit> {
-			SendBird.connect(userId) { user, e ->
+			logger.i("Connecting to SendBird")
+			SendBird.connect(userId, accessToken) { user, e ->
 				if (user != null) {
 					if (e != null) {
 						// Proceed in offline mode with the data stored in the local database.
@@ -51,8 +53,12 @@ internal class SendBirdProvider(private val logger: Logger) : ChatProvider {
 					}
 				} else {
 					// Handle error.
+					logger.w("Failed to connect to SendBird")
 					it.resumeWithException(e)
 				}
 			}
 		}
+
+	override suspend fun disconnect() =
+		suspendCoroutine<Unit> { SendBird.disconnect { it.resume(Unit) } }
 }

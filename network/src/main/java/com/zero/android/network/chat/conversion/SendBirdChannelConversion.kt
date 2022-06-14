@@ -1,7 +1,6 @@
 package com.zero.android.network.chat.conversion
 
 import com.sendbird.android.*
-import com.zero.android.models.enums.ChannelType
 import com.zero.android.models.enums.toAlertType
 import com.zero.android.models.enums.toChannelType
 import com.zero.android.network.model.ApiChannel
@@ -13,7 +12,18 @@ internal fun BaseChannel.toApi(): ApiChannel {
 	throw IllegalStateException("not handled")
 }
 
-internal fun OpenChannel.toApi(networkId: String? = null) =
+private fun getNetworkId(customType: String): String? {
+	return Regex(pattern = "network:([-a-zA-Z0-9]+)").matchEntire(customType)?.value
+}
+
+internal fun String.encodeToNetworkId() = "network:$this"
+
+internal val OpenChannel.networkId: String?
+	get() = customType?.let { getNetworkId(it) }
+internal val GroupChannel.networkId: String?
+	get() = customType?.let { getNetworkId(it) }
+
+internal fun OpenChannel.toApi() =
 	ApiOpenChannel(
 		url = url,
 		networkId = networkId,
@@ -23,12 +33,10 @@ internal fun OpenChannel.toApi(networkId: String? = null) =
 		createdAt = createdAt,
 		coverUrl = coverUrl,
 		data = data,
-		customType = customType,
-		type = ChannelType.OPEN,
 		isTemporary = isEphemeral
 	)
 
-internal fun GroupChannel.toApi(networkId: String? = null): ApiGroupChannel {
+internal fun GroupChannel.toApi(): ApiGroupChannel {
 	val operators = members.filter { it.role == Member.Role.OPERATOR }.map { it.toApi() }
 	return ApiGroupChannel(
 		url = url,
@@ -45,8 +53,6 @@ internal fun GroupChannel.toApi(networkId: String? = null): ApiGroupChannel {
 		createdAt = createdAt,
 		coverUrl = coverUrl,
 		data = data,
-		customType = customType,
-		type = ChannelType.OPEN,
 		isTemporary = isEphemeral,
 		createdBy = creator.toApi(),
 		alerts = myPushTriggerOption.toType(),
@@ -54,6 +60,32 @@ internal fun GroupChannel.toApi(networkId: String? = null): ApiGroupChannel {
 		isDiscoverable = isDiscoverable
 	)
 }
+
+internal fun com.zero.android.models.OpenChannel.toParams() =
+	OpenChannelParams().apply {
+		setName(name)
+		setChannelUrl(url)
+		setCoverUrl(coverUrl)
+		setData(data)
+		setCustomType(networkId?.encodeToNetworkId())
+	}
+
+internal fun com.zero.android.models.GroupChannel.toParams() =
+	GroupChannelParams().apply {
+		setName(name)
+		setChannelUrl(url)
+		setCoverUrl(coverUrl)
+		setData(data)
+		setCustomType(networkId?.encodeToNetworkId())
+
+		setSuper(isSuper)
+		setPublic(isPublic)
+		setDiscoverable(isDiscoverable)
+		setEphemeral(isTemporary)
+		setStrict(false)
+		setAccessCode(accessCode)
+		setMessageSurvivalSeconds(messageLifeSeconds)
+	}
 
 internal fun BaseChannel.ChannelType.toType() = value().toChannelType()
 

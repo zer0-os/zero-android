@@ -42,6 +42,6 @@ object DatabaseModule {
 
 	@Provides
 	@Singleton
-	fun provideAppCleaner(database: AppDatabase, dataStore: DataStore<Preferences>) =
-		AppCleaner(database, dataStore)
+	fun provideDataCleaner(database: AppDatabase, dataStore: DataStore<Preferences>) =
+		DataCleaner(database, dataStore)
 }

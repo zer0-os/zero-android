@@ -1,19 +1,11 @@
 package com.zero.android.data.conversion
 
-import com.zero.android.models.Channel
 import com.zero.android.models.GroupChannel
 import com.zero.android.models.OpenChannel
-import com.zero.android.network.model.ApiChannel
 import com.zero.android.network.model.ApiGroupChannel
 import com.zero.android.network.model.ApiOpenChannel
 
-internal fun ApiChannel.toChannel(): Channel {
-	if (this is ApiOpenChannel) return this.toChannel()
-	else if (this is ApiGroupChannel) return this.toChannel()
-	throw IllegalStateException("not handled")
-}
-
-internal fun ApiOpenChannel.toChannel() =
+internal fun ApiOpenChannel.toModel() =
 	OpenChannel(
 		url = url,
 		networkId = networkId,
@@ -23,12 +15,10 @@ internal fun ApiOpenChannel.toChannel() =
 		coverUrl = coverUrl,
 		createdAt = createdAt,
 		data = data,
-		customType = customType,
-		type = type,
 		isTemporary = isTemporary
 	)
 
-internal fun ApiGroupChannel.toChannel() =
+internal fun ApiGroupChannel.toModel() =
 	GroupChannel(
 		url = url,
 		networkId = networkId,
@@ -44,11 +34,11 @@ internal fun ApiGroupChannel.toChannel() =
 		createdAt = createdAt,
 		coverUrl = coverUrl,
 		data = data,
-		customType = customType,
-		type = type,
 		isTemporary = isTemporary,
 		createdBy = createdBy?.toModel(),
 		alerts = alerts,
 		isPublic = isPublic,
-		isDiscoverable = isDiscoverable
+		isDiscoverable = isDiscoverable,
+		accessCode = accessCode,
+		messageLifeSeconds = messageLifeSeconds
 	)

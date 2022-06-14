@@ -1,7 +1,6 @@
 package com.zero.android.models
 
 import com.zero.android.models.enums.AlertType
-import com.zero.android.models.enums.ChannelType
 
 interface Channel {
 	val url: String
@@ -12,8 +11,6 @@ interface Channel {
 	val coverUrl: String?
 	val createdAt: Long
 	val data: String?
-	val customType: String?
-	val type: ChannelType
 	val isTemporary: Boolean
 }
 
@@ -26,8 +23,6 @@ data class OpenChannel(
 	override val coverUrl: String? = null,
 	override val createdAt: Long,
 	override val data: String? = null,
-	override val customType: String? = null,
-	override val type: ChannelType,
 	override val isTemporary: Boolean = false
 ) : Channel
 
@@ -45,13 +40,12 @@ data class GroupChannel(
 	val lastMessage: Message? = null,
 	override val createdAt: Long,
 	override val data: String? = null,
-	override val customType: String? = null,
-	override val type: ChannelType,
 	override val isTemporary: Boolean = false,
 	val isSuper: Boolean = false,
 	val isPublic: Boolean = false,
 	val isDiscoverable: Boolean = false,
 	val createdBy: Member? = null,
 	val alerts: AlertType = AlertType.ALL,
-	val messageLifeSeconds: Int = 0
+	val messageLifeSeconds: Int = 0,
+	val accessCode: String? = null
 ) : Channel

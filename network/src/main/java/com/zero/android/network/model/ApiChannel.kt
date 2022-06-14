@@ -1,7 +1,6 @@
 package com.zero.android.network.model
 
 import com.zero.android.models.enums.AlertType
-import com.zero.android.models.enums.ChannelType
 import kotlinx.serialization.Serializable
 
 interface ApiChannel {
@@ -13,8 +12,6 @@ interface ApiChannel {
 	val coverUrl: String?
 	val createdAt: Long
 	val data: String?
-	val customType: String?
-	val type: ChannelType
 	val isTemporary: Boolean
 }
 
@@ -28,8 +25,6 @@ data class ApiOpenChannel(
 	override val coverUrl: String? = null,
 	override val createdAt: Long,
 	override val data: String? = null,
-	override val customType: String? = null,
-	override val type: ChannelType,
 	override val isTemporary: Boolean = false
 ) : ApiChannel
 
@@ -48,13 +43,12 @@ data class ApiGroupChannel(
 	val lastMessage: ApiMessage? = null,
 	override val createdAt: Long,
 	override val data: String? = null,
-	override val customType: String? = null,
-	override val type: ChannelType,
 	override val isTemporary: Boolean = false,
 	val isSuper: Boolean = false,
 	val isPublic: Boolean = false,
 	val isDiscoverable: Boolean = false,
 	val createdBy: ApiMember? = null,
 	val alerts: AlertType = AlertType.ALL,
-	val messageLifeSeconds: Int = 0
+	val messageLifeSeconds: Int = 0,
+	val accessCode: String? = null
 ) : ApiChannel

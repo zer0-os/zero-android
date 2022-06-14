@@ -7,9 +7,14 @@ import kotlinx.coroutines.flow.Flow
 
 interface ChannelService {
 
-	suspend fun createChannel(networkId: String): Flow<ApiChannel>
+	suspend fun getChannels(
+		networkId: String,
+		type: ChannelType = ChannelType.GROUP
+	): Flow<List<ApiChannel>>
 
-	suspend fun getChannel(url: String, type: ChannelType = ChannelType.OPEN): Flow<ApiChannel>
+	suspend fun createChannel(networkId: String, channel: Channel): Flow<ApiChannel>
+
+	suspend fun getChannel(url: String, type: ChannelType = ChannelType.GROUP): Flow<ApiChannel>
 
 	suspend fun joinChannel(channel: Channel)
 

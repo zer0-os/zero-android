@@ -7,5 +7,7 @@ interface ChatProvider {
 
 	fun initialize(@ApplicationContext context: Context)
 
-	suspend fun connect(userId: String)
+	suspend fun connect(userId: String, accessToken: String?)
+
+	suspend fun disconnect()
 }
