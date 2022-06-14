@@ -12,11 +12,13 @@ android {
 	buildTypes {
 		debug {
 			def properties = getEnv("development")
+			buildConfigField "String", "BASE_URL", "\"${properties["api_url"]}\""
 			buildConfigField "String", "BASE_API_URL", "\"${properties["api_url"]}\""
 			buildConfigField "String", "SEND_BIRD_ID", "\"${properties["sendbird_id"]}\""
 		}
 		release {
 			def properties = getEnv("production")
+			buildConfigField "String", "BASE_URL", "\"${properties["api_url"]}\""
 			buildConfigField "String", "BASE_API_URL", "\"${properties["api_url"]}\""
 			buildConfigField "String", "SEND_BIRD_ID", "\"${properties["sendbird_id"]}\""
 		}

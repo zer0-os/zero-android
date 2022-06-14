@@ -10,6 +10,7 @@ import com.zero.android.database.dao.ProfileDao
 import com.zero.android.database.dao.UserDao
 import com.zero.android.database.model.toModel
 import com.zero.android.models.AuthCredentials
+import com.zero.android.network.service.AccessService
 import com.zero.android.network.service.UserService
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
@@ -23,6 +24,7 @@ constructor(
 	private val profileDao: ProfileDao,
 	private val preferences: AppPreferences,
 	private val userService: UserService,
+	private val accessService: AccessService,
 	private val connectionManager: ConnectionManager,
 	private val dataCleaner: DataCleaner,
 	private val logger: Logger
@@ -50,7 +52,7 @@ constructor(
 	}
 
 	private suspend fun getChatAccessToken(accessToken: String): String {
-		val chatAccess = userService.getChatAccessToken(hashMapOf("idToken" to accessToken))
+		val chatAccess = accessService.getChatAccessToken(hashMapOf("idToken" to accessToken))
 		return chatAccess.chatAccessToken
 	}
 

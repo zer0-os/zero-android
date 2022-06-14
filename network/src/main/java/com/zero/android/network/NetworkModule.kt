@@ -13,7 +13,7 @@ import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
+import retrofit2.Converter
 import javax.inject.Singleton
 
 @OptIn(ExperimentalSerializationApi::class)
@@ -43,15 +43,12 @@ object NetworkModule {
 
 	@Singleton
 	@Provides
-	fun provideRetrofit(client: OkHttpClient) =
-		Retrofit.Builder()
-			.baseUrl(BuildConfig.BASE_API_URL)
-			.client(client)
-			.addConverterFactory(
-				Json { ignoreUnknownKeys = true }
-					.asConverterFactory("application/json".toMediaType())
-			)
-			.build()
+	fun provideJsonConverter(): Converter.Factory =
+		Json { ignoreUnknownKeys = true }.asConverterFactory("application/json".toMediaType())
+
+	@Singleton
+	@Provides
+	fun provideRetrofit(client: OkHttpClient, json: Converter.Factory) = Retrofit(client, json)
 
 	@Singleton
 	@Provides
