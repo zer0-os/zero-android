@@ -1,7 +1,10 @@
 package com.zero.android.network.chat
 
 import com.zero.android.models.enums.ChannelType
-import com.zero.android.network.model.*
+import com.zero.android.network.model.ApiChannel
+import com.zero.android.network.model.ApiGroupChannel
+import com.zero.android.network.model.ApiMember
+import com.zero.android.network.model.ApiMessage
 import com.zero.android.network.model.events.ApiMessageReactionEvent
 
 interface ChatListener {
@@ -19,31 +22,27 @@ interface ChatListener {
 
 	fun onReactionUpdated(channel: ApiChannel, event: ApiMessageReactionEvent) {}
 
-	fun onReadReceiptUpdated(channel: ApiGroupChannel) {}
+	fun onReadReceiptUpdated(channel: ApiChannel) {}
 
-	fun onDeliveryReceiptUpdated(channel: ApiGroupChannel) {}
+	fun onDeliveryReceiptUpdated(channel: ApiChannel) {}
 
-	fun onTypingStatusUpdated(channel: ApiGroupChannel) {}
+	fun onTypingStatusUpdated(channel: ApiChannel) {}
 
 	fun onUserReceivedInvitation(
-		channel: ApiGroupChannel,
+		channel: ApiChannel,
 		inviter: ApiMember?,
 		invitees: List<ApiMember?>?
 	) {}
 
-	fun onUserJoined(channel: ApiGroupChannel, user: ApiMember?) {}
+	fun onUserJoined(channel: ApiChannel, user: ApiMember?) {}
 
-	fun onUserDeclinedInvitation(
-		channel: ApiGroupChannel,
-		inviter: ApiMember?,
-		invitee: ApiMember?
-	) {}
+	fun onUserDeclinedInvitation(channel: ApiChannel, inviter: ApiMember?, invitee: ApiMember?) {}
 
-	fun onUserLeft(channel: ApiGroupChannel, user: ApiMember?) {}
+	fun onUserLeft(channel: ApiChannel, user: ApiMember?) {}
 
-	fun onUserEntered(channel: ApiOpenChannel, user: ApiMember?) {}
+	fun onUserEntered(channel: ApiGroupChannel, user: ApiMember?) {}
 
-	fun onUserExited(channel: ApiOpenChannel, user: ApiMember?) {}
+	fun onUserExited(channel: ApiGroupChannel, user: ApiMember?) {}
 
 	fun onUserMuted(channel: ApiChannel, user: ApiMember?) {}
 
@@ -69,11 +68,11 @@ interface ChatListener {
 
 	fun onMetaCountersDeleted(channel: ApiChannel, keys: List<String>?) {}
 
-	fun onChannelHidden(channel: ApiGroupChannel) {}
+	fun onChannelHidden(channel: ApiChannel) {}
 
 	fun onOperatorUpdated(channel: ApiChannel) {}
 
-	fun onChannelMemberCountChanged(ApiGroupChannels: List<ApiGroupChannel>?) {}
+	fun onChannelMemberCountChanged(ApiChannels: List<ApiChannel>?) {}
 
-	fun onChannelParticipantCountChanged(openChannels: List<ApiOpenChannel>?) {}
+	fun onChannelParticipantCountChanged(openChannels: List<ApiGroupChannel>?) {}
 }

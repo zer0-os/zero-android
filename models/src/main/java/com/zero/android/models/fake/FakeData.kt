@@ -20,7 +20,7 @@ object FakeData {
 
 	fun Channel(url: String = "url", name: String = "Channel Name", unread: Int = 1) =
 		GroupChannel(
-			url = url,
+			id = url,
 			name = name,
 			createdAt = 0,
 			memberCount = 2,

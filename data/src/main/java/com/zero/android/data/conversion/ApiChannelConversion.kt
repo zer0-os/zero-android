@@ -1,26 +1,28 @@
 package com.zero.android.data.conversion
 
+import com.zero.android.models.DirectChannel
 import com.zero.android.models.GroupChannel
-import com.zero.android.models.OpenChannel
+import com.zero.android.network.model.ApiDirectChannel
 import com.zero.android.network.model.ApiGroupChannel
-import com.zero.android.network.model.ApiOpenChannel
 
-internal fun ApiOpenChannel.toModel() =
-	OpenChannel(
-		url = url,
-		networkId = networkId,
-		name = name,
-		operators = operators.map { it.toModel() },
-		operatorCount = operatorCount,
+internal fun ApiDirectChannel.toModel() =
+	DirectChannel(
+		id = id,
+		members = members.map { it.toModel() },
+		memberCount = memberCount,
 		coverUrl = coverUrl,
+		lastMessage = lastMessage?.toModel(),
 		createdAt = createdAt,
 		data = data,
-		isTemporary = isTemporary
+		isTemporary = isTemporary,
+		unreadMentionCount = unreadMentionCount,
+		alerts = alerts,
+		accessCode = accessCode
 	)
 
 internal fun ApiGroupChannel.toModel() =
 	GroupChannel(
-		url = url,
+		id = id,
 		networkId = networkId,
 		name = name,
 		isSuper = isSuper,
@@ -32,13 +34,14 @@ internal fun ApiGroupChannel.toModel() =
 		unreadMessageCount = unreadMessageCount,
 		lastMessage = lastMessage?.toModel(),
 		createdAt = createdAt,
+		createdBy = createdBy?.toModel(),
 		coverUrl = coverUrl,
 		data = data,
 		isTemporary = isTemporary,
-		createdBy = createdBy?.toModel(),
 		alerts = alerts,
 		isPublic = isPublic,
 		isDiscoverable = isDiscoverable,
 		accessCode = accessCode,
-		messageLifeSeconds = messageLifeSeconds
+		messageLifeSeconds = messageLifeSeconds,
+		type = type
 	)

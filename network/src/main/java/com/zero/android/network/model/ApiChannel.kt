@@ -1,46 +1,51 @@
 package com.zero.android.network.model
 
 import com.zero.android.models.enums.AlertType
+import com.zero.android.models.enums.ChannelType
 import kotlinx.serialization.Serializable
 
 interface ApiChannel {
-	val url: String
-	val networkId: String?
-	val name: String
-	val operators: List<ApiMember>
-	val operatorCount: Int
+	val id: String
+	val members: List<ApiMember>
+	val memberCount: Int
 	val coverUrl: String?
 	val createdAt: Long
 	val data: String?
 	val isTemporary: Boolean
+	val unreadMentionCount: Int
+	val unreadMessageCount: Int
+	val lastMessage: ApiMessage?
+	val alerts: AlertType
+	val accessCode: String?
 }
 
 @Serializable
-data class ApiOpenChannel(
-	override val url: String,
-	override val networkId: String? = null,
-	override val name: String,
-	override val operators: List<ApiMember>,
-	override val operatorCount: Int,
+data class ApiDirectChannel(
+	override val id: String,
+	override val members: List<ApiMember>,
+	override val memberCount: Int,
 	override val coverUrl: String? = null,
+	override val lastMessage: ApiMessage? = null,
 	override val createdAt: Long,
 	override val data: String? = null,
-	override val isTemporary: Boolean = false
+	override val isTemporary: Boolean = false,
+	override val unreadMentionCount: Int = 0,
+	override val unreadMessageCount: Int = 0,
+	override val alerts: AlertType = AlertType.ALL,
+	override val accessCode: String? = null
 ) : ApiChannel
 
 @Serializable
 data class ApiGroupChannel(
-	override val url: String,
-	override val networkId: String? = null,
-	override val name: String,
-	override val operators: List<ApiMember>,
-	override val operatorCount: Int,
-	val members: List<ApiMember>,
-	val memberCount: Int,
-	val unreadMentionCount: Int,
-	val unreadMessageCount: Int,
+	override val id: String,
+	val networkId: String? = null,
+	val name: String,
+	val operators: List<ApiMember>,
+	val operatorCount: Int,
+	override val members: List<ApiMember>,
+	override val memberCount: Int,
 	override val coverUrl: String? = null,
-	val lastMessage: ApiMessage? = null,
+	override val lastMessage: ApiMessage? = null,
 	override val createdAt: Long,
 	override val data: String? = null,
 	override val isTemporary: Boolean = false,
@@ -48,7 +53,10 @@ data class ApiGroupChannel(
 	val isPublic: Boolean = false,
 	val isDiscoverable: Boolean = false,
 	val createdBy: ApiMember? = null,
-	val alerts: AlertType = AlertType.ALL,
+	override val alerts: AlertType = AlertType.ALL,
 	val messageLifeSeconds: Int = 0,
-	val accessCode: String? = null
+	override val accessCode: String? = null,
+	val type: ChannelType = ChannelType.GROUP,
+	override val unreadMentionCount: Int = 0,
+	override val unreadMessageCount: Int = 0
 ) : ApiChannel

@@ -4,6 +4,8 @@ import com.sendbird.android.BaseChannel
 import com.sendbird.android.GroupChannel
 import com.sendbird.android.OpenChannel
 import com.zero.android.models.Channel
+import com.zero.android.network.chat.conversion.isGroupChannel
+import com.zero.android.network.chat.conversion.isOpenChannel
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -11,8 +13,8 @@ import kotlin.coroutines.resumeWithException
 internal abstract class SendBirdBaseService {
 
 	protected suspend fun getChannel(channel: Channel): BaseChannel {
-		if (channel is com.zero.android.models.OpenChannel) return openChannel(channel.url)
-		else if (channel is com.zero.android.models.GroupChannel) return groupChannel(channel.url)
+		if (channel.isOpenChannel()) return openChannel(channel.id)
+		else if (channel.isGroupChannel()) return groupChannel(channel.id)
 		throw IllegalStateException("not handled")
 	}
 
