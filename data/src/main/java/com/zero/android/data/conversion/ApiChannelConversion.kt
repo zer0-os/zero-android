@@ -13,11 +13,13 @@ internal fun ApiDirectChannel.toModel() =
 		coverUrl = coverUrl,
 		lastMessage = lastMessage?.toModel(),
 		createdAt = createdAt,
-		data = data,
 		isTemporary = isTemporary,
 		unreadMentionCount = unreadMentionCount,
 		alerts = alerts,
-		accessCode = accessCode
+		accessCode = accessCode,
+		isAdminOnly = properties?.isAdminOnly ?: false,
+		telegramChatId = properties?.telegramChatId,
+		discordChatId = properties?.discordChatId
 	)
 
 internal fun ApiGroupChannel.toModel() =
@@ -36,7 +38,9 @@ internal fun ApiGroupChannel.toModel() =
 		createdAt = createdAt,
 		createdBy = createdBy?.toModel(),
 		coverUrl = coverUrl,
-		data = data,
+		isAdminOnly = properties?.isAdminOnly ?: false,
+		telegramChatId = properties?.telegramChatId,
+		discordChatId = properties?.discordChatId,
 		isTemporary = isTemporary,
 		alerts = alerts,
 		isPublic = isPublic,

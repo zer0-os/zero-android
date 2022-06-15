@@ -9,7 +9,6 @@ interface Channel {
 	val memberCount: Int
 	val coverUrl: String?
 	val createdAt: Long
-	val data: String?
 	val isTemporary: Boolean
 	val unreadMentionCount: Int
 	val unreadMessageCount: Int
@@ -17,6 +16,9 @@ interface Channel {
 	val messageLifeSeconds: Int
 	val alerts: AlertType
 	val accessCode: String?
+	val isAdminOnly: Boolean
+	val telegramChatId: String?
+	val discordChatId: String?
 }
 
 data class DirectChannel(
@@ -26,13 +28,15 @@ data class DirectChannel(
 	override val coverUrl: String? = null,
 	override val lastMessage: Message? = null,
 	override val createdAt: Long,
-	override val data: String? = null,
 	override val isTemporary: Boolean = false,
 	override val unreadMentionCount: Int = 0,
 	override val unreadMessageCount: Int = 0,
 	override val messageLifeSeconds: Int = 0,
 	override val alerts: AlertType = AlertType.ALL,
-	override val accessCode: String? = null
+	override val accessCode: String? = null,
+	override val isAdminOnly: Boolean = false,
+	override val telegramChatId: String? = null,
+	override val discordChatId: String? = null
 ) : Channel
 
 data class GroupChannel(
@@ -46,7 +50,6 @@ data class GroupChannel(
 	override val coverUrl: String? = null,
 	override val lastMessage: Message? = null,
 	override val createdAt: Long,
-	override val data: String? = null,
 	override val isTemporary: Boolean = false,
 	val isSuper: Boolean = false,
 	val isPublic: Boolean = false,
@@ -57,5 +60,15 @@ data class GroupChannel(
 	override val accessCode: String? = null,
 	val type: ChannelType = ChannelType.GROUP,
 	override val unreadMentionCount: Int = 0,
-	override val unreadMessageCount: Int = 0
-) : Channel
+	override val unreadMessageCount: Int = 0,
+	override val isAdminOnly: Boolean = false,
+	override val telegramChatId: String? = null,
+	override val discordChatId: String? = null
+) : Channel {
+
+	val hasDiscordChannel
+		get() = discordChatId != null
+
+	val hasTelegramChannel
+		get() = telegramChatId != null
+}

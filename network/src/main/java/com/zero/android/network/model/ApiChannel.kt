@@ -10,7 +10,7 @@ interface ApiChannel {
 	val memberCount: Int
 	val coverUrl: String?
 	val createdAt: Long
-	val data: String?
+	val properties: ApiChannelProperties?
 	val isTemporary: Boolean
 	val unreadMentionCount: Int
 	val unreadMessageCount: Int
@@ -20,6 +20,13 @@ interface ApiChannel {
 }
 
 @Serializable
+data class ApiChannelProperties(
+	val isAdminOnly: Boolean = false,
+	val telegramChatId: String? = null,
+	val discordChatId: String? = null
+)
+
+@Serializable
 data class ApiDirectChannel(
 	override val id: String,
 	override val members: List<ApiMember>,
@@ -27,7 +34,7 @@ data class ApiDirectChannel(
 	override val coverUrl: String? = null,
 	override val lastMessage: ApiMessage? = null,
 	override val createdAt: Long,
-	override val data: String? = null,
+	override val properties: ApiChannelProperties? = null,
 	override val isTemporary: Boolean = false,
 	override val unreadMentionCount: Int = 0,
 	override val unreadMessageCount: Int = 0,
@@ -47,7 +54,7 @@ data class ApiGroupChannel(
 	override val coverUrl: String? = null,
 	override val lastMessage: ApiMessage? = null,
 	override val createdAt: Long,
-	override val data: String? = null,
+	override val properties: ApiChannelProperties? = null,
 	override val isTemporary: Boolean = false,
 	val isSuper: Boolean = false,
 	val isPublic: Boolean = false,
