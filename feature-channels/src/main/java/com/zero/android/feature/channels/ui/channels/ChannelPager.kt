@@ -27,7 +27,6 @@ import com.zero.android.common.extensions.toDate
 import com.zero.android.common.extensions.toMessageDateFormat
 import com.zero.android.models.Channel
 import com.zero.android.models.GroupChannel
-import com.zero.android.models.fake.channel.ChannelRowMessage
 import com.zero.android.ui.theme.AppTheme
 import com.zero.android.ui.theme.Typography
 
@@ -36,7 +35,7 @@ import com.zero.android.ui.theme.Typography
 fun ChannelPager(
     pagerState: PagerState,
     channelUiState: ChannelUiState,
-    onClick: (ChannelRowMessage) -> Unit,
+    onClick: (Channel) -> Unit,
 ) {
     HorizontalPager(
         state = pagerState,

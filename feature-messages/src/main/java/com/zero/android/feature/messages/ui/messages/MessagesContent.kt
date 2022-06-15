@@ -1,4 +1,4 @@
-package com.zero.android.feature.messages.ui.conversation
+package com.zero.android.feature.messages.ui.messages
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -20,22 +20,23 @@ import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
-import com.zero.android.feature.messages.helper.ConversationUiState
-import com.zero.android.feature.messages.helper.JumpToBottom
+import com.zero.android.common.extensions.toDate
+import com.zero.android.common.extensions.toMessageDateFormat
 import com.zero.android.feature.messages.helper.SymbolAnnotationType
 import com.zero.android.feature.messages.helper.messageFormatter
-import com.zero.android.models.fake.conversationMessage.Message
+import com.zero.android.models.Member
+import com.zero.android.models.Message
+import com.zero.android.ui.components.JumpToBottom
 import com.zero.android.ui.theme.AppTheme
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ConversationContent(uiState: ConversationUiState, modifier: Modifier = Modifier) {
+fun MessagesContent(uiState: MessagesUiState, modifier: Modifier = Modifier) {
     val authorMe = "Me"
     val timeNow = "Now"
 
@@ -75,9 +76,7 @@ fun ConversationContent(uiState: ConversationUiState, modifier: Modifier = Modif
                 )
                 UserInputPanel(
                     onMessageSent = { content ->
-                        uiState.addMessage(
-                            Message(authorMe, content, timeNow)
-                        )
+                        //uiState.addMessage(Message())
                     },
                     resetScroll = {
                         scope.launch {
@@ -129,7 +128,7 @@ fun Messages(messages: List<Message>, scrollState: LazyListState, modifier: Modi
                 item {
                     Message(
                         msg = content,
-                        isUserMe = content.author == authorMe,
+                        isUserMe = content.author.name == authorMe,
                         isFirstMessageByAuthor = isFirstMessageByAuthor,
                         isLastMessageByAuthor = isLastMessageByAuthor,
                         onAuthorClick = {
@@ -162,7 +161,7 @@ fun Messages(messages: List<Message>, scrollState: LazyListState, modifier: Modi
 
 @Composable
 fun Message(
-    onAuthorClick: (String) -> Unit,
+    onAuthorClick: (Member) -> Unit,
     msg: Message,
     isUserMe: Boolean,
     isFirstMessageByAuthor: Boolean,
@@ -189,7 +188,7 @@ fun Message(
                     .border(3.dp, MaterialTheme.colorScheme.surface, CircleShape)
                     .clip(CircleShape)
                     .align(Alignment.Top),
-                painter = rememberAsyncImagePainter(msg.authorImage),
+                painter = rememberAsyncImagePainter(msg.author.profileUrl),
                 contentScale = ContentScale.Crop,
                 contentDescription = null
             )
@@ -216,7 +215,7 @@ fun AuthorAndTextMessage(
     isUserMe: Boolean,
     isFirstMessageByAuthor: Boolean,
     isLastMessageByAuthor: Boolean,
-    authorClicked: (String) -> Unit,
+    authorClicked: (Member) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
@@ -239,7 +238,7 @@ private fun AuthorNameTimestamp(msg: Message) {
     // Combine author and timestamp for a11y.
     Row(modifier = Modifier.semantics(mergeDescendants = true) {}) {
         Text(
-            text = msg.author,
+            text = msg.author.name ?: "",
             style = MaterialTheme.typography.titleMedium,
             modifier =
             Modifier
@@ -248,7 +247,7 @@ private fun AuthorNameTimestamp(msg: Message) {
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-            text = msg.timestamp,
+            text = msg.updatedAt.toDate().toMessageDateFormat(),
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.alignBy(LastBaseline),
             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -287,7 +286,7 @@ private fun RowScope.DayHeaderLine() {
 }
 
 @Composable
-fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) -> Unit) {
+fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (Member) -> Unit) {
     val backgroundBubbleColor =
         if (isUserMe) {
             MaterialTheme.colorScheme.primary
@@ -300,11 +299,11 @@ fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) 
             ClickableMessage(message = message, isUserMe = isUserMe, authorClicked = authorClicked)
         }
 
-        message.image?.let {
+        message.fileUrl?.let {
             Spacer(modifier = Modifier.height(4.dp))
             Surface(color = backgroundBubbleColor, shape = ChatBubbleShape) {
                 Image(
-                    painter = painterResource(it),
+                    painter = rememberAsyncImagePainter(it),
                     contentScale = ContentScale.Fit,
                     modifier = Modifier.size(160.dp),
                     contentDescription = "cd_attached_image"
@@ -315,10 +314,10 @@ fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (String) 
 }
 
 @Composable
-fun ClickableMessage(message: Message, isUserMe: Boolean, authorClicked: (String) -> Unit) {
+fun ClickableMessage(message: Message, isUserMe: Boolean, authorClicked: (Member) -> Unit) {
     val uriHandler = LocalUriHandler.current
 
-    val styledMessage = messageFormatter(text = message.content, primary = isUserMe)
+    val styledMessage = messageFormatter(text = message.message ?: "", primary = isUserMe)
 
     ClickableText(
         text = styledMessage,
@@ -329,7 +328,7 @@ fun ClickableMessage(message: Message, isUserMe: Boolean, authorClicked: (String
                 ?.let { annotation ->
                     when (annotation.tag) {
                         SymbolAnnotationType.LINK.name -> uriHandler.openUri(annotation.item)
-                        SymbolAnnotationType.PERSON.name -> authorClicked(annotation.item)
+                        SymbolAnnotationType.PERSON.name -> authorClicked(message.author)
                         else -> Unit
                     }
                 }

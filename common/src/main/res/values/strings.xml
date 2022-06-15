@@ -9,4 +9,7 @@
     <string name="invite_members">Invite Members</string>
     <string name="my_worlds">My Worlds</string>
     <string name="create_a_world">Create a World</string>
+
+    <string name="write_your_message">Write your Message</string>
+    <string name="latest_messages">Latest Messages</string>
 </resources>

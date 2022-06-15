@@ -1,9 +1,9 @@
-package com.zero.android.feature.messages.helper
+package com.zero.android.feature.messages.ui.messages
 
 import androidx.compose.runtime.mutableStateListOf
-import com.zero.android.models.fake.conversationMessage.Message
+import com.zero.android.models.Message
 
-class ConversationUiState(
+class MessagesUiState(
     val channelName: String,
     val channelMembers: Int,
     initialMessages: List<Message>

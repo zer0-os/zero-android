@@ -1,4 +1,4 @@
-package com.zero.android.feature.messages.ui.conversation
+package com.zero.android.feature.messages.ui.messages
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
@@ -29,9 +29,9 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.zero.android.common.R
-import com.zero.android.feature.messages.helper.BackPressHandler
 import com.zero.android.ui.theme.AppTheme
 import com.zero.android.ui.theme.Typography
+import com.zero.android.ui.util.BackHandler
 
 enum class InputSelector {
     TEXT,
@@ -61,7 +61,7 @@ fun UserInputPanel(
 
     // Intercept back navigation if there's a InputSelector visible
     if (currentInputSelector != InputSelector.TEXT) {
-        BackPressHandler(onBackPressed = dismissKeyboard)
+        BackHandler(onBack = dismissKeyboard)
     }
 
     var textState by remember { mutableStateOf(TextFieldValue()) }
@@ -145,7 +145,7 @@ private fun UserInputText(
             value = textFieldValue.text,
             onValueChange = { onTextChanged(TextFieldValue(it)) },
             placeholder = {
-                Text(stringResource(com.zero.android.feature.messages.R.string.write_your_message))
+                Text(stringResource(R.string.write_your_message))
             },
             textStyle = Typography.bodyMedium,
             modifier = Modifier
