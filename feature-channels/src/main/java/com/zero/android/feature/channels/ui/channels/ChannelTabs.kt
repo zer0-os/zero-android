@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import com.zero.android.models.fake.ChannelTab
-import com.zero.android.models.fake.FakeData
 import com.zero.android.ui.theme.AppTheme
 import com.zero.android.ui.theme.Typography
 import kotlinx.coroutines.CoroutineScope
@@ -30,8 +29,7 @@ import kotlinx.coroutines.launch
 fun ChannelTabLayout(
     pagerState: PagerState,
     coroutineScope: CoroutineScope,
-    tabs: List<ChannelTab> = FakeData.channelTabs(),
-    onTabClick: (ChannelTab) -> Unit,
+    tabs: List<ChannelTab>,
 ) {
     val tabIndex = pagerState.currentPage
 

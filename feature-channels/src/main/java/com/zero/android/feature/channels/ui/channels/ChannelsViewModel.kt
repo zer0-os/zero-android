@@ -35,7 +35,9 @@ class ChannelsViewModel @Inject constructor(private val channelRepository: Chann
 
 	private fun loadChannels() {
 		ioScope.launch {
-			channelRepository.getGroupChannels(network.id).asResult().collectLatest { channels.emit(it) }
+			channelRepository.getGroupChannels(network.id).asResult().collectLatest {
+				channels.emit(it)
+			}
 		}
 	}
 }

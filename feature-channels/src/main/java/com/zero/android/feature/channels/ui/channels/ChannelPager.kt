@@ -23,7 +23,10 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.zero.android.common.R
-import com.zero.android.models.fake.ChannelTab
+import com.zero.android.common.extensions.toDate
+import com.zero.android.common.extensions.toMessageDateFormat
+import com.zero.android.models.Channel
+import com.zero.android.models.GroupChannel
 import com.zero.android.models.fake.channel.ChannelRowMessage
 import com.zero.android.ui.theme.AppTheme
 import com.zero.android.ui.theme.Typography
@@ -32,20 +35,23 @@ import com.zero.android.ui.theme.Typography
 @Composable
 fun ChannelPager(
     pagerState: PagerState,
-    tabs: List<ChannelTab>,
-    messages: List<ChannelRowMessage>,
+    channelUiState: ChannelUiState,
     onClick: (ChannelRowMessage) -> Unit,
 ) {
     HorizontalPager(
         state = pagerState,
-        count = tabs.size
-    ) {
+        count = channelUiState.channelCategories.size,
+    ) { index ->
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
             LazyColumn {
-                items(messages) { message ->
-                    ChannelsItemsList(message)
+                channelUiState.groupMessages(
+                    channelUiState.channelCategories[index].name
+                )?.let {
+                    items(it) { channel ->
+                        ChannelsItemsList(channel)
+                    }
                 }
             }
         }
@@ -53,7 +59,8 @@ fun ChannelPager(
 }
 
 @Composable
-fun ChannelsItemsList(message: ChannelRowMessage) {
+fun ChannelsItemsList(channel: Channel) {
+    val groupChannel = channel as GroupChannel
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
@@ -63,8 +70,8 @@ fun ChannelsItemsList(message: ChannelRowMessage) {
         val (image, textTop, textBottom, symbols, dateTime, unreadCount) = createRefs()
 
         Image(
-            painter = rememberAsyncImagePainter(message.image),
-            contentDescription = message.id.toString(),
+            painter = rememberAsyncImagePainter(groupChannel.coverUrl),
+            contentDescription = groupChannel.id,
             modifier = Modifier
                 .size(64.dp)
                 .clip(CircleShape)
@@ -77,7 +84,7 @@ fun ChannelsItemsList(message: ChannelRowMessage) {
             contentScale = ContentScale.Fit,
         )
         Text(
-            text = message.message,
+            text = groupChannel.name,
             color = AppTheme.colors.colorTextPrimary,
             style = Typography.bodyLarge,
             fontWeight = FontWeight.Medium,
@@ -89,7 +96,7 @@ fun ChannelsItemsList(message: ChannelRowMessage) {
             }
         )
         Text(
-            text = message.description,
+            text = groupChannel.lastMessage?.message ?: "",
             color = AppTheme.colors.colorTextSecondary,
             style = Typography.bodyMedium,
             modifier = Modifier.constrainAs(textBottom) {
@@ -110,7 +117,7 @@ fun ChannelsItemsList(message: ChannelRowMessage) {
                 bottom.linkTo(textTop.bottom)
             }
         ) {
-            if (message.isVector) {
+            if (groupChannel.isTelegramMessage) {
                 Image(
                     painter = painterResource(R.drawable.ic_vector),
                     contentDescription = "",
@@ -119,7 +126,7 @@ fun ChannelsItemsList(message: ChannelRowMessage) {
                 )
                 Spacer(modifier = Modifier.padding(4.dp))
             }
-            if (message.isDiscord) {
+            if (groupChannel.isDiscord) {
                 Image(
                     painter = painterResource(R.drawable.ic_discord),
                     contentDescription = "",
@@ -129,7 +136,7 @@ fun ChannelsItemsList(message: ChannelRowMessage) {
             }
         }
         Text(
-            text = message.dateTime,
+            text = groupChannel.lastMessage?.updatedAt?.toDate()?.toMessageDateFormat() ?: "",
             color = AppTheme.colors.colorTextSecondary,
             style = Typography.bodyMedium,
             fontWeight = FontWeight.Medium,
@@ -139,10 +146,10 @@ fun ChannelsItemsList(message: ChannelRowMessage) {
                 end.linkTo(parent.end)
             }
         )
-        if (message.unreadCount > 0) {
+        if (groupChannel.unreadMessageCount > 0) {
             Text(
                 color = AppTheme.colors.surfaceInverse,
-                text = message.unreadCount.toString(),
+                text = groupChannel.unreadMessageCount.toString(),
                 modifier = Modifier
                     .background(
                         color = AppTheme.colors.glow,
