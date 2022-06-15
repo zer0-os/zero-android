@@ -1,4 +1,4 @@
-package com.zero.android.ui
+package com.zero.android.ui.home
 
 import androidx.lifecycle.viewModelScope
 import com.zero.android.common.ui.Result
@@ -8,7 +8,6 @@ import com.zero.android.data.repository.NetworkRepository
 import com.zero.android.feature.feed.navigation.FeedDestination
 import com.zero.android.models.Network
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
@@ -30,7 +29,7 @@ class HomeViewModel @Inject constructor(private val networkRepository: NetworkRe
 	}
 
 	private fun loadNetworks() {
-		viewModelScope.launch(Dispatchers.IO + exceptionHandler) {
+		ioScope.launch {
 			allNetworks = null
 			networkRepository.getNetworks().asResult().collectLatest { result ->
 				if (result is Result.Loading) {

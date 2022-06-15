@@ -8,5 +8,7 @@ import kotlinx.coroutines.launch
 inline fun <T> withSameScope(crossinline block: suspend () -> T) =
 	CoroutineScope(Dispatchers.Unconfined).launch { block() }
 
-inline fun <T> FlowCollector<T>.emitInScope(value: T) =
-	CoroutineScope(Dispatchers.Unconfined).launch { emit(value) }
+inline fun <T> FlowCollector<T>.emitInScope(
+	value: T,
+	scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined)
+) = scope.launch { emit(value) }

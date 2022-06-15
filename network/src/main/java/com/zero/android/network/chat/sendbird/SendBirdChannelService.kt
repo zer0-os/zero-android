@@ -2,7 +2,6 @@ package com.zero.android.network.chat.sendbird
 
 import com.sendbird.android.GroupChannel
 import com.sendbird.android.OpenChannel
-import com.zero.android.common.extensions.emitInScope
 import com.zero.android.common.extensions.withSameScope
 import com.zero.android.common.system.Logger
 import com.zero.android.models.Channel
@@ -11,7 +10,7 @@ import com.zero.android.network.chat.conversion.encodeToNetworkId
 import com.zero.android.network.chat.conversion.toApi
 import com.zero.android.network.chat.conversion.toParams
 import com.zero.android.network.service.ChannelService
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -19,7 +18,7 @@ import kotlin.coroutines.resumeWithException
 internal class SendBirdChannelService(private val logger: Logger) :
 	SendBirdBaseService(), ChannelService {
 
-	override suspend fun getChannels(networkId: String, type: ChannelType) = flow {
+	override suspend fun getChannels(networkId: String, type: ChannelType) = callbackFlow {
 		if (type == ChannelType.OPEN) {
 			val query =
 				OpenChannel.createOpenChannelListQuery().apply {
@@ -30,7 +29,7 @@ internal class SendBirdChannelService(private val logger: Logger) :
 					logger.e("Failed to get channels", e)
 					throw e
 				}
-				emitInScope(channels.map { it.toApi() })
+				trySend(channels.map { it.toApi() })
 			}
 		} else if (type == ChannelType.GROUP) {
 			val query =
@@ -42,19 +41,19 @@ internal class SendBirdChannelService(private val logger: Logger) :
 					logger.e("Failed to get channels", e)
 					throw e
 				}
-				emitInScope(channels.map { it.toApi() })
+				trySend(channels.map { it.toApi() })
 			}
 		}
 	}
 
-	override suspend fun createChannel(networkId: String, channel: Channel) = flow {
+	override suspend fun createChannel(networkId: String, channel: Channel) = callbackFlow {
 		if (channel is com.zero.android.models.OpenChannel) {
 			OpenChannel.createChannel(channel.toParams()) { openChannel, e ->
 				if (e != null) {
 					logger.e("Failed to create channel", e)
 					throw e
 				}
-				emitInScope(openChannel.toApi())
+				trySend(openChannel.toApi())
 			}
 		} else if (channel is com.zero.android.models.GroupChannel) {
 			GroupChannel.createChannel(channel.toParams()) { groupChannel, e ->
@@ -62,19 +61,19 @@ internal class SendBirdChannelService(private val logger: Logger) :
 					logger.e("Failed to create channel", e)
 					throw e
 				}
-				emitInScope(groupChannel.toApi())
+				trySend(groupChannel.toApi())
 			}
 		}
 	}
 
-	override suspend fun getChannel(url: String, type: ChannelType) = flow {
+	override suspend fun getChannel(url: String, type: ChannelType) = callbackFlow {
 		if (type == ChannelType.OPEN) {
 			OpenChannel.getChannel(url) { openChannel, e ->
 				if (e != null) {
 					logger.e("Failed to get channel", e)
 					throw e
 				}
-				emitInScope(openChannel.toApi())
+				trySend(openChannel.toApi())
 			}
 		} else if (type == ChannelType.GROUP) {
 			GroupChannel.getChannel(url) { groupChannel, e ->
@@ -82,7 +81,7 @@ internal class SendBirdChannelService(private val logger: Logger) :
 					logger.e("Failed to get channel", e)
 					throw e
 				}
-				emitInScope(groupChannel.toApi())
+				trySend(groupChannel.toApi())
 			}
 		}
 	}

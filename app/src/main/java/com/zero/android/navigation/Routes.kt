@@ -15,14 +15,15 @@ import com.zero.android.feature.messages.navigation.MessagesDestination
 import com.zero.android.feature.messages.ui.messages.MessagesRoute
 import com.zero.android.feature.people.MembersRoute
 import com.zero.android.feature.people.navigation.MembersDestination
+import com.zero.android.models.Network
 
 internal fun NavGraphBuilder.onboardGraph(controller: NavController) {
 	authGraph(onLogin = { controller.navigate(HomeDestination.route) { popUpTo(0) } })
 	homeGraph(onLogout = { controller.navigate(AuthDestination.route) { popUpTo(0) } })
 }
 
-internal fun NavGraphBuilder.appBottomNavGraph(controller: NavController) {
-	composable(route = ChannelsDestination.route) { ChannelsRoute() }
+internal fun NavGraphBuilder.appBottomNavGraph(controller: NavController, network: Network?) {
+	composable(route = ChannelsDestination.route) { ChannelsRoute(network = network) }
 	composable(route = MembersDestination.route) { MembersRoute() }
 	composable(route = FeedDestination.route) { FeedRoute() }
 	composable(route = NotificationsDestination.route) { NotificationsRoute() }

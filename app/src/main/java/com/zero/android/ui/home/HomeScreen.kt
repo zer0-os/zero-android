@@ -18,7 +18,6 @@ import com.zero.android.common.ui.Result
 import com.zero.android.feature.account.navigation.ProfileDestination
 import com.zero.android.models.Network
 import com.zero.android.navigation.HomeNavHost
-import com.zero.android.ui.HomeViewModel
 import com.zero.android.ui.appbar.AppBottomBar
 import com.zero.android.ui.appbar.AppTopBar
 import com.zero.android.ui.components.Background
@@ -108,6 +107,6 @@ fun HomeScreen(
 		},
 		drawerGesturesEnabled = scaffoldState.drawerState.isOpen
 	) {
-		Background { HomeNavHost(navController = navController) }
+		Background { HomeNavHost(navController = navController, network = currentNetwork) }
 	}
 }

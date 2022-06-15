@@ -1,7 +1,11 @@
 package com.zero.android.network.chat.sendbird
 
-import com.sendbird.android.*
-import com.zero.android.common.extensions.emitInScope
+import com.sendbird.android.FileMessageParams
+import com.sendbird.android.MessageListParams
+import com.sendbird.android.MessagePayloadFilter
+import com.sendbird.android.ReplyTypeFilter
+import com.sendbird.android.SendBird
+import com.sendbird.android.UserMessageParams
 import com.zero.android.common.extensions.withSameScope
 import com.zero.android.common.system.Logger
 import com.zero.android.models.Channel
@@ -11,9 +15,10 @@ import com.zero.android.network.chat.ChatListener
 import com.zero.android.network.chat.conversion.toApi
 import com.zero.android.network.chat.conversion.toMessage
 import com.zero.android.network.chat.conversion.toParams
+import com.zero.android.network.model.ApiMessage
 import com.zero.android.network.service.ChatService
 import com.zero.android.network.util.MESSAGES_PAGE_LIMIT
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -43,31 +48,33 @@ internal class SendBirdChatService(private val logger: Logger) :
 		SendBird.addChannelHandler(id, SendBirdChatListener(listener))
 	}
 
-	override suspend fun getMessages(channel: Channel, timestamp: Long) = flow {
-		val params = messageListParams(reverse = true)
-		getChannel(channel).getMessagesByMessageId(timestamp, params) { messages, e ->
-			if (e != null) {
-				logger.e(e)
-				throw e
-			} else {
-				emitInScope(messages?.map { it.toApi() } ?: emptyList())
+	override suspend fun getMessages(channel: Channel, timestamp: Long) =
+		callbackFlow<List<ApiMessage>> {
+			val params = messageListParams(reverse = true)
+			getChannel(channel).getMessagesByMessageId(timestamp, params) { messages, e ->
+				if (e != null) {
+					logger.e(e)
+					throw e
+				} else {
+					trySend(messages?.map { it.toApi() } ?: emptyList())
+				}
 			}
 		}
-	}
 
-	override suspend fun getMessagesTill(channel: Channel, id: String) = flow {
-		val params = messageListParams(reverse = true)
-		getChannel(channel).getMessagesByMessageId(id.toLong(), params) { messages, e ->
-			if (e != null) {
-				logger.e(e)
-				throw e
-			} else {
-				emitInScope(messages?.map { it.toApi() } ?: emptyList())
+	override suspend fun getMessagesTill(channel: Channel, id: String) =
+		callbackFlow<List<ApiMessage>> {
+			val params = messageListParams(reverse = true)
+			getChannel(channel).getMessagesByMessageId(id.toLong(), params) { messages, e ->
+				if (e != null) {
+					logger.e(e)
+					throw e
+				} else {
+					trySend(messages?.map { it.toApi() } ?: emptyList())
+				}
 			}
 		}
-	}
 
-	override suspend fun sendMessage(channel: Channel, message: DraftMessage) = flow {
+	override suspend fun sendMessage(channel: Channel, message: DraftMessage) = callbackFlow {
 		val params = message.toParams()
 		val sbChannel = getChannel(channel)
 		if (params is FileMessageParams) {
@@ -76,7 +83,7 @@ internal class SendBirdChatService(private val logger: Logger) :
 					logger.e("Failed to send file message", e)
 					throw e
 				}
-				emitInScope(fileMessage.toApi())
+				trySend(fileMessage.toApi())
 			}
 		} else if (params is UserMessageParams) {
 			sbChannel.sendUserMessage(params) { userMessage, e ->
@@ -84,7 +91,7 @@ internal class SendBirdChatService(private val logger: Logger) :
 					logger.e("Failed to send text message", e)
 					throw e
 				}
-				emitInScope(userMessage.toApi())
+				trySend(userMessage.toApi())
 			}
 		}
 	}
