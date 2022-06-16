@@ -16,16 +16,14 @@ internal fun ApiDirectChannel.toModel() =
 		isTemporary = isTemporary,
 		unreadMentionCount = unreadMentionCount,
 		alerts = alerts,
-		accessCode = accessCode,
-		isAdminOnly = properties?.isAdminOnly ?: false,
-		telegramChatId = properties?.telegramChatId,
-		discordChatId = properties?.discordChatId
+		accessCode = accessCode
 	)
 
 internal fun ApiGroupChannel.toModel() =
 	GroupChannel(
 		id = id,
 		networkId = networkId,
+		category = category,
 		name = name,
 		isSuper = isSuper,
 		operators = operators.map { it.toModel() },
@@ -47,5 +45,7 @@ internal fun ApiGroupChannel.toModel() =
 		isDiscoverable = isDiscoverable,
 		accessCode = accessCode,
 		messageLifeSeconds = messageLifeSeconds,
-		type = type
+		type = type,
+		accessType = accessType,
+		isVideoEnabled = isVideoEnabled
 	)

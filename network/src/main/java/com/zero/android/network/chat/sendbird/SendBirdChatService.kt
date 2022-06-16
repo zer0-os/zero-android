@@ -6,6 +6,7 @@ import com.sendbird.android.MessagePayloadFilter
 import com.sendbird.android.ReplyTypeFilter
 import com.sendbird.android.SendBird
 import com.sendbird.android.UserMessageParams
+import com.zero.android.common.extensions.callbackFlowWithAwait
 import com.zero.android.common.extensions.withSameScope
 import com.zero.android.common.system.Logger
 import com.zero.android.models.Channel
@@ -74,27 +75,28 @@ internal class SendBirdChatService(private val logger: Logger) :
 			}
 		}
 
-	override suspend fun sendMessage(channel: Channel, message: DraftMessage) = callbackFlow {
-		val params = message.toParams()
-		val sbChannel = getChannel(channel)
-		if (params is FileMessageParams) {
-			sbChannel.sendFileMessage(params) { fileMessage, e ->
-				if (e != null) {
-					logger.e("Failed to send file message", e)
-					throw e
+	override suspend fun sendMessage(channel: Channel, message: DraftMessage) =
+		callbackFlowWithAwait {
+			val params = message.toParams()
+			val sbChannel = getChannel(channel)
+			if (params is FileMessageParams) {
+				sbChannel.sendFileMessage(params) { fileMessage, e ->
+					if (e != null) {
+						logger.e("Failed to send file message", e)
+						throw e
+					}
+					trySend(fileMessage.toApi())
 				}
-				trySend(fileMessage.toApi())
-			}
-		} else if (params is UserMessageParams) {
-			sbChannel.sendUserMessage(params) { userMessage, e ->
-				if (e != null) {
-					logger.e("Failed to send text message", e)
-					throw e
+			} else if (params is UserMessageParams) {
+				sbChannel.sendUserMessage(params) { userMessage, e ->
+					if (e != null) {
+						logger.e("Failed to send text message", e)
+						throw e
+					}
+					trySend(userMessage.toApi())
 				}
-				trySend(userMessage.toApi())
 			}
 		}
-	}
 
 	override suspend fun replyMessage(channel: Channel, id: String, message: DraftMessage) =
 		sendMessage(channel, message.apply { parentMessageId = id })

@@ -22,6 +22,7 @@ object FakeData {
 		GroupChannel(
 			id = url,
 			name = name,
+			networkId = "",
 			createdAt = 0,
 			memberCount = 2,
 			members = listOf(Member("one"), Member("two")),

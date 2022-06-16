@@ -1,5 +1,6 @@
 package com.zero.android.models
 
+import com.zero.android.models.enums.AccessType
 import com.zero.android.models.enums.AlertType
 import com.zero.android.models.enums.ChannelType
 
@@ -16,10 +17,9 @@ interface Channel {
 	val messageLifeSeconds: Int
 	val alerts: AlertType
 	val accessCode: String?
-	val isAdminOnly: Boolean
-	val telegramChatId: String?
-	val discordChatId: String?
 }
+
+typealias ChannelCategory = String
 
 data class DirectChannel(
 	override val id: String,
@@ -33,15 +33,13 @@ data class DirectChannel(
 	override val unreadMessageCount: Int = 0,
 	override val messageLifeSeconds: Int = 0,
 	override val alerts: AlertType = AlertType.ALL,
-	override val accessCode: String? = null,
-	override val isAdminOnly: Boolean = false,
-	override val telegramChatId: String? = null,
-	override val discordChatId: String? = null
+	override val accessCode: String? = null
 ) : Channel
 
 data class GroupChannel(
 	override val id: String,
-	val networkId: String? = null,
+	val networkId: String,
+	val category: ChannelCategory? = null,
 	val name: String,
 	val operators: List<Member>,
 	val operatorCount: Int,
@@ -54,6 +52,7 @@ data class GroupChannel(
 	val isSuper: Boolean = false,
 	val isPublic: Boolean = false,
 	val isDiscoverable: Boolean = false,
+	val isVideoEnabled: Boolean = false,
 	val createdBy: Member? = null,
 	override val alerts: AlertType = AlertType.ALL,
 	override val messageLifeSeconds: Int = 0,
@@ -61,14 +60,15 @@ data class GroupChannel(
 	val type: ChannelType = ChannelType.GROUP,
 	override val unreadMentionCount: Int = 0,
 	override val unreadMessageCount: Int = 0,
-	override val isAdminOnly: Boolean = false,
-	override val telegramChatId: String? = null,
-	override val discordChatId: String? = null
+	val isAdminOnly: Boolean = false,
+	val telegramChatId: String? = null,
+	val discordChatId: String? = null,
+	val accessType: AccessType = AccessType.PUBLIC
 ) : Channel {
 
-	val hasDiscordChannel
+	val hasDiscordChannel: Boolean
 		get() = discordChatId != null
 
-	val hasTelegramChannel
+	val hasTelegramChannel: Boolean
 		get() = telegramChatId != null
 }

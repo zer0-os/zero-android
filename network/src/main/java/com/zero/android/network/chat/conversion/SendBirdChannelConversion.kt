@@ -9,6 +9,7 @@ import com.sendbird.android.OpenChannelParams
 import com.sendbird.android.SendBird
 import com.zero.android.models.Channel
 import com.zero.android.models.DirectChannel
+import com.zero.android.models.enums.AccessType
 import com.zero.android.models.enums.ChannelType
 import com.zero.android.models.enums.toAlertType
 import com.zero.android.models.enums.toChannelType
@@ -29,7 +30,7 @@ private fun getNetworkId(customType: String): String? {
 	return Regex(pattern = "network:([-a-zA-Z0-9]+)").matchEntire(customType)?.value
 }
 
-internal fun String.encodeToNetworkId() = "network:$this"
+internal fun String.encodeToNetworkId() = if (this.isNotEmpty()) "network:$this" else null
 
 internal val OpenChannel.networkId
 	get() = customType?.let { getNetworkId(it) }
@@ -49,7 +50,7 @@ internal fun Channel.isOpenChannel() =
 internal fun OpenChannel.toApi() =
 	ApiGroupChannel(
 		id = url,
-		networkId = networkId,
+		networkId = networkId ?: "",
 		name = name,
 		members = operators.map { it.toApi() },
 		memberCount = participantCount,
@@ -73,7 +74,6 @@ internal fun GroupChannel.toDirectApi(): ApiDirectChannel {
 		lastMessage = lastMessage.toApi(),
 		createdAt = createdAt,
 		coverUrl = coverUrl,
-		properties = Json.decodeFromString<ApiChannelProperties>(data),
 		isTemporary = isEphemeral,
 		alerts = myPushTriggerOption.toType()
 	)
@@ -81,9 +81,11 @@ internal fun GroupChannel.toDirectApi(): ApiDirectChannel {
 
 internal fun GroupChannel.toGroupApi(): ApiGroupChannel {
 	val operators = members.filter { it.role == Member.Role.OPERATOR }.map { it.toApi() }
+	val properties = Json { ignoreUnknownKeys = true }.decodeFromString<ApiChannelProperties?>(data)
 	return ApiGroupChannel(
 		id = url,
-		networkId = networkId,
+		networkId = networkId ?: "",
+		category = properties?.category,
 		name = name,
 		isSuper = isSuper,
 		operators = operators,
@@ -95,12 +97,14 @@ internal fun GroupChannel.toGroupApi(): ApiGroupChannel {
 		lastMessage = lastMessage.toApi(),
 		createdAt = createdAt,
 		coverUrl = coverUrl,
-		properties = Json.decodeFromString<ApiChannelProperties>(data),
+		properties = properties,
 		isTemporary = isEphemeral,
 		createdBy = creator.toApi(),
 		alerts = myPushTriggerOption.toType(),
 		isPublic = isPublic && isDiscoverable,
-		isDiscoverable = isDiscoverable
+		isDiscoverable = isDiscoverable,
+		isVideoEnabled = properties?.isVideoEnabled == true,
+		accessType = properties?.groupChannelType ?: AccessType.PUBLIC
 	)
 }
 
@@ -109,7 +113,7 @@ internal fun DirectChannel.toParams() =
 		setName(members.map { it.name }.joinToString(","))
 		setChannelUrl(id)
 		setCoverUrl(coverUrl)
-		setData(Json.encodeToString(toProperties()))
+		setData(null)
 		setCustomType(null)
 
 		setSuper(false)
@@ -127,7 +131,7 @@ internal fun com.zero.android.models.GroupChannel.toOpenParams() =
 		setChannelUrl(id)
 		setCoverUrl(coverUrl)
 		setData(Json.encodeToString(toProperties()))
-		setCustomType(networkId?.encodeToNetworkId())
+		setCustomType(networkId.encodeToNetworkId())
 	}
 
 internal fun com.zero.android.models.GroupChannel.toParams() =
@@ -136,7 +140,7 @@ internal fun com.zero.android.models.GroupChannel.toParams() =
 		setChannelUrl(id)
 		setCoverUrl(coverUrl)
 		setData(Json.encodeToString(toProperties()))
-		setCustomType(networkId?.encodeToNetworkId())
+		setCustomType(networkId.encodeToNetworkId())
 
 		setSuper(isSuper)
 		setPublic(isPublic)
@@ -147,11 +151,14 @@ internal fun com.zero.android.models.GroupChannel.toParams() =
 		setMessageSurvivalSeconds(messageLifeSeconds)
 	}
 
-private fun Channel.toProperties() =
+private fun com.zero.android.models.GroupChannel.toProperties() =
 	ApiChannelProperties(
+		category = category,
 		isAdminOnly = isAdminOnly,
 		telegramChatId = telegramChatId,
-		discordChatId = discordChatId
+		discordChatId = discordChatId,
+		isVideoEnabled = isVideoEnabled,
+		groupChannelType = accessType
 	)
 
 internal fun BaseChannel.ChannelType.toType() = value().toChannelType()

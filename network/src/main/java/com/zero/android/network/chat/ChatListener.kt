@@ -56,11 +56,11 @@ interface ChatListener {
 
 	fun onChannelUnfrozen(channel: ApiChannel) {}
 
-	fun onMetaDataCreated(channel: ApiChannel, metaDataMap: Map<String, String?>?) {}
+	fun onMetadataCreated(channel: ApiChannel, metadataMap: Map<String, String?>?) {}
 
-	fun onMetaDataUpdated(channel: ApiChannel, metaDataMap: Map<String, String?>?) {}
+	fun onMetadataUpdated(channel: ApiChannel, metadataMap: Map<String, String?>?) {}
 
-	fun onMetaDataDeleted(channel: ApiChannel, keys: List<String?>?) {}
+	fun onMetadataDeleted(channel: ApiChannel, keys: List<String?>?) {}
 
 	fun onMetaCountersCreated(channel: ApiChannel, metaCounterMap: Map<String, Int?>?) {}
 

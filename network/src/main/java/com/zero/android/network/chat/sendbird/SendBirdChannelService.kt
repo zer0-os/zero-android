@@ -2,9 +2,11 @@ package com.zero.android.network.chat.sendbird
 
 import com.sendbird.android.GroupChannel
 import com.sendbird.android.OpenChannel
+import com.zero.android.common.extensions.callbackFlowWithAwait
 import com.zero.android.common.extensions.withSameScope
 import com.zero.android.common.system.Logger
 import com.zero.android.models.Channel
+import com.zero.android.models.ChannelCategory
 import com.zero.android.models.DirectChannel
 import com.zero.android.models.enums.ChannelType
 import com.zero.android.network.chat.conversion.encodeToNetworkId
@@ -16,7 +18,8 @@ import com.zero.android.network.chat.conversion.toGroupApi
 import com.zero.android.network.chat.conversion.toOpenParams
 import com.zero.android.network.chat.conversion.toParams
 import com.zero.android.network.service.ChannelService
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -24,35 +27,44 @@ import kotlin.coroutines.resumeWithException
 internal class SendBirdChannelService(private val logger: Logger) :
 	SendBirdBaseService(), ChannelService {
 
-	override suspend fun getGroupChannels(networkId: String, type: ChannelType) = callbackFlow {
-		if (type == ChannelType.OPEN) {
-			val query =
-				OpenChannel.createOpenChannelListQuery().apply {
-					setCustomTypeFilter(networkId.encodeToNetworkId())
-				}
-			query.next { channels, e ->
-				if (e != null) {
-					logger.e("Failed to get open channels", e)
-					throw e
-				}
-				trySend(channels.map { it.toApi() })
-			}
-		} else if (type == ChannelType.GROUP) {
-			val query =
-				GroupChannel.createMyGroupChannelListQuery().apply {
-					customTypeStartsWithFilter = networkId.encodeToNetworkId()
-				}
-			query.next { channels, e ->
-				if (e != null) {
-					logger.e("Failed to get group channels", e)
-					throw e
-				}
-				trySend(channels.map { it.toGroupApi() })
+	override suspend fun getCategories(networkId: String) =
+		flow<List<ChannelCategory>> {
+			getGroupChannels(networkId, ChannelType.GROUP).firstOrNull().let { channels ->
+				if (channels == null) emit(emptyList())
+				else emit(channels.filter { !it.category.isNullOrEmpty() }.map { it.category!! })
 			}
 		}
-	}
 
-	override suspend fun getDirectChannels() = callbackFlow {
+	override suspend fun getGroupChannels(networkId: String, type: ChannelType) =
+		callbackFlowWithAwait {
+			if (type == ChannelType.OPEN) {
+				val query =
+					OpenChannel.createOpenChannelListQuery().apply {
+						setCustomTypeFilter(networkId.encodeToNetworkId())
+					}
+				query.next { channels, e ->
+					if (e != null) {
+						logger.e("Failed to get open channels", e)
+						throw e
+					}
+					trySend(channels.map { it.toApi() })
+				}
+			} else if (type == ChannelType.GROUP) {
+				val query =
+					GroupChannel.createMyGroupChannelListQuery().apply {
+						customTypeStartsWithFilter = networkId.encodeToNetworkId()
+					}
+				query.next { channels, e ->
+					if (e != null) {
+						logger.e("Failed to get group channels", e)
+						throw e
+					}
+					trySend(channels.map { it.toGroupApi() })
+				}
+			}
+		}
+
+	override suspend fun getDirectChannels() = callbackFlowWithAwait {
 		GroupChannel.createMyGroupChannelListQuery().next { channels, e ->
 			if (e != null) {
 				logger.e("Failed to get direct channels", e)
@@ -62,7 +74,7 @@ internal class SendBirdChannelService(private val logger: Logger) :
 		}
 	}
 
-	override suspend fun createChannel(networkId: String, channel: Channel) = callbackFlow {
+	override suspend fun createChannel(networkId: String, channel: Channel) = callbackFlowWithAwait {
 		if (channel.isGroupChannel()) {
 			val params =
 				when (channel) {
@@ -91,7 +103,7 @@ internal class SendBirdChannelService(private val logger: Logger) :
 		}
 	}
 
-	override suspend fun getChannel(url: String, type: ChannelType) = callbackFlow {
+	override suspend fun getChannel(url: String, type: ChannelType) = callbackFlowWithAwait {
 		if (type == ChannelType.OPEN) {
 			OpenChannel.getChannel(url) { openChannel, e ->
 				if (e != null) {

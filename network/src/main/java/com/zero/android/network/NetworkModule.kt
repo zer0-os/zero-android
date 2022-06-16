@@ -41,10 +41,13 @@ object NetworkModule {
 			.addInterceptor(loggingInterceptor)
 			.build()
 
+	@Singleton @Provides
+	fun provideJson() = Json { ignoreUnknownKeys = true }
+
 	@Singleton
 	@Provides
-	fun provideJsonConverter(): Converter.Factory =
-		Json { ignoreUnknownKeys = true }.asConverterFactory("application/json".toMediaType())
+	fun provideJsonConverter(json: Json): Converter.Factory =
+		json.asConverterFactory("application/json".toMediaType())
 
 	@Singleton
 	@Provides

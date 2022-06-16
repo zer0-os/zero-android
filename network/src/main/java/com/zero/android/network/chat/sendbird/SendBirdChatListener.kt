@@ -110,15 +110,15 @@ class SendBirdChatListener(private val listener: ChatListener) : SendBird.Channe
 	}
 
 	override fun onMetaDataCreated(channel: BaseChannel, metaDataMap: Map<String, String?>?) {
-		listener.onMetaDataCreated(channel.toApi(), metaDataMap)
+		listener.onMetadataCreated(channel.toApi(), metaDataMap)
 	}
 
 	override fun onMetaDataUpdated(channel: BaseChannel, metaDataMap: Map<String, String?>?) {
-		listener.onMetaDataUpdated(channel.toApi(), metaDataMap)
+		listener.onMetadataUpdated(channel.toApi(), metaDataMap)
 	}
 
 	override fun onMetaDataDeleted(channel: BaseChannel, keys: MutableList<String>) {
-		listener.onMetaDataDeleted(channel.toApi(), keys)
+		listener.onMetadataDeleted(channel.toApi(), keys)
 	}
 
 	override fun onMetaCountersCreated(
