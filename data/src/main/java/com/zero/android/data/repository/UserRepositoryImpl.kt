@@ -52,7 +52,7 @@ constructor(
 	}
 
 	private suspend fun refreshChatAccessToken(accessToken: String) {
-		accessService.getChatAccessToken(hashMapOf("idToken" to accessToken)).let {
+		accessService.getChatAccessToken(accessToken).let {
 			preferences.setChatToken(it.chatAccessToken)
 		}
 	}

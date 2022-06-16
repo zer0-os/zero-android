@@ -27,6 +27,10 @@ import kotlin.coroutines.resumeWithException
 internal class SendBirdChatService(private val logger: Logger) :
 	SendBirdBaseService(), ChatService {
 
+	override suspend fun listen(channelId: String, listener: ChatListener) {
+		SendBird.addChannelHandler(channelId, SendBirdChatListener(listener))
+	}
+
 	private fun messageListParams(
 		reverse: Boolean = true,
 		limit: Int = MESSAGES_PAGE_LIMIT,
@@ -45,10 +49,6 @@ internal class SendBirdChatService(private val logger: Logger) :
 					.build()
 		}
 
-	override suspend fun receiveMessages(id: String, listener: ChatListener) {
-		SendBird.addChannelHandler(id, SendBirdChatListener(listener))
-	}
-
 	override suspend fun getMessages(channel: Channel, timestamp: Long) =
 		callbackFlow<List<ApiMessage>> {
 			val params = messageListParams(reverse = true)
@@ -62,7 +62,7 @@ internal class SendBirdChatService(private val logger: Logger) :
 			}
 		}
 
-	override suspend fun getMessagesTill(channel: Channel, id: String) =
+	override suspend fun getMessages(channel: Channel, id: String) =
 		callbackFlow<List<ApiMessage>> {
 			val params = messageListParams(reverse = true)
 			getChannel(channel).getMessagesByMessageId(id.toLong(), params) { messages, e ->
@@ -75,31 +75,30 @@ internal class SendBirdChatService(private val logger: Logger) :
 			}
 		}
 
-	override suspend fun sendMessage(channel: Channel, message: DraftMessage) =
-		callbackFlowWithAwait {
-			val params = message.toParams()
-			val sbChannel = getChannel(channel)
-			if (params is FileMessageParams) {
-				sbChannel.sendFileMessage(params) { fileMessage, e ->
-					if (e != null) {
-						logger.e("Failed to send file message", e)
-						throw e
-					}
-					trySend(fileMessage.toApi())
+	override suspend fun send(channel: Channel, message: DraftMessage) = callbackFlowWithAwait {
+		val params = message.toParams()
+		val sbChannel = getChannel(channel)
+		if (params is FileMessageParams) {
+			sbChannel.sendFileMessage(params) { fileMessage, e ->
+				if (e != null) {
+					logger.e("Failed to send file message", e)
+					throw e
 				}
-			} else if (params is UserMessageParams) {
-				sbChannel.sendUserMessage(params) { userMessage, e ->
-					if (e != null) {
-						logger.e("Failed to send text message", e)
-						throw e
-					}
-					trySend(userMessage.toApi())
+				trySend(fileMessage.toApi())
+			}
+		} else if (params is UserMessageParams) {
+			sbChannel.sendUserMessage(params) { userMessage, e ->
+				if (e != null) {
+					logger.e("Failed to send text message", e)
+					throw e
 				}
+				trySend(userMessage.toApi())
 			}
 		}
+	}
 
-	override suspend fun replyMessage(channel: Channel, id: String, message: DraftMessage) =
-		sendMessage(channel, message.apply { parentMessageId = id })
+	override suspend fun reply(channel: Channel, id: String, message: DraftMessage) =
+		send(channel, message.apply { parentMessageId = id })
 
 	override suspend fun deleteMessage(channel: Channel, message: Message) =
 		suspendCancellableCoroutine<Unit> { coroutine ->

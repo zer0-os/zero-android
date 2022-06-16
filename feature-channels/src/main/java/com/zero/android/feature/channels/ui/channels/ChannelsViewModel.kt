@@ -4,8 +4,8 @@ import com.zero.android.common.ui.Result
 import com.zero.android.common.ui.asResult
 import com.zero.android.common.ui.base.BaseViewModel
 import com.zero.android.data.repository.ChannelRepository
-import com.zero.android.models.Channel
 import com.zero.android.models.ChannelCategory
+import com.zero.android.models.GroupChannel
 import com.zero.android.models.Network
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +19,7 @@ class ChannelsViewModel @Inject constructor(private val channelRepository: Chann
 
 	private lateinit var network: Network
 	val categories = MutableStateFlow<Result<List<ChannelCategory>>>(Result.Loading)
-	val channels = MutableStateFlow<Result<List<Channel>>>(Result.Loading)
+	val channels = MutableStateFlow<Result<List<GroupChannel>>>(Result.Loading)
 
 	fun onNetworkUpdated(network: Network) {
 		this.network = network

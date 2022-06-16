@@ -7,6 +7,7 @@ import com.zero.android.network.service.AccessService
 import com.zero.android.network.service.AccountService
 import com.zero.android.network.service.ChannelService
 import com.zero.android.network.service.ChatService
+import com.zero.android.network.service.MessageService
 import com.zero.android.network.service.NetworkService
 import com.zero.android.network.service.ProfileService
 import com.zero.android.network.service.UserService
@@ -46,5 +47,9 @@ object ServiceModule {
 
 	@Singleton
 	@Provides
-	fun provideMessageService(logger: Logger): ChatService = SendBirdChatService(logger)
+	fun provideChatService(logger: Logger): ChatService = SendBirdChatService(logger)
+
+	@Singleton
+	@Provides
+	fun provideMessageService(retrofit: Retrofit) = retrofit.api.create(MessageService::class.java)
 }

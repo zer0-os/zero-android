@@ -9,8 +9,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.zero.android.common.ui.Result
-import com.zero.android.models.Channel
 import com.zero.android.models.ChannelCategory
+import com.zero.android.models.GroupChannel
 import com.zero.android.models.Network
 import com.zero.android.models.fake.FakeData
 import com.zero.android.ui.extensions.Preview
@@ -18,7 +18,7 @@ import com.zero.android.ui.extensions.Preview
 @Composable
 fun ChannelsRoute(network: Network?, viewModel: ChannelsViewModel = hiltViewModel()) {
 	val categories: Result<List<ChannelCategory>> by viewModel.categories.collectAsState()
-	val channels: Result<List<Channel>> by viewModel.channels.collectAsState()
+	val channels: Result<List<GroupChannel>> by viewModel.channels.collectAsState()
 
 	LaunchedEffect(network?.id) { network?.let { viewModel.onNetworkUpdated(it) } }
 
@@ -26,7 +26,10 @@ fun ChannelsRoute(network: Network?, viewModel: ChannelsViewModel = hiltViewMode
 }
 
 @Composable
-fun ChannelsScreen(categories: Result<List<ChannelCategory>>, channels: Result<List<Channel>>) {
+fun ChannelsScreen(
+	categories: Result<List<ChannelCategory>>,
+	channels: Result<List<GroupChannel>>
+) {
 	Column { Text(text = "Channels Screen") }
 }
 
@@ -35,6 +38,6 @@ fun ChannelsScreen(categories: Result<List<ChannelCategory>>, channels: Result<L
 fun ChannelsScreenPreview() = Preview {
 	ChannelsScreen(
 		categories = Result.Success(listOf("One", "Two")),
-		channels = Result.Success(FakeData.channels())
+		channels = Result.Success(FakeData.groupChannels())
 	)
 }
