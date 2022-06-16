@@ -2,6 +2,7 @@ package com.zero.android.feature.channels.ui.channels
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -49,7 +50,7 @@ fun ChannelPager(
                     channelUiState.channelCategories[index].name
                 )?.let {
                     items(it) { channel ->
-                        ChannelsItemsList(channel)
+                        ChannelsItemsList(channel, onClick)
                     }
                 }
             }
@@ -58,13 +59,14 @@ fun ChannelPager(
 }
 
 @Composable
-fun ChannelsItemsList(channel: Channel) {
+fun ChannelsItemsList(channel: Channel,  onClick: (Channel) -> Unit) {
     val groupChannel = channel as GroupChannel
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
             .padding(12.dp)
+            .clickable { onClick(channel) }
     ) {
         val (image, textTop, textBottom, symbols, dateTime, unreadCount) = createRefs()
 
@@ -116,7 +118,7 @@ fun ChannelsItemsList(channel: Channel) {
                 bottom.linkTo(textTop.bottom)
             }
         ) {
-            if (groupChannel.isTelegramMessage) {
+            if (groupChannel.hasTelegramChannel) {
                 Image(
                     painter = painterResource(R.drawable.ic_vector),
                     contentDescription = "",
@@ -125,7 +127,7 @@ fun ChannelsItemsList(channel: Channel) {
                 )
                 Spacer(modifier = Modifier.padding(4.dp))
             }
-            if (groupChannel.isDiscord) {
+            if (groupChannel.hasDiscordChannel) {
                 Image(
                     painter = painterResource(R.drawable.ic_discord),
                     contentDescription = "",

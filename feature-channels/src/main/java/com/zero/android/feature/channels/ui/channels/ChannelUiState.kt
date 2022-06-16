@@ -2,24 +2,27 @@ package com.zero.android.feature.channels.ui.channels
 
 import com.zero.android.common.ui.Result
 import com.zero.android.models.Channel
+import com.zero.android.models.ChannelCategory
 import com.zero.android.models.GroupChannel
 import com.zero.android.models.fake.ChannelTab
 
 class ChannelUiState(
+    categories: Result<List<ChannelCategory>>,
     channels: Result<List<Channel>>
 ) {
-    private val filteredResult = if (channels is Result.Success) {
+    private val filteredChannels = if (channels is Result.Success) {
         channels.data.filter { !(it as GroupChannel).category.isNullOrEmpty() }
     } else emptyList()
+    private val filteredCategories = if (categories is Result.Success) {
+        categories.data.filter { it.isNotEmpty() }
+    } else emptyList()
 
-    val channelGroupMessages = filteredResult.groupBy { (it as GroupChannel).category!! }
-    val channelCategories = filteredResult.map { channel ->
+    val channelGroupMessages = filteredChannels.groupBy { (it as GroupChannel).category!! }
+    val channelCategories = filteredCategories.map { category ->
         val unreadGroupMessagesCount =
-            channelGroupMessages[(channel as GroupChannel).category!!]?.count { it.unreadMessageCount > 0 } ?: 0
+            channelGroupMessages[category]?.count { it.unreadMessageCount > 0 } ?: 0
         ChannelTab(
-            (channel as GroupChannel).category!!.hashCode().toLong(),
-            (channel as GroupChannel).category!!,
-            unreadGroupMessagesCount
+            category.hashCode().toLong(), category, unreadGroupMessagesCount
         )
     }
 }

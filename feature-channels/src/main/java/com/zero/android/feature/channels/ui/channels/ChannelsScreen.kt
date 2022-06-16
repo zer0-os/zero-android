@@ -27,8 +27,8 @@ fun ChannelsRoute(network: Network?, viewModel: ChannelsViewModel = hiltViewMode
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun ChannelsScreen(channels: Result<List<Channel>>) {
-    val channelUiState = ChannelUiState(channels)
+fun ChannelsScreen(categories: Result<List<ChannelCategory>>, channels: Result<List<Channel>>) {
+    val channelUiState = ChannelUiState(categories, channels)
     val pagerState = rememberPagerState(
         initialPage = 0,
     )
