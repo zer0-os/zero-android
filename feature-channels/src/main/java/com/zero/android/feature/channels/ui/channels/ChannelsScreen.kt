@@ -59,6 +59,6 @@ fun ChannelsScreen(categories: Result<List<ChannelCategory>>, channels: Result<L
 fun ChannelsScreenPreview() = Preview {
 	ChannelsScreen(
 		categories = Result.Success(listOf("One", "Two")),
-		channels = Result.Success(FakeData.channels())
+		channels = Result.Success(FakeData.groupChannels())
 	)
 }

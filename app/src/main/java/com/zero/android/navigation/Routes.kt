@@ -8,7 +8,8 @@ import com.zero.android.feature.account.ui.notifications.NotificationsRoute
 import com.zero.android.feature.auth.navigation.AuthDestination
 import com.zero.android.feature.auth.navigation.authGraph
 import com.zero.android.feature.channels.navigation.ChannelsDestination
-import com.zero.android.feature.channels.ui.directchannels.ChannelsRoute
+import com.zero.android.feature.channels.ui.channels.ChannelsRoute
+import com.zero.android.feature.channels.ui.directchannels.DirectChannelsRoute
 import com.zero.android.feature.feed.FeedRoute
 import com.zero.android.feature.feed.navigation.FeedDestination
 import com.zero.android.feature.messages.navigation.MessagesDestination
@@ -27,5 +28,5 @@ internal fun NavGraphBuilder.appBottomNavGraph(controller: NavController, networ
 	composable(route = MembersDestination.route) { MembersRoute() }
 	composable(route = FeedDestination.route) { FeedRoute() }
 	composable(route = NotificationsDestination.route) { NotificationsRoute() }
-	composable(route = MessagesDestination.route) { MessagesRoute() }
+	composable(route = MessagesDestination.route) { DirectChannelsRoute() }
 }

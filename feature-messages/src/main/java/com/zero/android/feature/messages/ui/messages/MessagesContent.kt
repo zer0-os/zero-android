@@ -13,7 +13,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LastBaseline
@@ -30,6 +29,7 @@ import com.zero.android.feature.messages.helper.SymbolAnnotationType
 import com.zero.android.feature.messages.helper.messageFormatter
 import com.zero.android.models.Member
 import com.zero.android.models.Message
+import com.zero.android.ui.components.BottomBarDivider
 import com.zero.android.ui.components.JumpToBottom
 import com.zero.android.ui.theme.AppTheme
 import kotlinx.coroutines.launch
@@ -57,23 +57,7 @@ fun MessagesContent(uiState: MessagesUiState, modifier: Modifier = Modifier) {
                     modifier = Modifier.weight(1f),
                     scrollState = scrollState
                 )
-                Spacer(
-                    modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(1.dp)
-                        .background(
-                            brush =
-                            Brush.horizontalGradient(
-                                colors =
-                                listOf(
-                                    AppTheme.colors.surfaceInverse,
-                                    AppTheme.colors.glow,
-                                    AppTheme.colors.surfaceInverse
-                                )
-                            )
-                        )
-                )
+                BottomBarDivider()
                 UserInputPanel(
                     onMessageSent = { content ->
                         //uiState.addMessage(Message())

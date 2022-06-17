@@ -1,24 +1,20 @@
 package com.zero.android.ui.sidebar
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import coil.compose.rememberAsyncImagePainter
+import com.zero.android.common.R
 import com.zero.android.models.Network
 import com.zero.android.models.fake.FakeData
 import com.zero.android.ui.components.CountBadge
+import com.zero.android.ui.components.MediumCircularImage
 import com.zero.android.ui.extensions.Preview
 import com.zero.android.ui.theme.AppTheme
 import com.zero.android.ui.theme.Typography
@@ -27,30 +23,27 @@ import com.zero.android.ui.theme.Typography
 fun DrawerItem(modifier: Modifier = Modifier, item: Network, onItemClick: (Network) -> Unit) {
     ConstraintLayout(
         modifier =
-		modifier
-			.fillMaxWidth()
-			.wrapContentHeight()
-			.padding(12.dp)
-			.clickable {
-				onItemClick.invoke(item)
-			}
+        modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .padding(12.dp)
+            .clickable {
+                onItemClick.invoke(item)
+            }
     ) {
         val (image, textTop, textBottom, textEnd) = createRefs()
 
-        Image(
-            painter = rememberAsyncImagePainter(item.logo),
-            contentDescription = item.name,
-            contentScale = ContentScale.Fit,
-            modifier =
-			modifier
-				.constrainAs(image) {
-					top.linkTo(parent.top)
-					bottom.linkTo(parent.bottom)
-					start.linkTo(parent.start)
-				}
-				.size(42.dp)
-				.padding(end = 8.dp)
-				.clip(CircleShape)
+        MediumCircularImage(
+            modifier = modifier
+                .constrainAs(image) {
+                    top.linkTo(parent.top)
+                    bottom.linkTo(parent.bottom)
+                    start.linkTo(parent.start)
+                }
+                .padding(end = 8.dp),
+            placeHolder = R.drawable.ic_circular_image_placeholder,
+            imageUrl = item.logo,
+            contentDescription = item.name
         )
         Text(
             text = item.displayName,

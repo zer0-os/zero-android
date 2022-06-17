@@ -6,12 +6,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -19,7 +17,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -28,6 +25,7 @@ import com.zero.android.common.extensions.toDate
 import com.zero.android.common.extensions.toMessageDateFormat
 import com.zero.android.models.Channel
 import com.zero.android.models.GroupChannel
+import com.zero.android.ui.components.LargeCircularImage
 import com.zero.android.ui.theme.AppTheme
 import com.zero.android.ui.theme.Typography
 
@@ -59,7 +57,7 @@ fun ChannelPager(
 }
 
 @Composable
-fun ChannelsItemsList(channel: Channel,  onClick: (Channel) -> Unit) {
+fun ChannelsItemsList(channel: Channel, onClick: (Channel) -> Unit) {
     val groupChannel = channel as GroupChannel
     ConstraintLayout(
         modifier = Modifier
@@ -70,19 +68,17 @@ fun ChannelsItemsList(channel: Channel,  onClick: (Channel) -> Unit) {
     ) {
         val (image, textTop, textBottom, symbols, dateTime, unreadCount) = createRefs()
 
-        Image(
-            painter = rememberAsyncImagePainter(groupChannel.coverUrl),
-            contentDescription = groupChannel.id,
+        LargeCircularImage(
             modifier = Modifier
-                .size(64.dp)
-                .clip(CircleShape)
                 .constrainAs(image) {
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
                     start.linkTo(parent.start)
                     end.linkTo(textTop.start)
                 },
-            contentScale = ContentScale.Fit,
+            placeHolder = R.drawable.ic_circular_image_placeholder,
+            imageUrl = groupChannel.coverUrl,
+            contentDescription = groupChannel.name
         )
         Text(
             text = groupChannel.name,

@@ -4,12 +4,13 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
@@ -21,10 +22,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import coil.compose.rememberAsyncImagePainter
 import com.zero.android.common.R
 import com.zero.android.models.Network
 import com.zero.android.models.fake.FakeData
+import com.zero.android.ui.components.SmallCircularImage
 import com.zero.android.ui.extensions.Preview
 import com.zero.android.ui.theme.AppTheme
 import com.zero.android.ui.theme.Typography
@@ -42,17 +43,15 @@ fun AppDrawerHeader(
         ) {
             val (imageStart, textTop, textBottom, imageEnd, inviteButton) = createRefs()
 
-            Image(
-                painter = rememberAsyncImagePainter(network.logo),
+            SmallCircularImage(
+                imageUrl = network.logo,
                 contentDescription = network.name,
-                contentScale = ContentScale.Fit,
                 modifier =
                 Modifier.constrainAs(imageStart) {
                     top.linkTo(parent.top)
                     start.linkTo(parent.start)
-                }
-                    .size(34.dp)
-                    .clip(CircleShape)
+                },
+                placeHolder = R.drawable.ic_circular_image_placeholder
             )
             Text(
                 text = network.displayName,
@@ -60,7 +59,7 @@ fun AppDrawerHeader(
                 Modifier.constrainAs(textTop) {
                     top.linkTo(imageStart.top)
                     bottom.linkTo(textBottom.top)
-                    linkTo(start = imageStart.end, end = imageEnd.start, bias = 0f)
+                    linkTo(start = imageStart.end, end = imageEnd.start, bias = 0.05f)
                 },
                 color = AppTheme.colors.colorTextPrimary,
                 style = Typography.bodyLarge,

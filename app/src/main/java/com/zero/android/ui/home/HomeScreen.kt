@@ -27,11 +27,12 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun HomeRoute(viewModel: HomeViewModel = hiltViewModel()) {
-	val currentScreen: NavDestination by viewModel.currentScreen.collectAsState()
+	val currentScreen by viewModel.currentScreen.collectAsState()
 	val currentNetwork: Network? by viewModel.selectedNetwork.collectAsState()
 	val networks: Result<List<Network>> by viewModel.networks.collectAsState()
 
 	HomeScreen(
+		viewModel = viewModel,
 		currentScreen = currentScreen,
 		currentNetwork = currentNetwork,
 		networks = networks,
@@ -44,6 +45,7 @@ fun HomeRoute(viewModel: HomeViewModel = hiltViewModel()) {
 @Composable
 fun HomeScreen(
 	modifier: Modifier = Modifier,
+	viewModel: HomeViewModel,
 	currentScreen: NavDestination,
 	currentNetwork: Network?,
 	networks: Result<List<Network>>,
@@ -66,7 +68,10 @@ fun HomeScreen(
 		AppBottomBar(
 			currentDestination = currentScreen,
 			onNavigateToHomeDestination = {
-				coroutineScope.launch { scaffoldState.drawerState.close() }
+				coroutineScope.launch {
+					viewModel.currentScreen.emit(it)
+					scaffoldState.drawerState.close()
+				}
 				navController.navigate(it.route) {
 					popUpTo(navController.graph.startDestinationId)
 					launchSingleTop = true

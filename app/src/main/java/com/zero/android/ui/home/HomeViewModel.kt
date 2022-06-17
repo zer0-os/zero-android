@@ -1,6 +1,7 @@
 package com.zero.android.ui.home
 
 import androidx.lifecycle.viewModelScope
+import com.zero.android.common.navigation.NavDestination
 import com.zero.android.common.ui.Result
 import com.zero.android.common.ui.asResult
 import com.zero.android.common.ui.base.BaseViewModel
@@ -18,7 +19,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(private val networkRepository: NetworkRepository) :
 	BaseViewModel() {
 
-	val currentScreen = MutableStateFlow(FeedDestination)
+	val currentScreen = MutableStateFlow<NavDestination>(FeedDestination)
 
 	private var allNetworks: List<Network>? = null
 	val selectedNetwork = MutableStateFlow<Network?>(null)
