@@ -42,3 +42,12 @@ fun Date.format(format: String, locale: Locale = Locale.ENGLISH): String {
     val formatter = SimpleDateFormat(format, locale)
     return formatter.format(this)
 }
+
+fun Date.toCalendar() = Calendar.getInstance().apply { this.time = this@toCalendar }
+
+fun Date.isSameDay(date: Date): Boolean {
+    val cal1 = this.toCalendar()
+    val cal2 = date.toCalendar()
+    return cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) &&
+            cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)
+}

@@ -72,3 +72,10 @@ data class GroupChannel(
 	val hasTelegramChannel: Boolean
 		get() = telegramChatId != null
 }
+
+fun Channel.getTitle(loggedInUserId: String?): String {
+	return if (this is GroupChannel) this.name
+	else (this as DirectChannel).members.filter {
+		it.id != loggedInUserId
+	}.joinToString { it.name ?: "" }.trim()
+}

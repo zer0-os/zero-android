@@ -14,8 +14,8 @@ import com.zero.android.common.R
 import com.zero.android.common.navigation.NavDestination
 import com.zero.android.feature.account.navigation.NotificationsDestination
 import com.zero.android.feature.channels.navigation.ChannelsDestination
+import com.zero.android.feature.channels.ui.directchannels.DirectChannelDestination
 import com.zero.android.feature.feed.navigation.FeedDestination
-import com.zero.android.feature.messages.navigation.MessagesDestination
 import com.zero.android.feature.people.navigation.MembersDestination
 import com.zero.android.ui.components.BottomBarDivider
 import com.zero.android.ui.components.CountBadge
@@ -41,7 +41,7 @@ val HOME_DESTINATIONS =
             R.drawable.ic_notification_unselected
         ),
         AppBarItem(
-            MessagesDestination,
+            DirectChannelDestination,
             R.drawable.ic_direct_chat_selected,
             R.drawable.ic_direct_chat_unselected
         )

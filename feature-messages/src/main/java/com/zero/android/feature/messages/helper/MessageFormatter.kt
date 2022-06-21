@@ -14,7 +14,17 @@ import androidx.compose.ui.unit.sp
 import com.zero.android.ui.theme.AppTheme
 
 val symbolPattern by lazy {
-    Regex("""(https?://[^\s\t\n]+)|(`[^`]+`)|(@\w+)|(\*[\w]+\*)|(_[\w]+_)|(~[\w]+~)""")
+    Regex("""
+        (https?://[^\s\t\n]+)|
+        (www[^\s\t\n]+)|
+        (`[^`]+`)|
+        (@\[*([\s]*[\w]+)([\s]*[\w]+)([\s]*)\]\([^\s\t\n]+\))|
+        (@\w+)|
+        (#[^\s\t\n]+)|
+        (\*[\w]+\*)|
+        (_[\w]+_)|
+        (~[\w]+~)
+        """.trimIndent())
 }
 
 // Accepted annotations for the ClickableTextWrapper
@@ -69,7 +79,9 @@ private fun getSymbolAnnotation(
         '@' ->
             SymbolAnnotation(
                 AnnotatedString(
-                    text = matchResult.value,
+                    text = matchResult.value
+                        .substringBefore("]")
+                        .replace("[", ""),
                     spanStyle =
                     SpanStyle(
                         color = annotationColor,
@@ -121,7 +133,7 @@ private fun getSymbolAnnotation(
                 ),
                 null
             )
-        'h' ->
+        'h','w','#' ->
             SymbolAnnotation(
                 AnnotatedString(
                     text = matchResult.value,

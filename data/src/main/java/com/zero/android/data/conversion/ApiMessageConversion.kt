@@ -19,6 +19,7 @@ internal fun ApiMessage.toModel(): Message =
 		updatedAt = updatedAt,
 		status = status,
 		data = data,
+		message = message,
 		parentMessage = parentMessage?.toModel(),
 		isMuted = isMuted,
 		fileUrl = fileUrl,

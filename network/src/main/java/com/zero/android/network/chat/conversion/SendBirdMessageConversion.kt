@@ -34,7 +34,9 @@ internal fun BaseMessage.toApi() =
 		author = sender.toApi(),
 		status = sendingStatus.toType(),
 		createdAt = createdAt,
-		updatedAt = updatedAt
+		updatedAt = updatedAt,
+		message = message,
+		fileUrl = (this as? FileMessage)?.url
 	)
 
 internal fun UserMessage.toApi() =
@@ -95,11 +97,9 @@ internal fun DraftMessage.toParams(): BaseMessageParams {
 		UserMessageParams().also { params ->
 			params.message = message!!
 			params.data = data
-			params.mentionType = mentionType.toType()
 			parentMessageId?.let { params.parentMessageId = it.toLong() }
 			params.customType = type.serializedName
 			params.mentionedUserIds = mentions
-			params.mentionType = mentionType.toType()
 		}
 	} else {
 		FileMessageParams().also { params ->

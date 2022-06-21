@@ -7,8 +7,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -24,7 +26,10 @@ import com.zero.android.common.R
 import com.zero.android.common.extensions.toDate
 import com.zero.android.common.extensions.toMessageDateFormat
 import com.zero.android.models.Channel
+import com.zero.android.models.DirectChannel
 import com.zero.android.models.GroupChannel
+import com.zero.android.models.enums.MessageStatus
+import com.zero.android.models.getTitle
 import com.zero.android.ui.components.LargeCircularImage
 import com.zero.android.ui.theme.AppTheme
 import com.zero.android.ui.theme.Typography
@@ -33,22 +38,22 @@ import com.zero.android.ui.theme.Typography
 @Composable
 fun ChannelPager(
     pagerState: PagerState,
-    channelUiState: ChannelUiState,
+    groupChannelUiState: GroupChannelUiState,
     onClick: (Channel) -> Unit,
 ) {
     HorizontalPager(
         state = pagerState,
-        count = channelUiState.channelCategories.size,
+        count = groupChannelUiState.channelCategories.size,
     ) { index ->
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
             LazyColumn {
-                channelUiState.groupMessages(
-                    channelUiState.channelCategories[index].name
+                groupChannelUiState.groupMessages(
+                    groupChannelUiState.channelCategories[index].name
                 )?.let {
                     items(it) { channel ->
-                        ChannelsItemsList(channel, onClick)
+                        ChannelsItemsList(channel = channel, onClick = onClick)
                     }
                 }
             }
@@ -57,8 +62,13 @@ fun ChannelPager(
 }
 
 @Composable
-fun ChannelsItemsList(channel: Channel, onClick: (Channel) -> Unit) {
-    val groupChannel = channel as GroupChannel
+fun ChannelsItemsList(
+    loggedInUserId: String? = null,
+    channel: Channel,
+    onClick: (Channel) -> Unit
+) {
+    val isDirectChannel = channel is DirectChannel
+
     ConstraintLayout(
         modifier = Modifier
             .fillMaxWidth()
@@ -66,7 +76,7 @@ fun ChannelsItemsList(channel: Channel, onClick: (Channel) -> Unit) {
             .padding(12.dp)
             .clickable { onClick(channel) }
     ) {
-        val (image, textTop, textBottom, symbols, dateTime, unreadCount) = createRefs()
+        val (image, textTop, textBottom, dateTime, unreadCount) = createRefs()
 
         LargeCircularImage(
             modifier = Modifier
@@ -77,23 +87,55 @@ fun ChannelsItemsList(channel: Channel, onClick: (Channel) -> Unit) {
                     end.linkTo(textTop.start)
                 },
             placeHolder = R.drawable.ic_circular_image_placeholder,
-            imageUrl = groupChannel.coverUrl,
-            contentDescription = groupChannel.name
+            imageUrl = channel.coverUrl,
+            contentDescription = channel.id
         )
-        Text(
-            text = groupChannel.name,
-            color = AppTheme.colors.colorTextPrimary,
-            style = Typography.bodyLarge,
-            fontWeight = FontWeight.Medium,
+        Row(
             modifier = Modifier.constrainAs(textTop) {
                 top.linkTo(image.top)
                 bottom.linkTo(textBottom.top)
                 start.linkTo(image.end, margin = 12.dp)
-                end.linkTo(symbols.start)
+                end.linkTo(dateTime.start, margin = 12.dp)
+                width = Dimension.fillToConstraints
             }
-        )
+        ) {
+            Text(
+                text = channel.getTitle(loggedInUserId),
+                color = AppTheme.colors.colorTextPrimary,
+                style = Typography.bodyLarge,
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.align(CenterVertically),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            if (!isDirectChannel) {
+                if ((channel as GroupChannel).hasTelegramChannel) {
+                    Spacer(modifier = Modifier.padding(4.dp))
+                    Image(
+                        painter = painterResource(R.drawable.ic_vector),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .align(CenterVertically),
+                        contentScale = ContentScale.Fit,
+                    )
+                    Spacer(modifier = Modifier.padding(4.dp))
+                }
+                if ((channel as GroupChannel).hasDiscordChannel) {
+                    Image(
+                        painter = painterResource(R.drawable.ic_discord),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .align(CenterVertically),
+                        contentScale = ContentScale.Fit,
+                    )
+                    Spacer(modifier = Modifier.padding(4.dp))
+                }
+            }
+        }
         Text(
-            text = groupChannel.lastMessage?.message ?: "",
+            text = channel.lastMessage?.message ?: "",
             color = AppTheme.colors.colorTextSecondary,
             style = Typography.bodyMedium,
             modifier = Modifier.constrainAs(textBottom) {
@@ -105,35 +147,8 @@ fun ChannelsItemsList(channel: Channel, onClick: (Channel) -> Unit) {
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
-        Row(modifier = Modifier
-            .wrapContentWidth()
-            .wrapContentHeight()
-            .constrainAs(symbols) {
-                top.linkTo(textTop.top)
-                start.linkTo(textTop.end, margin = 12.dp)
-                bottom.linkTo(textTop.bottom)
-            }
-        ) {
-            if (groupChannel.hasTelegramChannel) {
-                Image(
-                    painter = painterResource(R.drawable.ic_vector),
-                    contentDescription = "",
-                    modifier = Modifier.wrapContentSize(),
-                    contentScale = ContentScale.Fit,
-                )
-                Spacer(modifier = Modifier.padding(4.dp))
-            }
-            if (groupChannel.hasDiscordChannel) {
-                Image(
-                    painter = painterResource(R.drawable.ic_discord),
-                    contentDescription = "",
-                    modifier = Modifier.wrapContentSize(),
-                    contentScale = ContentScale.Fit,
-                )
-            }
-        }
         Text(
-            text = groupChannel.lastMessage?.updatedAt?.toDate()?.toMessageDateFormat() ?: "",
+            text = channel.lastMessage?.createdAt?.toDate()?.toMessageDateFormat() ?: "",
             color = AppTheme.colors.colorTextSecondary,
             style = Typography.bodyMedium,
             fontWeight = FontWeight.Medium,
@@ -143,23 +158,63 @@ fun ChannelsItemsList(channel: Channel, onClick: (Channel) -> Unit) {
                 end.linkTo(parent.end)
             }
         )
-        if (groupChannel.unreadMessageCount > 0) {
-            Text(
-                color = AppTheme.colors.surfaceInverse,
-                text = groupChannel.unreadMessageCount.toString(),
-                modifier = Modifier
-                    .background(
-                        color = AppTheme.colors.glow,
-                        shape = RoundedCornerShape(24.dp)
+        if (channel is DirectChannel) {
+            if (channel.lastMessage?.author?.id?.equals(loggedInUserId, true) == true) {
+                Icon(
+                    painter = if (channel.lastMessage?.status == MessageStatus.PENDING)
+                        painterResource(R.drawable.ic_check)
+                    else
+                        painterResource(R.drawable.ic_double_check),
+                    contentDescription = "cd_message_status",
+                    modifier = Modifier
+                        .width(18.dp)
+                        .constrainAs(unreadCount) {
+                            bottom.linkTo(image.bottom)
+                            end.linkTo(parent.end)
+                        },
+                )
+            } else {
+                if (channel.unreadMessageCount > 0) {
+                    UnReadCountText(
+                        modifier = Modifier
+                            .constrainAs(unreadCount) {
+                                bottom.linkTo(image.bottom)
+                                end.linkTo(parent.end)
+                            },
+                        text = channel.unreadMessageCount.toString()
                     )
-                    .wrapContentHeight()
-                    .constrainAs(unreadCount) {
-                        bottom.linkTo(image.bottom)
-                        end.linkTo(parent.end)
-                    }
-                    .padding(6.dp, 2.dp, 6.dp, 2.dp),
-                style = Typography.labelLarge
-            )
+                }
+            }
+        } else {
+            if (channel.unreadMessageCount > 0) {
+                UnReadCountText(
+                    modifier = Modifier
+                        .constrainAs(unreadCount) {
+                            bottom.linkTo(image.bottom)
+                            end.linkTo(parent.end)
+                        },
+                    text = channel.unreadMessageCount.toString()
+                )
+            }
         }
     }
+}
+
+@Composable
+fun UnReadCountText(
+    modifier: Modifier = Modifier,
+    text: String
+) {
+    Text(
+        color = AppTheme.colors.surfaceInverse,
+        text = text,
+        modifier = modifier
+            .background(
+                color = AppTheme.colors.glow,
+                shape = RoundedCornerShape(24.dp)
+            )
+            .wrapContentHeight()
+            .padding(6.dp, 2.dp, 6.dp, 2.dp),
+        style = Typography.labelLarge
+    )
 }

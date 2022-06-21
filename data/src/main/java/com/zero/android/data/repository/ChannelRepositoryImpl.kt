@@ -33,9 +33,9 @@ class ChannelRepositoryImpl @Inject constructor(private val channelService: Chan
 		}
 	}
 
-	override suspend fun getDirectChannel(id: String): Flow<DirectChannel> {
+	override suspend fun getDirectChannel(id: String): Flow<GroupChannel> {
 		return channelService.getChannel(id, type = ChannelType.GROUP).map {
-			(it as ApiDirectChannel).toModel()
+			(it as ApiGroupChannel).toModel()
 		}
 	}
 

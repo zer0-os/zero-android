@@ -1,45 +1,48 @@
 package com.zero.android.feature.messages.ui.messages
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.LastBaseline
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.AsyncImage
+import com.zero.android.common.R
+import com.zero.android.common.extensions.format
+import com.zero.android.common.extensions.isSameDay
 import com.zero.android.common.extensions.toDate
 import com.zero.android.common.extensions.toMessageDateFormat
 import com.zero.android.feature.messages.helper.SymbolAnnotationType
 import com.zero.android.feature.messages.helper.messageFormatter
+import com.zero.android.models.DraftMessage
 import com.zero.android.models.Member
 import com.zero.android.models.Message
-import com.zero.android.ui.components.BottomBarDivider
-import com.zero.android.ui.components.JumpToBottom
+import com.zero.android.ui.components.*
 import com.zero.android.ui.theme.AppTheme
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MessagesContent(uiState: MessagesUiState, modifier: Modifier = Modifier) {
-    val authorMe = "Me"
-    val timeNow = "Now"
-
+fun MessagesContent(
+    modifier: Modifier = Modifier,
+    isDirectChannelMessage: Boolean = false,
+    uiState: MessagesUiState,
+    onNewMessage:(DraftMessage) -> Unit,
+) {
     val scrollState = rememberLazyListState()
     val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior() }
     val scope = rememberCoroutineScope()
@@ -53,81 +56,88 @@ fun MessagesContent(uiState: MessagesUiState, modifier: Modifier = Modifier) {
                     .nestedScroll(scrollBehavior.nestedScrollConnection),
             ) {
                 Messages(
-                    messages = uiState.messages,
                     modifier = Modifier.weight(1f),
+                    isDirectChannelMessage = isDirectChannelMessage,
+                    uiState = uiState,
                     scrollState = scrollState
                 )
                 BottomBarDivider()
                 UserInputPanel(
+                    modifier = Modifier
+                        .navigationBarsPadding()
+                        .weight(1f)
+                        .imePadding(),
                     onMessageSent = { content ->
-                        //uiState.addMessage(Message())
+                        val message = uiState.addMessage(content)
+                        onNewMessage(message)
                     },
                     resetScroll = {
                         scope.launch {
                             scrollState.scrollToItem(0)
                         }
                     },
-                    // Use navigationBarsPadding() imePadding() and , to move the input panel above both the
-                    // navigation bar, and on-screen keyboard (IME)
-                    modifier = Modifier
-                        .navigationBarsPadding()
-                        .weight(1f)
-                        .imePadding(),
                 )
             }
         }
     }
 }
 
-const val ConversationTestTag = "ConversationTestTag"
-
 @Composable
-fun Messages(messages: List<Message>, scrollState: LazyListState, modifier: Modifier = Modifier) {
+fun Messages(
+    isDirectChannelMessage: Boolean,
+    uiState: MessagesUiState,
+    scrollState: LazyListState,
+    modifier: Modifier = Modifier
+) {
     val scope = rememberCoroutineScope()
     Box(modifier = modifier) {
-        val authorMe = "Me"
+        val messages = uiState.messages
         LazyColumn(
+            modifier = Modifier.fillMaxSize(),
             reverseLayout = true,
             state = scrollState,
             contentPadding = WindowInsets.statusBars.add(WindowInsets(top = 90.dp))
-                .asPaddingValues(),
-            modifier = Modifier
-                .testTag(ConversationTestTag)
-                .fillMaxSize()
+                .asPaddingValues()
         ) {
             for (index in messages.indices) {
                 val prevAuthor = messages.getOrNull(index - 1)?.author
                 val nextAuthor = messages.getOrNull(index + 1)?.author
                 val content = messages[index]
+                val messageDate = content.createdAt.toDate()
+                val nextMessageDate = (messages.getOrNull(index + 1)?.createdAt ?: 0).toDate()
+                val isSameDay = nextMessageDate.isSameDay(messageDate)
                 val isFirstMessageByAuthor = prevAuthor != content.author
                 val isLastMessageByAuthor = nextAuthor != content.author
 
-                // Hardcode day dividers for simplicity
-                if (index == messages.size - 1) {
-                    item { DayHeader("20 Aug") }
-                } else if (index == 2) {
-                    item { DayHeader("Today") }
-                }
-
                 item {
-                    Message(
-                        msg = content,
-                        isUserMe = content.author.name == authorMe,
-                        isFirstMessageByAuthor = isFirstMessageByAuthor,
-                        isLastMessageByAuthor = isLastMessageByAuthor,
-                        onAuthorClick = {
+                    if (isDirectChannelMessage) {
+                        DirectMessage(
+                            msg = content,
+                            isUserMe = content.author.id == uiState.currentUserId,
+                            isFirstMessageByAuthor = isFirstMessageByAuthor,
+                            isLastMessageByAuthor = isLastMessageByAuthor,
+                            onAuthorClick = {
 
-                        }
-                    )
+                            }
+                        )
+                    } else {
+                        ChannelMessage(
+                            msg = content,
+                            isUserMe = content.author.id == uiState.currentUserId,
+                            isFirstMessageByAuthor = isFirstMessageByAuthor,
+                            onAuthorClick = {
+
+                            }
+                        )
+                    }
+                }
+                if (!isSameDay) {
+                    item { DayHeader(messageDate.format("MMMM dd, yyyy")) }
                 }
             }
         }
-        // Jump to bottom button shows up when user scrolls past a threshold.
-        // Convert to pixels:
-        val jumpThreshold = with(LocalDensity.current) { JumpToBottomThreshold.toPx() }
 
-        // Show the button if the first visible item is not the first one or if the offset is
-        // greater than the threshold.
+        val jumpThreshold = with(LocalDensity.current) { JumpToBottomThreshold.toPx() }
         val jumpToBottomButtonEnabled by remember {
             derivedStateOf {
                 scrollState.firstVisibleItemIndex != 0 ||
@@ -144,169 +154,241 @@ fun Messages(messages: List<Message>, scrollState: LazyListState, modifier: Modi
 }
 
 @Composable
-fun Message(
+fun DirectMessage(
     onAuthorClick: (Member) -> Unit,
     msg: Message,
     isUserMe: Boolean,
     isFirstMessageByAuthor: Boolean,
     isLastMessageByAuthor: Boolean
 ) {
-    val borderColor =
-        if (isUserMe) {
-            MaterialTheme.colorScheme.primary
-        } else {
-            MaterialTheme.colorScheme.tertiary
-        }
-
-    val spaceBetweenAuthors = if (isLastMessageByAuthor) Modifier.padding(top = 8.dp) else Modifier
-    Row(modifier = spaceBetweenAuthors) {
-        if (isLastMessageByAuthor) {
-            // Avatar
-            Image(
-                modifier =
-                Modifier
-                    .clickable(onClick = { onAuthorClick(msg.author) })
-                    .padding(horizontal = 16.dp)
-                    .size(42.dp)
-                    .border(1.5.dp, borderColor, CircleShape)
-                    .border(3.dp, MaterialTheme.colorScheme.surface, CircleShape)
-                    .clip(CircleShape)
-                    .align(Alignment.Top),
-                painter = rememberAsyncImagePainter(msg.author.profileUrl),
-                contentScale = ContentScale.Crop,
-                contentDescription = null
+    val modifier = if (isLastMessageByAuthor) Modifier.padding(top = 8.dp) else Modifier
+    Column(
+        modifier = modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = if (isUserMe) Arrangement.End else Arrangement.Start,
+        ) {
+            if (!isUserMe) {
+                if (isLastMessageByAuthor) {
+                    if (msg.author.profileUrl.isNullOrEmpty()) {
+                        NameInitialsView(userName = msg.author.name ?: "")
+                    } else {
+                        SmallCircularImage(
+                            imageUrl = msg.author.profileUrl,
+                            placeHolder = R.drawable.ic_user_profile_placeholder
+                        )
+                    }
+                } else {
+                    Spacer(modifier = Modifier.width(34.dp))
+                }
+            }
+            DirectMessageAuthorAndTextMessage(
+                modifier = Modifier
+                    .padding(end = 16.dp)
+                    .weight(1f),
+                message = msg,
+                isUserMe = isUserMe,
+                isFirstMessageByAuthor = isFirstMessageByAuthor,
+                isLastMessageByAuthor = isLastMessageByAuthor,
+                authorClicked = onAuthorClick
             )
-        } else {
-            // Space under avatar
-            Spacer(modifier = Modifier.width(74.dp))
         }
-        AuthorAndTextMessage(
-            msg = msg,
-            isUserMe = isUserMe,
-            isFirstMessageByAuthor = isFirstMessageByAuthor,
-            isLastMessageByAuthor = isLastMessageByAuthor,
-            authorClicked = onAuthorClick,
+    }
+}
+
+@Composable
+fun ChannelMessage(
+    onAuthorClick: (Member) -> Unit,
+    msg: Message,
+    isUserMe: Boolean,
+    isFirstMessageByAuthor: Boolean
+) {
+    Row {
+        if (msg.author.profileUrl.isNullOrEmpty()) {
+            NameInitialsView(userName = msg.author.name ?: "")
+        } else {
+            SmallCircularImage(
+                imageUrl = msg.author.profileUrl,
+                placeHolder = R.drawable.ic_user_profile_placeholder
+            )
+        }
+        GroupChannelAuthorAndTextMessage(
             modifier = Modifier
                 .padding(end = 16.dp)
-                .weight(1f)
+                .weight(1f),
+            message = msg,
+            isUserMe = isUserMe,
+            isFirstMessageByAuthor = isFirstMessageByAuthor,
+            authorClicked = onAuthorClick
         )
     }
 }
 
+private val ChatBubbleShape = RoundedCornerShape(4.dp, 12.dp, 12.dp, 12.dp)
+private val ChatDirectOther = RoundedCornerShape(12.dp, 12.dp, 12.dp, 4.dp)
+private val ChatDirectAuthor = RoundedCornerShape(12.dp, 12.dp, 4.dp, 12.dp)
+
 @Composable
-fun AuthorAndTextMessage(
-    msg: Message,
+fun DirectMessageAuthorAndTextMessage(
+    modifier: Modifier = Modifier,
+    message: Message,
     isUserMe: Boolean,
     isFirstMessageByAuthor: Boolean,
     isLastMessageByAuthor: Boolean,
-    authorClicked: (Member) -> Unit,
-    modifier: Modifier = Modifier
+    authorClicked: (Member) -> Unit
 ) {
-    Column(modifier = modifier) {
-        if (isLastMessageByAuthor) {
-            AuthorNameTimestamp(msg)
+    val backgroundColorsList = if (isUserMe) {
+        listOf(Color(0xFF470080), Color(0xFFB14EFF))
+    } else {
+        listOf(Color(0xFF191919), Color(0xFF0A0A0A))
+    }
+    Column {
+        Row {
+            Spacer(modifier = Modifier.width(12.dp))
+            Box(
+                modifier = Modifier.background(
+                    brush = Brush.linearGradient(
+                        colors = backgroundColorsList
+                    ),
+                    shape = if (isUserMe) ChatDirectAuthor else ChatDirectOther
+                )
+            ) {
+                Column(modifier = Modifier.padding(8.dp)) {
+                    if (!isUserMe && isLastMessageByAuthor) {
+                        Text(
+                            text = message.author.name ?: "",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier =
+                            Modifier.paddingFrom(LastBaseline, after = 8.dp) // Space to 1st bubble
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                    }
+                    MessageContent(
+                        message = message,
+                        isUserMe = isUserMe,
+                        authorClicked = authorClicked
+                    )
+                    val messageDate = message.createdAt.toDate()
+                    Text(
+                        text = messageDate.format("hh:mm aa"),
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.align(Alignment.End),
+                        color = AppTheme.colors.colorTextSecondary,
+                    )
+                }
+            }
         }
-        ChatItemBubble(msg, isUserMe, authorClicked = authorClicked)
-        if (isFirstMessageByAuthor) {
-            // Last bubble before next author
-            Spacer(modifier = Modifier.height(8.dp))
-        } else {
-            // Between bubbles
-            Spacer(modifier = Modifier.height(4.dp))
-        }
+        ChatBubbleSpacing(isFirstMessageByAuthor)
     }
 }
 
 @Composable
-private fun AuthorNameTimestamp(msg: Message) {
-    // Combine author and timestamp for a11y.
+fun GroupChannelAuthorAndTextMessage(
+    modifier: Modifier = Modifier,
+    message: Message,
+    isUserMe: Boolean,
+    isFirstMessageByAuthor: Boolean,
+    authorClicked: (Member) -> Unit
+) {
+    val backgroundColorsList = if (isUserMe) {
+        listOf(Color(0xFF470080), Color(0xFFB14EFF))
+    } else {
+        listOf(Color(0xFF191919), Color(0xFF0A0A0A))
+    }
+    Column {
+        Row {
+            Spacer(modifier = Modifier.width(12.dp))
+            Box(
+                modifier = Modifier.background(
+                    brush = Brush.linearGradient(
+                        colors = backgroundColorsList
+                    ),
+                    shape = ChatBubbleShape
+                )
+            ) {
+                Column(modifier = Modifier.padding(8.dp)) {
+                    AuthorNameTimestamp(isUserMe, message)
+                    MessageContent(
+                        message = message,
+                        isUserMe = isUserMe,
+                        authorClicked = authorClicked
+                    )
+                }
+            }
+        }
+        ChatBubbleSpacing(isFirstMessageByAuthor)
+    }
+}
+
+@Composable
+private fun AuthorNameTimestamp(isUserMe: Boolean, msg: Message) {
     Row(modifier = Modifier.semantics(mergeDescendants = true) {}) {
         Text(
-            text = msg.author.name ?: "",
+            text = if (isUserMe) "Me" else msg.author.name ?: "",
             style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.primary,
             modifier =
             Modifier
                 .alignBy(LastBaseline)
                 .paddingFrom(LastBaseline, after = 8.dp) // Space to 1st bubble
         )
         Spacer(modifier = Modifier.width(8.dp))
+        val messageDate = msg.createdAt.toDate()
         Text(
-            text = msg.updatedAt.toDate().toMessageDateFormat(),
+            text = "${messageDate.toMessageDateFormat()} at ${messageDate.format("hh:mm aa")}",
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.alignBy(LastBaseline),
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = AppTheme.colors.colorTextSecondary,
         )
     }
 }
 
-private val ChatBubbleShape = RoundedCornerShape(4.dp, 20.dp, 20.dp, 20.dp)
-
 @Composable
-fun DayHeader(dayString: String) {
-    Row(
-        modifier = Modifier
-            .padding(vertical = 8.dp, horizontal = 16.dp)
-            .height(16.dp)
-    ) {
-        DayHeaderLine()
-        Text(
-            text = dayString,
-            modifier = Modifier.padding(horizontal = 16.dp),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+private fun ColumnScope.MessageContent(
+    message: Message,
+    isUserMe: Boolean,
+    authorClicked: (Member) -> Unit,
+) {
+    message.message?.let {
+        if (message.fileUrl.isNullOrEmpty()) {
+            ClickableMessage(
+                message = message,
+                isUserMe = isUserMe,
+                authorClicked = authorClicked
+            )
+        }
+    }
+    message.fileUrl?.let {
+        AsyncImage(
+            model = it,
+            contentDescription = "",
+            modifier = Modifier
+                .wrapContentWidth()
+                .defaultMinSize(160.dp),
         )
-        DayHeaderLine()
     }
 }
 
 @Composable
-private fun RowScope.DayHeaderLine() {
-    Divider(
-        modifier = Modifier
-            .weight(1f)
-            .align(Alignment.CenterVertically),
-        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
-    )
-}
-
-@Composable
-fun ChatItemBubble(message: Message, isUserMe: Boolean, authorClicked: (Member) -> Unit) {
-    val backgroundBubbleColor =
-        if (isUserMe) {
-            MaterialTheme.colorScheme.primary
-        } else {
-            MaterialTheme.colorScheme.surfaceVariant
-        }
-
-    Column {
-        Surface(color = backgroundBubbleColor, shape = ChatBubbleShape) {
-            ClickableMessage(message = message, isUserMe = isUserMe, authorClicked = authorClicked)
-        }
-
-        message.fileUrl?.let {
-            Spacer(modifier = Modifier.height(4.dp))
-            Surface(color = backgroundBubbleColor, shape = ChatBubbleShape) {
-                Image(
-                    painter = rememberAsyncImagePainter(it),
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier.size(160.dp),
-                    contentDescription = "cd_attached_image"
-                )
-            }
-        }
+private fun ColumnScope.ChatBubbleSpacing(isFirstMessageByAuthor: Boolean){
+    if (isFirstMessageByAuthor) {
+        // Last bubble before next author
+        Spacer(modifier = Modifier.height(8.dp))
+    } else {
+        // Between bubbles
+        Spacer(modifier = Modifier.height(4.dp))
     }
 }
 
 @Composable
 fun ClickableMessage(message: Message, isUserMe: Boolean, authorClicked: (Member) -> Unit) {
     val uriHandler = LocalUriHandler.current
-
     val styledMessage = messageFormatter(text = message.message ?: "", primary = isUserMe)
-
     ClickableText(
         text = styledMessage,
         style = MaterialTheme.typography.bodyLarge.copy(color = LocalContentColor.current),
-        modifier = Modifier.padding(16.dp),
         onClick = {
             styledMessage.getStringAnnotations(start = it, end = it).firstOrNull()
                 ?.let { annotation ->
@@ -325,16 +407,4 @@ fun ClickableMessage(message: Message, isUserMe: Boolean, authorClicked: (Member
 fun ConversationPreview() {
 }
 
-@Preview
-@Composable
-fun channelBarPrev() {
-}
-
-@Preview
-@Composable
-fun DayHeaderPrev() {
-}
-
 private val JumpToBottomThreshold = 56.dp
-
-private fun ScrollState.atBottom(): Boolean = value == 0

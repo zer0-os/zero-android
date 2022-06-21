@@ -12,7 +12,7 @@ import coil.compose.AsyncImage
 
 @Composable
 fun SmallCircularImage(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     imageUrl: String? = null,
     @DrawableRes placeHolder: Int,
     contentDescription: String = ""
@@ -30,7 +30,7 @@ fun SmallCircularImage(
 
 @Composable
 fun MediumCircularImage(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     imageUrl: String? = null,
     @DrawableRes placeHolder: Int,
     contentDescription: String = ""
@@ -48,7 +48,7 @@ fun MediumCircularImage(
 
 @Composable
 fun BigCircularImage(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     imageUrl: String? = null,
     @DrawableRes placeHolder: Int,
     contentDescription: String = ""
@@ -66,7 +66,7 @@ fun BigCircularImage(
 
 @Composable
 fun LargeCircularImage(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     imageUrl: String? = null,
     @DrawableRes placeHolder: Int,
     contentDescription: String = ""

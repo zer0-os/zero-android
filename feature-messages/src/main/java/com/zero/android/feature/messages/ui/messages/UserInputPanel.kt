@@ -15,9 +15,11 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.SemanticsPropertyKey
@@ -46,7 +48,7 @@ fun UserInputPreview() {
     UserInputPanel(onMessageSent = {})
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun UserInputPanel(
     modifier: Modifier = Modifier,
@@ -56,6 +58,7 @@ fun UserInputPanel(
     addImage: () -> Unit = {},
     recordMemo: () -> Unit = {},
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     var currentInputSelector by rememberSaveable { mutableStateOf(InputSelector.TEXT) }
     val dismissKeyboard = { currentInputSelector = InputSelector.TEXT }
 
@@ -97,7 +100,13 @@ fun UserInputPanel(
                 }
                 textFieldFocusState = focused
             },
-            onMessageSent = onMessageSent,
+            onMessageSent = {
+                if (it.isNotEmpty()) {
+                    onMessageSent(it)
+                    textState = TextFieldValue()
+                    keyboardController?.hide()
+                }
+            },
         )
         IconButton(modifier = Modifier.align(CenterVertically), onClick = {
             currentInputSelector = InputSelector.IMAGE
@@ -162,7 +171,7 @@ private fun UserInputText(
             TextFieldDefaults.textFieldColors(
                 textColor = AppTheme.colors.colorTextPrimary,
                 disabledTextColor = AppTheme.colors.colorTextSecondary,
-                focusedIndicatorColor = AppTheme.colors.colorTextSecondary,
+                focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent,
                 placeholderColor = AppTheme.colors.colorTextSecondaryVariant,
@@ -172,7 +181,7 @@ private fun UserInputText(
             keyboardOptions =
             KeyboardOptions(keyboardType = keyboardType, imeAction = ImeAction.Send),
             keyboardActions = KeyboardActions(
-                onDone = { onMessageSent(textFieldValue.text) }
+                onSend = { onMessageSent(textFieldValue.text) }
             )
         )
     }

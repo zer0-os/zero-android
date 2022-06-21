@@ -6,7 +6,7 @@ import com.zero.android.models.ChannelCategory
 import com.zero.android.models.GroupChannel
 import com.zero.android.models.fake.ChannelTab
 
-class ChannelUiState(
+class GroupChannelUiState(
     categories: Result<List<ChannelCategory>>,
     channels: Result<List<Channel>>
 ) {
@@ -27,4 +27,4 @@ class ChannelUiState(
     }
 }
 
-fun ChannelUiState.groupMessages(category: String) = channelGroupMessages[category]
+fun GroupChannelUiState.groupMessages(category: String) = channelGroupMessages[category]
