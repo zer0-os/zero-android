@@ -12,20 +12,20 @@ import javax.inject.Singleton
 @Singleton
 class AuthInterceptor @Inject constructor(private val preferences: AppPreferences) : Interceptor {
 
-    private var token: String? = null
+	private var token: String? = null
 
-    @Throws(IOException::class)
-    override fun intercept(chain: Interceptor.Chain): Response {
-        val request: Request = chain.request()
-        val requestBuilder: Request.Builder = request.newBuilder()
-        if (request.header(NO_AUTH_HEADER_KEY) == null) {
-            runBlocking {
-                token = token ?: preferences.token()
-                if (token != null) {
-                    requestBuilder.addHeader("Authorization", "Bearer $token")
-                }
-            }
-        }
-        return chain.proceed(requestBuilder.build())
-    }
+	@Throws(IOException::class)
+	override fun intercept(chain: Interceptor.Chain): Response {
+		val request: Request = chain.request()
+		val requestBuilder: Request.Builder = request.newBuilder()
+		if (request.header(NO_AUTH_HEADER_KEY) == null) {
+			runBlocking {
+				token = token ?: preferences.token()
+				if (token != null) {
+					requestBuilder.addHeader("Authorization", "Bearer $token")
+				}
+			}
+		}
+		return chain.proceed(requestBuilder.build())
+	}
 }

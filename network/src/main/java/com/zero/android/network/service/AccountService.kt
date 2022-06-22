@@ -5,6 +5,6 @@ import retrofit2.http.GET
 
 interface AccountService {
 
-    @GET(value = "accounts/sync")
-    suspend fun sync(): JsonObject
+	@GET(value = "accounts/sync")
+	suspend fun sync(): JsonObject
 }

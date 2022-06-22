@@ -9,10 +9,10 @@ import com.zero.android.models.Network
 
 @Composable
 fun HomeNavHost(navController: NavController, network: Network?) {
-    NavHost(
-        navController = navController as NavHostController,
-        startDestination = FeedDestination.route
-    ) {
-        appBottomNavGraph(navController, network = network)
-    }
+	NavHost(
+		navController = navController as NavHostController,
+		startDestination = FeedDestination.route
+	) {
+		appBottomNavGraph(navController, network = network)
+	}
 }

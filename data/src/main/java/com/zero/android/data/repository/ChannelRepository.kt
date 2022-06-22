@@ -8,17 +8,17 @@ import kotlinx.coroutines.flow.Flow
 
 interface ChannelRepository {
 
-    suspend fun getCategories(networkId: String): Flow<List<ChannelCategory>>
+	suspend fun getCategories(networkId: String): Flow<List<ChannelCategory>>
 
-    suspend fun getDirectChannels(): Flow<List<DirectChannel>>
+	suspend fun getDirectChannels(): Flow<List<DirectChannel>>
 
-    suspend fun getGroupChannels(networkId: String): Flow<List<GroupChannel>>
+	suspend fun getGroupChannels(networkId: String): Flow<List<GroupChannel>>
 
-    suspend fun getGroupChannel(id: String): Flow<GroupChannel>
+	suspend fun getGroupChannel(id: String): Flow<GroupChannel>
 
-    suspend fun getDirectChannel(id: String): Flow<DirectChannel>
+	suspend fun getDirectChannel(id: String): Flow<DirectChannel>
 
-    suspend fun joinChannel(channel: Channel)
+	suspend fun joinChannel(channel: Channel)
 
-    suspend fun deleteChannel(channel: Channel)
+	suspend fun deleteChannel(channel: Channel)
 }

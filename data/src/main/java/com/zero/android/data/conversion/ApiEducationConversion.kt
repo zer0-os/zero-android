@@ -4,14 +4,14 @@ import com.zero.android.models.Education
 import com.zero.android.network.model.ApiEducation
 
 internal fun ApiEducation.toModel() =
-    Education(
-        startDate = startDate,
-        endDate = endDate,
-        degree = degree,
-        field = field,
-        description = description,
-        organization = organization?.toEntity()
-    )
+	Education(
+		startDate = startDate,
+		endDate = endDate,
+		degree = degree,
+		field = field,
+		description = description,
+		organization = organization?.toEntity()
+	)
 
 internal fun ApiEducation.toEntity() = toModel()
 

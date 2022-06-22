@@ -9,12 +9,12 @@ import kotlinx.serialization.encoding.Encoder
 
 abstract class EnumSerializer<E : Enum<E>> : KSerializer<E> {
 
-    final override val descriptor: SerialDescriptor =
-        PrimitiveSerialDescriptor(serialName = "type", kind = PrimitiveKind.STRING)
+	final override val descriptor: SerialDescriptor =
+		PrimitiveSerialDescriptor(serialName = "type", kind = PrimitiveKind.STRING)
 
-    final override fun serialize(encoder: Encoder, value: E) = encoder.encodeString(value.name)
+	final override fun serialize(encoder: Encoder, value: E) = encoder.encodeString(value.name)
 
-    final override fun deserialize(decoder: Decoder): E = decoder.decodeString().stringToEnum()
+	final override fun deserialize(decoder: Decoder): E = decoder.decodeString().stringToEnum()
 
-    abstract fun String?.stringToEnum(): E
+	abstract fun String?.stringToEnum(): E
 }

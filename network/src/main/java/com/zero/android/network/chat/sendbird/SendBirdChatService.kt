@@ -25,92 +25,92 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 internal class SendBirdChatService(private val logger: Logger) :
-    SendBirdBaseService(), ChatService {
+	SendBirdBaseService(), ChatService {
 
-    override suspend fun listen(channelId: String, listener: ChatListener) {
-        SendBird.addChannelHandler(channelId, SendBirdChatListener(listener))
-    }
+	override suspend fun listen(channelId: String, listener: ChatListener) {
+		SendBird.addChannelHandler(channelId, SendBirdChatListener(listener))
+	}
 
-    private fun messageListParams(
-        reverse: Boolean = true,
-        limit: Int = MESSAGES_PAGE_LIMIT,
-        replyFilter: ReplyTypeFilter = ReplyTypeFilter.ALL
-    ) =
-        MessageListParams().apply {
-            previousResultSize = limit
-            nextResultSize = limit
-            isInclusive = true
-            setReverse(reverse)
-            replyTypeFilter = replyFilter
-            messagePayloadFilter =
-                MessagePayloadFilter.Builder()
-                    .setIncludeParentMessageInfo(true)
-                    .setIncludeThreadInfo(true)
-                    .build()
-        }
+	private fun messageListParams(
+		reverse: Boolean = true,
+		limit: Int = MESSAGES_PAGE_LIMIT,
+		replyFilter: ReplyTypeFilter = ReplyTypeFilter.ALL
+	) =
+		MessageListParams().apply {
+			previousResultSize = limit
+			nextResultSize = limit
+			isInclusive = true
+			setReverse(reverse)
+			replyTypeFilter = replyFilter
+			messagePayloadFilter =
+				MessagePayloadFilter.Builder()
+					.setIncludeParentMessageInfo(true)
+					.setIncludeThreadInfo(true)
+					.build()
+		}
 
-    override suspend fun getMessages(channel: Channel, timestamp: Long) =
-        callbackFlowWithAwait<List<ApiMessage>> {
-            val params = messageListParams(reverse = true)
-            getChannel(channel).getMessagesByTimestamp(timestamp, params) { messages, e ->
-                if (e != null) {
-                    logger.e(e)
-                    throw e
-                } else {
-                    trySend(messages?.map { it.toApi() } ?: emptyList())
-                }
-            }
-        }
+	override suspend fun getMessages(channel: Channel, timestamp: Long) =
+		callbackFlowWithAwait<List<ApiMessage>> {
+			val params = messageListParams(reverse = true)
+			getChannel(channel).getMessagesByTimestamp(timestamp, params) { messages, e ->
+				if (e != null) {
+					logger.e(e)
+					throw e
+				} else {
+					trySend(messages?.map { it.toApi() } ?: emptyList())
+				}
+			}
+		}
 
-    override suspend fun getMessages(channel: Channel, id: String) =
-        callbackFlow<List<ApiMessage>> {
-            val params = messageListParams(reverse = true)
-            getChannel(channel).getMessagesByMessageId(id.toLong(), params) { messages, e ->
-                if (e != null) {
-                    logger.e(e)
-                    throw e
-                } else {
-                    trySend(messages?.map { it.toApi() } ?: emptyList())
-                }
-            }
-        }
+	override suspend fun getMessages(channel: Channel, id: String) =
+		callbackFlow<List<ApiMessage>> {
+			val params = messageListParams(reverse = true)
+			getChannel(channel).getMessagesByMessageId(id.toLong(), params) { messages, e ->
+				if (e != null) {
+					logger.e(e)
+					throw e
+				} else {
+					trySend(messages?.map { it.toApi() } ?: emptyList())
+				}
+			}
+		}
 
-    override suspend fun send(channel: Channel, message: DraftMessage) = callbackFlowWithAwait {
-        val params = message.toParams()
-        val sbChannel = getChannel(channel)
-        if (params is FileMessageParams) {
-            sbChannel.sendFileMessage(params) { fileMessage, e ->
-                if (e != null) {
-                    logger.e("Failed to send file message", e)
-                    throw e
-                }
-                trySend(fileMessage.toApi())
-            }
-        } else if (params is UserMessageParams) {
-            sbChannel.sendUserMessage(params) { userMessage, e ->
-                if (e != null) {
-                    logger.e("Failed to send text message", e)
-                    throw e
-                }
-                trySend(userMessage.toApi())
-            }
-        }
-    }
+	override suspend fun send(channel: Channel, message: DraftMessage) = callbackFlowWithAwait {
+		val params = message.toParams()
+		val sbChannel = getChannel(channel)
+		if (params is FileMessageParams) {
+			sbChannel.sendFileMessage(params) { fileMessage, e ->
+				if (e != null) {
+					logger.e("Failed to send file message", e)
+					throw e
+				}
+				trySend(fileMessage.toApi())
+			}
+		} else if (params is UserMessageParams) {
+			sbChannel.sendUserMessage(params) { userMessage, e ->
+				if (e != null) {
+					logger.e("Failed to send text message", e)
+					throw e
+				}
+				trySend(userMessage.toApi())
+			}
+		}
+	}
 
-    override suspend fun reply(channel: Channel, id: String, message: DraftMessage) =
-        send(channel, message.apply { parentMessageId = id })
+	override suspend fun reply(channel: Channel, id: String, message: DraftMessage) =
+		send(channel, message.apply { parentMessageId = id })
 
-    override suspend fun deleteMessage(channel: Channel, message: Message) =
-        suspendCancellableCoroutine<Unit> { coroutine ->
-            withSameScope {
-                getChannel(channel).deleteMessage(message.toApi().toMessage()) {
-                    if (it != null) {
-                        logger.e("Failed to send text message", it)
-                        coroutine.resumeWithException(it)
-                    } else {
-                        coroutine.resume(Unit)
-                    }
-                }
-            }
-        }
+	override suspend fun deleteMessage(channel: Channel, message: Message) =
+		suspendCancellableCoroutine<Unit> { coroutine ->
+			withSameScope {
+				getChannel(channel).deleteMessage(message.toApi().toMessage()) {
+					if (it != null) {
+						logger.e("Failed to send text message", it)
+						coroutine.resumeWithException(it)
+					} else {
+						coroutine.resume(Unit)
+					}
+				}
+			}
+		}
 }

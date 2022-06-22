@@ -9,4 +9,4 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun CircularProgress(size: Dp = 42.dp) =
-    CircularProgressIndicator(modifier = Modifier.size(size), strokeWidth = 5.dp)
+	CircularProgressIndicator(modifier = Modifier.size(size), strokeWidth = 5.dp)

@@ -22,144 +22,144 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 internal fun BaseChannel.toApi(): ApiChannel {
-    if (this is OpenChannel) return toApi() else if (this is GroupChannel) return toApi()
-    throw IllegalStateException("not handled")
+	if (this is OpenChannel) return toApi() else if (this is GroupChannel) return toApi()
+	throw IllegalStateException("not handled")
 }
 
 private fun getNetworkId(customType: String): String? {
-    return Regex(pattern = "network:([-a-zA-Z0-9]+)").matchEntire(customType)?.value
+	return Regex(pattern = "network:([-a-zA-Z0-9]+)").matchEntire(customType)?.value
 }
 
 internal fun String.encodeToNetworkId() = if (this.isNotEmpty()) "network:$this" else null
 
 internal val OpenChannel.networkId
-    get() = customType?.let { getNetworkId(it) }
+	get() = customType?.let { getNetworkId(it) }
 internal val GroupChannel.networkId
-    get() = customType?.let { getNetworkId(it) }
+	get() = customType?.let { getNetworkId(it) }
 
 private val GroupChannel.isDirectChannel
-    get() = networkId == null
+	get() = networkId == null
 
 internal fun Channel.isGroupChannel() =
-    this is DirectChannel ||
-        (this is com.zero.android.models.GroupChannel && type == ChannelType.GROUP)
+	this is DirectChannel ||
+		(this is com.zero.android.models.GroupChannel && type == ChannelType.GROUP)
 
 internal fun Channel.isOpenChannel() =
-    this is com.zero.android.models.GroupChannel && type == ChannelType.OPEN
+	this is com.zero.android.models.GroupChannel && type == ChannelType.OPEN
 
 internal fun OpenChannel.toApi() =
-    ApiGroupChannel(
-        id = url,
-        networkId = networkId ?: "",
-        name = name,
-        members = operators.map { it.toApi() },
-        memberCount = participantCount,
-        operators = operators.map { it.toApi() },
-        operatorCount = participantCount,
-        createdAt = createdAt,
-        coverUrl = coverUrl,
-        properties = Json.decodeFromString<ApiChannelProperties>(data),
-        isTemporary = isEphemeral
-    )
+	ApiGroupChannel(
+		id = url,
+		networkId = networkId ?: "",
+		name = name,
+		members = operators.map { it.toApi() },
+		memberCount = participantCount,
+		operators = operators.map { it.toApi() },
+		operatorCount = participantCount,
+		createdAt = createdAt,
+		coverUrl = coverUrl,
+		properties = Json.decodeFromString<ApiChannelProperties>(data),
+		isTemporary = isEphemeral
+	)
 
 internal fun GroupChannel.toApi() = if (isDirectChannel) toDirectApi() else toGroupApi()
 
 internal fun GroupChannel.toDirectApi(): ApiDirectChannel {
-    return ApiDirectChannel(
-        id = url,
-        members = members.map { it.toApi() },
-        memberCount = memberCount,
-        unreadMentionCount = unreadMentionCount,
-        unreadMessageCount = unreadMessageCount,
-        lastMessage = lastMessage.toApi(),
-        createdAt = createdAt,
-        coverUrl = coverUrl,
-        isTemporary = isEphemeral,
-        alerts = myPushTriggerOption.toType()
-    )
+	return ApiDirectChannel(
+		id = url,
+		members = members.map { it.toApi() },
+		memberCount = memberCount,
+		unreadMentionCount = unreadMentionCount,
+		unreadMessageCount = unreadMessageCount,
+		lastMessage = lastMessage.toApi(),
+		createdAt = createdAt,
+		coverUrl = coverUrl,
+		isTemporary = isEphemeral,
+		alerts = myPushTriggerOption.toType()
+	)
 }
 
 internal fun GroupChannel.toGroupApi(): ApiGroupChannel {
-    val operators = members.filter { it.role == Member.Role.OPERATOR }.map { it.toApi() }
-    val properties = Json { ignoreUnknownKeys = true }.decodeFromString<ApiChannelProperties?>(data)
-    return ApiGroupChannel(
-        id = url,
-        networkId = networkId ?: "",
-        category = properties?.category,
-        name = name,
-        isSuper = isSuper,
-        operators = operators,
-        operatorCount = operators.size,
-        members = members.map { it.toApi() },
-        memberCount = memberCount,
-        unreadMentionCount = unreadMentionCount,
-        unreadMessageCount = unreadMessageCount,
-        lastMessage = lastMessage.toApi(),
-        createdAt = createdAt,
-        coverUrl = coverUrl,
-        properties = properties,
-        isTemporary = isEphemeral,
-        createdBy = creator.toApi(),
-        alerts = myPushTriggerOption.toType(),
-        isPublic = isPublic && isDiscoverable,
-        isDiscoverable = isDiscoverable,
-        isVideoEnabled = properties?.isVideoEnabled == true,
-        accessType = properties?.groupChannelType ?: AccessType.PUBLIC
-    )
+	val operators = members.filter { it.role == Member.Role.OPERATOR }.map { it.toApi() }
+	val properties = Json { ignoreUnknownKeys = true }.decodeFromString<ApiChannelProperties?>(data)
+	return ApiGroupChannel(
+		id = url,
+		networkId = networkId ?: "",
+		category = properties?.category,
+		name = name,
+		isSuper = isSuper,
+		operators = operators,
+		operatorCount = operators.size,
+		members = members.map { it.toApi() },
+		memberCount = memberCount,
+		unreadMentionCount = unreadMentionCount,
+		unreadMessageCount = unreadMessageCount,
+		lastMessage = lastMessage.toApi(),
+		createdAt = createdAt,
+		coverUrl = coverUrl,
+		properties = properties,
+		isTemporary = isEphemeral,
+		createdBy = creator.toApi(),
+		alerts = myPushTriggerOption.toType(),
+		isPublic = isPublic && isDiscoverable,
+		isDiscoverable = isDiscoverable,
+		isVideoEnabled = properties?.isVideoEnabled == true,
+		accessType = properties?.groupChannelType ?: AccessType.PUBLIC
+	)
 }
 
 internal fun DirectChannel.toParams() =
-    GroupChannelParams().apply {
-        setName(members.map { it.name }.joinToString(","))
-        setChannelUrl(id)
-        setCoverUrl(coverUrl)
-        setData(null)
-        setCustomType(null)
+	GroupChannelParams().apply {
+		setName(members.map { it.name }.joinToString(","))
+		setChannelUrl(id)
+		setCoverUrl(coverUrl)
+		setData(null)
+		setCustomType(null)
 
-        setSuper(false)
-        setPublic(false)
-        setDiscoverable(false)
-        setEphemeral(isTemporary)
-        setStrict(false)
-        setAccessCode(null)
-        setMessageSurvivalSeconds(messageLifeSeconds)
-    }
+		setSuper(false)
+		setPublic(false)
+		setDiscoverable(false)
+		setEphemeral(isTemporary)
+		setStrict(false)
+		setAccessCode(null)
+		setMessageSurvivalSeconds(messageLifeSeconds)
+	}
 
 internal fun com.zero.android.models.GroupChannel.toOpenParams() =
-    OpenChannelParams().apply {
-        setName(name)
-        setChannelUrl(id)
-        setCoverUrl(coverUrl)
-        setData(Json.encodeToString(toProperties()))
-        setCustomType(networkId.encodeToNetworkId())
-    }
+	OpenChannelParams().apply {
+		setName(name)
+		setChannelUrl(id)
+		setCoverUrl(coverUrl)
+		setData(Json.encodeToString(toProperties()))
+		setCustomType(networkId.encodeToNetworkId())
+	}
 
 internal fun com.zero.android.models.GroupChannel.toParams() =
-    GroupChannelParams().apply {
-        setName(name)
-        setChannelUrl(id)
-        setCoverUrl(coverUrl)
-        setData(Json.encodeToString(toProperties()))
-        setCustomType(networkId.encodeToNetworkId())
+	GroupChannelParams().apply {
+		setName(name)
+		setChannelUrl(id)
+		setCoverUrl(coverUrl)
+		setData(Json.encodeToString(toProperties()))
+		setCustomType(networkId.encodeToNetworkId())
 
-        setSuper(isSuper)
-        setPublic(isPublic)
-        setDiscoverable(isDiscoverable)
-        setEphemeral(isTemporary)
-        setStrict(false)
-        setAccessCode(accessCode)
-        setMessageSurvivalSeconds(messageLifeSeconds)
-    }
+		setSuper(isSuper)
+		setPublic(isPublic)
+		setDiscoverable(isDiscoverable)
+		setEphemeral(isTemporary)
+		setStrict(false)
+		setAccessCode(accessCode)
+		setMessageSurvivalSeconds(messageLifeSeconds)
+	}
 
 private fun com.zero.android.models.GroupChannel.toProperties() =
-    ApiChannelProperties(
-        category = category,
-        isAdminOnly = isAdminOnly,
-        telegramChatId = telegramChatId,
-        discordChatId = discordChatId,
-        isVideoEnabled = isVideoEnabled,
-        groupChannelType = accessType
-    )
+	ApiChannelProperties(
+		category = category,
+		isAdminOnly = isAdminOnly,
+		telegramChatId = telegramChatId,
+		discordChatId = discordChatId,
+		isVideoEnabled = isVideoEnabled,
+		groupChannelType = accessType
+	)
 
 internal fun BaseChannel.ChannelType.toType() = value().toChannelType()
 

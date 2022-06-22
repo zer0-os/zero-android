@@ -17,48 +17,48 @@ import com.zero.android.ui.extensions.OnEvent
 
 @Composable
 fun AuthRoute(viewModel: AuthViewModel = hiltViewModel(), onLogin: () -> Unit) {
-    val uiState: AuthScreenUIState by viewModel.uiState.collectAsState()
+	val uiState: AuthScreenUIState by viewModel.uiState.collectAsState()
 
-    if (uiState == AuthScreenUIState.LOGIN) {
-        LaunchedEffect(Unit) { onLogin() }
-    } else {
-        AuthScreen(authCallback = viewModel.authCallback)
-    }
+	if (uiState == AuthScreenUIState.LOGIN) {
+		LaunchedEffect(Unit) { onLogin() }
+	} else {
+		AuthScreen(authCallback = viewModel.authCallback)
+	}
 }
 
 @Composable
 fun AuthScreen(
-    lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
-    authCallback: AuthenticationCallback
+	lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
+	authCallback: AuthenticationCallback
 ) {
-    val context = LocalContext.current
-    val lock =
-        Lock.newBuilder(Auth0(context), authCallback)
-            .allowedConnections(
-                mutableListOf(
-                    "facebook",
-                    "twitter",
-                    "google-oauth2",
-                    "apple",
-                    "Username-Password-Authentication"
-                )
-            )
-            .withAudience(BuildConfig.AUTH0_AUDIENCE)
-            .withScope("openid profile offline_access")
-            .closable(false)
-            .allowLogIn(true)
-            .allowSignUp(false)
-            .allowShowPassword(true)
-            .allowForgotPassword(true)
-            .loginAfterSignUp(true)
-            .setMustAcceptTerms(false)
-            .build(context)
+	val context = LocalContext.current
+	val lock =
+		Lock.newBuilder(Auth0(context), authCallback)
+			.allowedConnections(
+				mutableListOf(
+					"facebook",
+					"twitter",
+					"google-oauth2",
+					"apple",
+					"Username-Password-Authentication"
+				)
+			)
+			.withAudience(BuildConfig.AUTH0_AUDIENCE)
+			.withScope("openid profile offline_access")
+			.closable(false)
+			.allowLogIn(true)
+			.allowSignUp(false)
+			.allowShowPassword(true)
+			.allowForgotPassword(true)
+			.loginAfterSignUp(true)
+			.setMustAcceptTerms(false)
+			.build(context)
 
-    lifecycleOwner.OnEvent { _, event ->
-        if (event == Lifecycle.Event.ON_DESTROY) {
-            lock.onDestroy(context)
-        }
-    }
+	lifecycleOwner.OnEvent { _, event ->
+		if (event == Lifecycle.Event.ON_DESTROY) {
+			lock.onDestroy(context)
+		}
+	}
 
-    context.startActivity(lock.newIntent(context))
+	context.startActivity(lock.newIntent(context))
 }

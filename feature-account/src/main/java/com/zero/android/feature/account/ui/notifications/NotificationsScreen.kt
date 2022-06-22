@@ -7,10 +7,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun NotificationsRoute(viewModel: NotificationsViewModel = hiltViewModel()) {
-    NotificationsScreen()
+	NotificationsScreen()
 }
 
 @Composable
 fun NotificationsScreen() {
-    Column { Text(text = "Notifications Screen") }
+	Column { Text(text = "Notifications Screen") }
 }

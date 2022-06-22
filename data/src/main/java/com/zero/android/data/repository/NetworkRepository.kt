@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface NetworkRepository {
 
-    suspend fun getNetworks(): Flow<List<Network>>
+	suspend fun getNetworks(): Flow<List<Network>>
 }

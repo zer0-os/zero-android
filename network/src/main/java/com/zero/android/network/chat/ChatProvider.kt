@@ -5,9 +5,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 
 interface ChatProvider {
 
-    fun initialize(@ApplicationContext context: Context)
+	fun initialize(@ApplicationContext context: Context)
 
-    suspend fun connect(userId: String, accessToken: String?)
+	suspend fun connect(userId: String, accessToken: String?)
 
-    suspend fun disconnect()
+	suspend fun disconnect()
 }

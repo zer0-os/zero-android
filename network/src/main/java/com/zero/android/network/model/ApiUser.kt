@@ -5,8 +5,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ApiUser(
-    val id: String,
-    @SerialName("profileSummary") val profile: ApiProfile,
-    @SerialName("handle") val name: String,
-    @SerialName("isANetworkAdmin") val isNetworkAdmin: Boolean
+	val id: String,
+	@SerialName("profileSummary") val profile: ApiProfile,
+	@SerialName("handle") val name: String,
+	@SerialName("isANetworkAdmin") val isNetworkAdmin: Boolean
 )

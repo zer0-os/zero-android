@@ -17,111 +17,111 @@ import kotlinx.serialization.json.jsonObject
 import okio.internal.commonAsUtf8ToByteArray
 
 private fun ApiMessage.toSendBirdJsonString(): ByteArray {
-    val json =
-        Json.encodeToJsonElement(this).run {
-            jsonObject.apply { plus(Pair("message_id", id.toLong())) }
-            Json.encodeToString(this)
-        }
-    return Base64.decode(json.commonAsUtf8ToByteArray(), 0)
+	val json =
+		Json.encodeToJsonElement(this).run {
+			jsonObject.apply { plus(Pair("message_id", id.toLong())) }
+			Json.encodeToString(this)
+		}
+	return Base64.decode(json.commonAsUtf8ToByteArray(), 0)
 }
 
 internal fun BaseMessage.toApi() =
-    ApiMessage(
-        id = messageId.toString(),
-        type = customType.toMessageType(),
-        mentionType = mentionType.toType(),
-        channelUrl = channelUrl,
-        author = sender.toApi(),
-        status = sendingStatus.toType(),
-        createdAt = createdAt,
-        updatedAt = updatedAt,
-        message = message,
-        fileUrl = (this as? FileMessage)?.url
-    )
+	ApiMessage(
+		id = messageId.toString(),
+		type = customType.toMessageType(),
+		mentionType = mentionType.toType(),
+		channelUrl = channelUrl,
+		author = sender.toApi(),
+		status = sendingStatus.toType(),
+		createdAt = createdAt,
+		updatedAt = updatedAt,
+		message = message,
+		fileUrl = (this as? FileMessage)?.url
+	)
 
 internal fun UserMessage.toApi() =
-    ApiMessage(
-        id = messageId.toString(),
-        channelUrl = channelUrl,
-        author = sender.toApi(),
-        mentions = mentionedUsers.map { it.toApi() },
-        type = customType.toMessageType(),
-        mentionType = mentionType.toType(),
-        createdAt = createdAt,
-        updatedAt = updatedAt,
-        status = sendingStatus.toType(),
-        data = data,
-        parentMessage = parentMessage?.toApi(),
-        isMuted = isSilent,
-        message = message
-    )
+	ApiMessage(
+		id = messageId.toString(),
+		channelUrl = channelUrl,
+		author = sender.toApi(),
+		mentions = mentionedUsers.map { it.toApi() },
+		type = customType.toMessageType(),
+		mentionType = mentionType.toType(),
+		createdAt = createdAt,
+		updatedAt = updatedAt,
+		status = sendingStatus.toType(),
+		data = data,
+		parentMessage = parentMessage?.toApi(),
+		isMuted = isSilent,
+		message = message
+	)
 
 internal fun FileMessage.toApi() =
-    ApiMessage(
-        id = messageId.toString(),
-        channelUrl = channelUrl,
-        author = sender.toApi(),
-        mentions = mentionedUsers.map { it.toApi() },
-        type = type.toMessageType(),
-        mentionType = mentionType.toType(),
-        createdAt = createdAt,
-        updatedAt = updatedAt,
-        status = sendingStatus.toType(),
-        data = data,
-        parentMessage = parentMessage?.toApi(),
-        isMuted = isSilent,
-        fileUrl = url,
-        fileName = name,
-        fileThumbnails = thumbnails.map { it.toApi() },
-        fileMimeType = messageParams?.mimeType
-    )
+	ApiMessage(
+		id = messageId.toString(),
+		channelUrl = channelUrl,
+		author = sender.toApi(),
+		mentions = mentionedUsers.map { it.toApi() },
+		type = type.toMessageType(),
+		mentionType = mentionType.toType(),
+		createdAt = createdAt,
+		updatedAt = updatedAt,
+		status = sendingStatus.toType(),
+		data = data,
+		parentMessage = parentMessage?.toApi(),
+		isMuted = isSilent,
+		fileUrl = url,
+		fileName = name,
+		fileThumbnails = thumbnails.map { it.toApi() },
+		fileMimeType = messageParams?.mimeType
+	)
 
 internal fun FileMessage.Thumbnail.toApi() =
-    ApiFileThumbnail(
-        maxWidth = maxWidth,
-        maxHeight = maxHeight,
-        realWidth = realWidth,
-        realHeight = realHeight,
-        url = url
-    )
+	ApiFileThumbnail(
+		maxWidth = maxWidth,
+		maxHeight = maxHeight,
+		realWidth = realWidth,
+		realHeight = realHeight,
+		url = url
+	)
 
 internal fun ApiMessage.toMessage(): BaseMessage {
-    return if (type == MessageType.TEXT) {
-        UserMessage.buildFromSerializedData(toSendBirdJsonString())
-    } else {
-        FileMessage.buildFromSerializedData(toSendBirdJsonString())
-    }
+	return if (type == MessageType.TEXT) {
+		UserMessage.buildFromSerializedData(toSendBirdJsonString())
+	} else {
+		FileMessage.buildFromSerializedData(toSendBirdJsonString())
+	}
 }
 
 internal fun DraftMessage.toParams(): BaseMessageParams {
-    return if (type == MessageType.TEXT) {
-        UserMessageParams().also { params ->
-            params.message = message!!
-            params.data = data
-            parentMessageId?.let { params.parentMessageId = it.toLong() }
-            params.customType = type.serializedName
-            params.mentionedUserIds = mentions
-        }
-    } else {
-        FileMessageParams().also { params ->
-            params.data = data
-            params.mentionType = mentionType.toType()
-            parentMessageId?.let { params.parentMessageId = it.toLong() }
-            params.customType = type.serializedName
-            params.mentionedUserIds = mentions
-            params.mentionType = mentionType.toType()
+	return if (type == MessageType.TEXT) {
+		UserMessageParams().also { params ->
+			params.message = message!!
+			params.data = data
+			parentMessageId?.let { params.parentMessageId = it.toLong() }
+			params.customType = type.serializedName
+			params.mentionedUserIds = mentions
+		}
+	} else {
+		FileMessageParams().also { params ->
+			params.data = data
+			params.mentionType = mentionType.toType()
+			parentMessageId?.let { params.parentMessageId = it.toLong() }
+			params.customType = type.serializedName
+			params.mentionedUserIds = mentions
+			params.mentionType = mentionType.toType()
 
-            params.file = file
-            params.fileUrl = fileUrl
-            params.fileName = fileName
-            params.thumbnailSizes = fileThumbnails?.map { it.toSize() }
-            params.mimeType = fileMimeType
-        }
-    }
+			params.file = file
+			params.fileUrl = fileUrl
+			params.fileName = fileName
+			params.thumbnailSizes = fileThumbnails?.map { it.toSize() }
+			params.mimeType = fileMimeType
+		}
+	}
 }
 
 internal fun ReactionEvent.toApi() =
-    ApiMessageReaction(messageId = messageId, key = key, userId = userId, updatedAt = updatedAt)
+	ApiMessageReaction(messageId = messageId, key = key, userId = userId, updatedAt = updatedAt)
 
 internal fun FileThumbnail.toSize() = FileMessage.ThumbnailSize(maxWidth, maxHeight)
 

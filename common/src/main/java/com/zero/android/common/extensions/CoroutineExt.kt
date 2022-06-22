@@ -10,18 +10,18 @@ import kotlinx.coroutines.launch
 import kotlin.experimental.ExperimentalTypeInference
 
 inline fun <T> withSameScope(crossinline block: suspend () -> T) =
-    CoroutineScope(Dispatchers.Unconfined).launch { block() }
+	CoroutineScope(Dispatchers.Unconfined).launch { block() }
 
 inline fun <T> FlowCollector<T>.emitInScope(
-    value: T,
-    scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined)
+	value: T,
+	scope: CoroutineScope = CoroutineScope(Dispatchers.Unconfined)
 ) = scope.launch { emit(value) }
 
 @OptIn(ExperimentalTypeInference::class)
 inline fun <T> callbackFlowWithAwait(
-    @BuilderInference crossinline block: suspend ProducerScope<T>.() -> Unit
+	@BuilderInference crossinline block: suspend ProducerScope<T>.() -> Unit
 ) =
-    callbackFlow<T> {
-        block(this)
-        awaitClose()
-    }
+	callbackFlow<T> {
+		block(this)
+		awaitClose()
+	}

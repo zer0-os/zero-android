@@ -9,9 +9,9 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun Background(modifier: Modifier = Modifier, content: @Composable () -> Unit) {
-    Surface(
-        color = MaterialTheme.colorScheme.background,
-        tonalElevation = 0.dp,
-        modifier = modifier.fillMaxSize()
-    ) { content() }
+	Surface(
+		color = MaterialTheme.colorScheme.background,
+		tonalElevation = 0.dp,
+		modifier = modifier.fillMaxSize()
+	) { content() }
 }

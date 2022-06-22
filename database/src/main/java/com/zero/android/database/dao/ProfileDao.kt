@@ -10,10 +10,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ProfileDao {
 
-    @Transaction
-    @Query("SELECT * FROM profiles WHERE userId = :userId")
-    fun getByUser(userId: String): Flow<ProfileEntity>
+	@Transaction
+	@Query("SELECT * FROM profiles WHERE userId = :userId")
+	fun getByUser(userId: String): Flow<ProfileEntity>
 
-    @Transaction @Insert
-    suspend fun insert(vararg users: ProfileEntity)
+	@Transaction @Insert
+	suspend fun insert(vararg users: ProfileEntity)
 }

@@ -17,47 +17,47 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val networkRepository: NetworkRepository) :
-    BaseViewModel() {
+	BaseViewModel() {
 
-    val currentScreen = MutableStateFlow<NavDestination>(FeedDestination)
+	val currentScreen = MutableStateFlow<NavDestination>(FeedDestination)
 
-    private var allNetworks: List<Network>? = null
-    val selectedNetwork = MutableStateFlow<Network?>(null)
-    val networks = MutableStateFlow<Result<List<Network>>>(Result.Loading)
+	private var allNetworks: List<Network>? = null
+	val selectedNetwork = MutableStateFlow<Network?>(null)
+	val networks = MutableStateFlow<Result<List<Network>>>(Result.Loading)
 
-    init {
-        loadNetworks()
-    }
+	init {
+		loadNetworks()
+	}
 
-    private fun loadNetworks() {
-        ioScope.launch {
-            allNetworks = null
-            networkRepository.getNetworks().asResult().collectLatest { result ->
-                if (result is Result.Loading) {
-                    if (allNetworks == null) networks.emit(result)
-                    return@collectLatest
-                }
+	private fun loadNetworks() {
+		ioScope.launch {
+			allNetworks = null
+			networkRepository.getNetworks().asResult().collectLatest { result ->
+				if (result is Result.Loading) {
+					if (allNetworks == null) networks.emit(result)
+					return@collectLatest
+				}
 
-                if (result is Result.Success && result.data.isNotEmpty()) {
-                    allNetworks = result.data
-                }
+				if (result is Result.Success && result.data.isNotEmpty()) {
+					allNetworks = result.data
+				}
 
-                val selected = selectedNetwork.firstOrNull()
-                if (selected == null) {
-                    allNetworks?.takeIf { it.isNotEmpty() }?.let { onNetworkSelected(it[0]) }
-                } else {
-                    onNetworkSelected(selected)
-                }
-            }
-        }
-    }
+				val selected = selectedNetwork.firstOrNull()
+				if (selected == null) {
+					allNetworks?.takeIf { it.isNotEmpty() }?.let { onNetworkSelected(it[0]) }
+				} else {
+					onNetworkSelected(selected)
+				}
+			}
+		}
+	}
 
-    fun onNetworkSelected(network: Network) {
-        viewModelScope.launch {
-            selectedNetwork.emit(network)
-            allNetworks?.let { allNetworks ->
-                networks.emit(Result.Success(allNetworks.filter { it.id != network.id }))
-            }
-        }
-    }
+	fun onNetworkSelected(network: Network) {
+		viewModelScope.launch {
+			selectedNetwork.emit(network)
+			allNetworks?.let { allNetworks ->
+				networks.emit(Result.Success(allNetworks.filter { it.id != network.id }))
+			}
+		}
+	}
 }

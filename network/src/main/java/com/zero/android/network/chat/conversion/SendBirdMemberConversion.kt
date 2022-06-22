@@ -16,62 +16,62 @@ import kotlinx.serialization.json.jsonObject
 import okio.internal.commonAsUtf8ToByteArray
 
 private fun ApiMember.toSendBirdJsonString(): ByteArray {
-    val json =
-        Json.encodeToJsonElement(this).run {
-            jsonObject.apply { plus(Pair("is_online", status == ConnectionStatus.ONLINE)) }
-            Json.encodeToString(this)
-        }
-    return Base64.decode(json.commonAsUtf8ToByteArray(), 0)
+	val json =
+		Json.encodeToJsonElement(this).run {
+			jsonObject.apply { plus(Pair("is_online", status == ConnectionStatus.ONLINE)) }
+			Json.encodeToString(this)
+		}
+	return Base64.decode(json.commonAsUtf8ToByteArray(), 0)
 }
 
 internal fun User.toApi() =
-    ApiMember(
-        id = userId,
-        nickname = nickname,
-        profileUrl = profileUrl,
-        friendDiscoveryKey = friendDiscoveryKey,
-        friendName = friendName,
-        metadata = metaData,
-        status = connectionStatus.toType(),
-        lastSeenAt = lastSeenAt,
-        isActive = isActive
-    )
+	ApiMember(
+		id = userId,
+		nickname = nickname,
+		profileUrl = profileUrl,
+		friendDiscoveryKey = friendDiscoveryKey,
+		friendName = friendName,
+		metadata = metaData,
+		status = connectionStatus.toType(),
+		lastSeenAt = lastSeenAt,
+		isActive = isActive
+	)
 
 internal fun ApiMember.toUser() = User.buildFromSerializedData(toSendBirdJsonString())
 
 internal fun Member.toApi() =
-    ApiMember(
-        id = userId,
-        nickname = nickname,
-        profileUrl = profileUrl,
-        friendDiscoveryKey = friendDiscoveryKey,
-        friendName = friendName,
-        metadata = metaData,
-        status = connectionStatus.toType(),
-        lastSeenAt = lastSeenAt,
-        isActive = isActive,
-        isBlockedByMe = isBlockedByMe,
-        isBlockingMe = isBlockingMe,
-        isMuted = isMuted
-    )
+	ApiMember(
+		id = userId,
+		nickname = nickname,
+		profileUrl = profileUrl,
+		friendDiscoveryKey = friendDiscoveryKey,
+		friendName = friendName,
+		metadata = metaData,
+		status = connectionStatus.toType(),
+		lastSeenAt = lastSeenAt,
+		isActive = isActive,
+		isBlockedByMe = isBlockedByMe,
+		isBlockingMe = isBlockingMe,
+		isMuted = isMuted
+	)
 
 internal fun ApiMember.toMember() = Member.buildFromSerializedData(toSendBirdJsonString())
 
 internal fun Sender.toApi(): ApiMember {
-    val properties = Json { ignoreUnknownKeys = true }.decodeFromString<ApiMemberProfile?>(profileUrl)
-    return ApiMember(
-        id = userId,
-        nickname = nickname,
-        profileUrl = profileUrl,
-        profileImage = properties?.profileImage,
-        friendDiscoveryKey = friendDiscoveryKey,
-        friendName = friendName,
-        metadata = metaData,
-        status = connectionStatus.toType(),
-        lastSeenAt = lastSeenAt,
-        isActive = isActive,
-        isBlockedByMe = isBlockedByMe
-    )
+	val properties = Json { ignoreUnknownKeys = true }.decodeFromString<ApiMemberProfile?>(profileUrl)
+	return ApiMember(
+		id = userId,
+		nickname = nickname,
+		profileUrl = profileUrl,
+		profileImage = properties?.profileImage,
+		friendDiscoveryKey = friendDiscoveryKey,
+		friendName = friendName,
+		metadata = metaData,
+		status = connectionStatus.toType(),
+		lastSeenAt = lastSeenAt,
+		isActive = isActive,
+		isBlockedByMe = isBlockedByMe
+	)
 }
 
 internal fun ApiMember.toSender() = Sender.buildFromSerializedData(toSendBirdJsonString())

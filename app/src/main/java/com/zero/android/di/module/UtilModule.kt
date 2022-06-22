@@ -12,6 +12,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object UtilModule {
 
-    @Singleton @Provides
-    fun logger(): Logger = ConsoleLogger()
+	@Singleton @Provides
+	fun logger(): Logger = ConsoleLogger()
 }

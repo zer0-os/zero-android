@@ -17,24 +17,24 @@ import com.zero.android.ui.theme.ZeroTheme
 
 @Composable
 fun AppLayout(
-    windowSizeClass: WindowSizeClass,
-    modifier: Modifier = Modifier,
-    viewModel: AppViewModel = hiltViewModel()
+	windowSizeClass: WindowSizeClass,
+	modifier: Modifier = Modifier,
+	viewModel: AppViewModel = hiltViewModel()
 ) {
-    ZeroTheme {
-        val navController = rememberNavController()
-        val navBackStackEntry = navController.currentBackStackEntryAsState()
-        val currentRoute =
-            navBackStackEntry.value?.destination?.route ?: viewModel.startDestination.route
+	ZeroTheme {
+		val navController = rememberNavController()
+		val navBackStackEntry = navController.currentBackStackEntryAsState()
+		val currentRoute =
+			navBackStackEntry.value?.destination?.route ?: viewModel.startDestination.route
 
-        val isLoading: Boolean by viewModel.loading.collectAsState()
+		val isLoading: Boolean by viewModel.loading.collectAsState()
 
-        LoadingContainer(loading = isLoading, modifier = modifier.fillMaxSize()) {
-            AppNavHost(
-                navController = navController,
-                modifier = modifier.systemBarsPadding(),
-                startDestination = currentRoute
-            )
-        }
-    }
+		LoadingContainer(loading = isLoading, modifier = modifier.fillMaxSize()) {
+			AppNavHost(
+				navController = navController,
+				modifier = modifier.systemBarsPadding(),
+				startDestination = currentRoute
+			)
+		}
+	}
 }

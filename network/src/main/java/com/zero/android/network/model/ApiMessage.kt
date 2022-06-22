@@ -11,39 +11,39 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ApiMessage(
-    val id: String,
-    @SerialName("channel_url") val channelUrl: String? = null,
-    val author: ApiMember,
-    val mentions: List<ApiMember> = emptyList(),
-    @Serializable(MessageTypeSerializer::class) val type: MessageType,
-    @Serializable(MessageMentionTypeSerializer::class) val mentionType: MessageMentionType,
-    @SerialName("created_at") val createdAt: Long,
-    @SerialName("updated_at") val updatedAt: Long,
-    @Serializable(MessageStatusSerializer::class) val status: MessageStatus,
-    val message: String? = null,
-    val data: String? = null,
-    val parentMessage: ApiMessage? = null,
-    val isMuted: Boolean = false,
-    val fileUrl: String? = null,
-    val fileName: String? = null,
-    val fileThumbnails: List<ApiFileThumbnail>? = null,
-    val fileMimeType: String? = null,
-    val reactions: List<ApiMessageReaction>? = null
+	val id: String,
+	@SerialName("channel_url") val channelUrl: String? = null,
+	val author: ApiMember,
+	val mentions: List<ApiMember> = emptyList(),
+	@Serializable(MessageTypeSerializer::class) val type: MessageType,
+	@Serializable(MessageMentionTypeSerializer::class) val mentionType: MessageMentionType,
+	@SerialName("created_at") val createdAt: Long,
+	@SerialName("updated_at") val updatedAt: Long,
+	@Serializable(MessageStatusSerializer::class) val status: MessageStatus,
+	val message: String? = null,
+	val data: String? = null,
+	val parentMessage: ApiMessage? = null,
+	val isMuted: Boolean = false,
+	val fileUrl: String? = null,
+	val fileName: String? = null,
+	val fileThumbnails: List<ApiFileThumbnail>? = null,
+	val fileMimeType: String? = null,
+	val reactions: List<ApiMessageReaction>? = null
 )
 
 @Serializable
 data class ApiFileThumbnail(
-    var maxWidth: Int = 0,
-    val maxHeight: Int = 0,
-    val realWidth: Int = 0,
-    val realHeight: Int = 0,
-    val url: String? = null
+	var maxWidth: Int = 0,
+	val maxHeight: Int = 0,
+	val realWidth: Int = 0,
+	val realHeight: Int = 0,
+	val url: String? = null
 )
 
 @Serializable
 data class ApiMessageReaction(
-    var messageId: Long,
-    val key: String,
-    val userId: String,
-    val updatedAt: Long
+	var messageId: Long,
+	val key: String,
+	val userId: String,
+	val updatedAt: Long
 )

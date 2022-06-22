@@ -23,80 +23,80 @@ import com.zero.android.ui.extensions.Preview
 import com.zero.android.ui.theme.AppTheme
 
 val HOME_DESTINATIONS =
-    listOf(
-        AppBarItem(ChannelsDestination, R.drawable.ic_channel, R.drawable.ic_channel),
-        AppBarItem(
-            MembersDestination,
-            R.drawable.ic_people_selected,
-            R.drawable.ic_people_unselected
-        ),
-        AppBarItem(FeedDestination, R.drawable.ic_feeds, R.drawable.ic_feeds),
-        AppBarItem(
-            NotificationsDestination,
-            R.drawable.ic_notification_selected,
-            R.drawable.ic_notification_unselected
-        ),
-        AppBarItem(
-            DirectChannelDestination,
-            R.drawable.ic_direct_chat_selected,
-            R.drawable.ic_direct_chat_unselected
-        )
-    )
+	listOf(
+		AppBarItem(ChannelsDestination, R.drawable.ic_channel, R.drawable.ic_channel),
+		AppBarItem(
+			MembersDestination,
+			R.drawable.ic_people_selected,
+			R.drawable.ic_people_unselected
+		),
+		AppBarItem(FeedDestination, R.drawable.ic_feeds, R.drawable.ic_feeds),
+		AppBarItem(
+			NotificationsDestination,
+			R.drawable.ic_notification_selected,
+			R.drawable.ic_notification_unselected
+		),
+		AppBarItem(
+			DirectChannelDestination,
+			R.drawable.ic_direct_chat_selected,
+			R.drawable.ic_direct_chat_unselected
+		)
+	)
 
 @Composable
 fun AppBottomBar(
-    modifier: Modifier = Modifier,
-    currentDestination: NavDestination?,
-    onNavigateToHomeDestination: (NavDestination) -> Unit
+	modifier: Modifier = Modifier,
+	currentDestination: NavDestination?,
+	onNavigateToHomeDestination: (NavDestination) -> Unit
 ) {
-    Column {
-        BottomBarDivider()
-        BottomNavigation(
-            modifier =
-            modifier
-                .windowInsetsPadding(
-                    WindowInsets.safeDrawing.only(
-                        WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
-                    )
-                )
-                .fillMaxWidth(),
-            backgroundColor = AppTheme.colors.surfaceInverse,
-            contentColor = AppTheme.colors.surface,
-            elevation = 0.dp
-        ) {
-            HOME_DESTINATIONS.forEach { item ->
-                val selected = currentDestination?.route == item.destination.route
-                BottomNavigationItem(
-                    selected = selected,
-                    onClick = { onNavigateToHomeDestination(item.destination) },
-                    icon = {
-                        val showBadgeCount = false
-                        if (showBadgeCount) {
-                            BadgedBox(badge = { CountBadge(count = 1) }) {
-                                BottomBarIcon(isSelected = selected, item = item)
-                            }
-                        } else {
-                            BottomBarIcon(isSelected = selected, item = item)
-                        }
-                    },
-                    alwaysShowLabel = false,
-                    selectedContentColor = AppTheme.colors.glow,
-                    unselectedContentColor = AppTheme.colors.surface
-                )
-            }
-        }
-    }
+	Column {
+		BottomBarDivider()
+		BottomNavigation(
+			modifier =
+			modifier
+				.windowInsetsPadding(
+					WindowInsets.safeDrawing.only(
+						WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
+					)
+				)
+				.fillMaxWidth(),
+			backgroundColor = AppTheme.colors.surfaceInverse,
+			contentColor = AppTheme.colors.surface,
+			elevation = 0.dp
+		) {
+			HOME_DESTINATIONS.forEach { item ->
+				val selected = currentDestination?.route == item.destination.route
+				BottomNavigationItem(
+					selected = selected,
+					onClick = { onNavigateToHomeDestination(item.destination) },
+					icon = {
+						val showBadgeCount = false
+						if (showBadgeCount) {
+							BadgedBox(badge = { CountBadge(count = 1) }) {
+								BottomBarIcon(isSelected = selected, item = item)
+							}
+						} else {
+							BottomBarIcon(isSelected = selected, item = item)
+						}
+					},
+					alwaysShowLabel = false,
+					selectedContentColor = AppTheme.colors.glow,
+					unselectedContentColor = AppTheme.colors.surface
+				)
+			}
+		}
+	}
 }
 
 @Composable
 fun BottomBarIcon(isSelected: Boolean, item: AppBarItem) {
-    val iconId = if (isSelected) item.selectedIcon else item.unselectedIcon
-    Icon(
-        modifier =
-        if (item.destination is FeedDestination) Modifier.size(32.dp) else Modifier.size(20.dp),
-        painter = painterResource(iconId),
-        contentDescription = null
-    )
+	val iconId = if (isSelected) item.selectedIcon else item.unselectedIcon
+	Icon(
+		modifier =
+		if (item.destination is FeedDestination) Modifier.size(32.dp) else Modifier.size(20.dp),
+		painter = painterResource(iconId),
+		contentDescription = null
+	)
 }
 
 @Preview

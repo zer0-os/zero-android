@@ -8,8 +8,8 @@ import androidx.lifecycle.LifecycleOwner
 
 @Composable
 fun LifecycleOwner.OnEvent(observer: LifecycleEventObserver) {
-    DisposableEffect(this) {
-        lifecycle.addObserver(observer)
-        onDispose { lifecycle.removeObserver(observer) }
-    }
+	DisposableEffect(this) {
+		lifecycle.addObserver(observer)
+		onDispose { lifecycle.removeObserver(observer) }
+	}
 }

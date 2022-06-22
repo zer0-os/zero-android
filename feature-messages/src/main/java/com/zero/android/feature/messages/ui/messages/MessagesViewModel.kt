@@ -20,68 +20,72 @@ import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
-class MessagesViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
-    private val preferences: AppPreferences,
-    private val chatRepository: ChatRepository,
-    private val channelRepository: ChannelRepository
+class MessagesViewModel
+@Inject
+constructor(
+	savedStateHandle: SavedStateHandle,
+	private val preferences: AppPreferences,
+	private val chatRepository: ChatRepository,
+	private val channelRepository: ChannelRepository
 ) : BaseViewModel() {
 
-    private val channelId: String = checkNotNull(savedStateHandle[MessagesDestination.channelIdArg])
-    val isGroupChannel: Boolean = checkNotNull(savedStateHandle[MessagesDestination.channelTypeArg])
-    val loggedInUserId get() = runBlocking(Dispatchers.IO) { preferences.userId() }
+	private val channelId: String = checkNotNull(savedStateHandle[MessagesDestination.channelIdArg])
+	val isGroupChannel: Boolean = checkNotNull(savedStateHandle[MessagesDestination.channelTypeArg])
+	val loggedInUserId
+		get() = runBlocking(Dispatchers.IO) { preferences.userId() }
 
-    private val _channel = MutableStateFlow<Result<Channel>>(Result.Loading)
-    private val _messages: Flow<Result<List<Message>>> = chatRepository.channelChatMessages.asResult()
+	private val _channel = MutableStateFlow<Result<Channel>>(Result.Loading)
+	private val _messages: Flow<Result<List<Message>>> = chatRepository.channelChatMessages.asResult()
 
-    val uiState: StateFlow<ChatScreenUiState> =
-        combine(
-            _channel,
-            _messages
-        ) { channelResult, messagesResult ->
-            val chatChannelUiState = when (channelResult) {
-                is Result.Success -> ChatChannelUiState.Success(channelResult.data)
-                is Result.Loading -> ChatChannelUiState.Loading
-                else -> ChatChannelUiState.Error
-            }
-            val messagesUiState = when (messagesResult) {
-                is Result.Success -> MessagesUiState.Success(messagesResult.data)
-                is Result.Loading -> MessagesUiState.Loading
-                else -> MessagesUiState.Error
-            }
-            ChatScreenUiState(chatChannelUiState, messagesUiState)
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(1_000),
-            initialValue = ChatScreenUiState(ChatChannelUiState.Loading, MessagesUiState.Loading)
-        )
+	val uiState: StateFlow<ChatScreenUiState> =
+		combine(_channel, _messages) { channelResult, messagesResult ->
+			val chatChannelUiState =
+				when (channelResult) {
+					is Result.Success -> ChatChannelUiState.Success(channelResult.data)
+					is Result.Loading -> ChatChannelUiState.Loading
+					else -> ChatChannelUiState.Error
+				}
+			val messagesUiState =
+				when (messagesResult) {
+					is Result.Success -> MessagesUiState.Success(messagesResult.data)
+					is Result.Loading -> MessagesUiState.Loading
+					else -> MessagesUiState.Error
+				}
+			ChatScreenUiState(chatChannelUiState, messagesUiState)
+		}
+			.stateIn(
+				scope = viewModelScope,
+				started = SharingStarted.WhileSubscribed(1_000),
+				initialValue = ChatScreenUiState(ChatChannelUiState.Loading, MessagesUiState.Loading)
+			)
 
-    fun loadChannel() {
-        ioScope.launch {
-            val request = if (isGroupChannel) {
-                channelRepository.getGroupChannel(channelId)
-            } else {
-                channelRepository.getDirectChannel(channelId)
-            }
-            request.asResult().collectLatest {
-                _channel.emit(it)
-                if (it is Result.Success) configureChat(it.data)
-            }
-        }
-    }
+	fun loadChannel() {
+		ioScope.launch {
+			val request =
+				if (isGroupChannel) {
+					channelRepository.getGroupChannel(channelId)
+				} else {
+					channelRepository.getDirectChannel(channelId)
+				}
+			request.asResult().collectLatest {
+				_channel.emit(it)
+				if (it is Result.Success) configureChat(it.data)
+			}
+		}
+	}
 
-    private fun configureChat(channel: Channel) {
-        ioScope.launch {
-            chatRepository.addChatListener(channel)
-            chatRepository.getMessages(channel)
-        }
-    }
+	private fun configureChat(channel: Channel) {
+		ioScope.launch {
+			chatRepository.addChatListener(channel)
+			chatRepository.getMessages(channel)
+		}
+	}
 
-    fun sendMessage(message: DraftMessage) {
-        ioScope.launch {
-            (_channel.firstOrNull() as? Result.Success)?.data?.let { channel ->
-                chatRepository.send(channel, message)
-            }
-        }
-    }
+	fun sendMessage(message: DraftMessage) {
+		ioScope.launch {
+			(_channel.firstOrNull() as? Result.Success)?.data?.let { channel ->
+				chatRepository.send(channel, message)
+			}
+		}
+	}
 }

@@ -7,10 +7,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun SearchChannelScreen(viewModel: SearchChannelViewModel = hiltViewModel()) {
-    SearchChannelScreen()
+	SearchChannelScreen()
 }
 
 @Composable
 fun SearchChannelScreen() {
-    Column { Text(text = "Search Channel Screen") }
+	Column { Text(text = "Search Channel Screen") }
 }

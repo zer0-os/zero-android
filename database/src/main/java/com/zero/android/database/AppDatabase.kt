@@ -15,29 +15,29 @@ import com.zero.android.database.model.ProfileEntity
 import com.zero.android.database.model.UserEntity
 
 @Database(
-    entities = [UserEntity::class, ProfileEntity::class, NetworkEntity::class],
-    version = 1,
-    exportSchema = false
+	entities = [UserEntity::class, ProfileEntity::class, NetworkEntity::class],
+	version = 1,
+	exportSchema = false
 )
 @TypeConverters(DateConverters::class, ListConverters::class)
 abstract class AppDatabase : RoomDatabase() {
 
-    companion object {
+	companion object {
 
-        @Volatile private var INSTANCE: AppDatabase? = null
+		@Volatile private var INSTANCE: AppDatabase? = null
 
-        fun getInstance(context: Context): AppDatabase =
-            INSTANCE ?: synchronized(this) { INSTANCE ?: buildDatabase(context).also { INSTANCE = it } }
+		fun getInstance(context: Context): AppDatabase =
+			INSTANCE ?: synchronized(this) { INSTANCE ?: buildDatabase(context).also { INSTANCE = it } }
 
-        private fun buildDatabase(context: Context) =
-            Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "zero-database")
-                .fallbackToDestructiveMigration()
-                .build()
-    }
+		private fun buildDatabase(context: Context) =
+			Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "zero-database")
+				.fallbackToDestructiveMigration()
+				.build()
+	}
 
-    abstract fun userDao(): UserDao
+	abstract fun userDao(): UserDao
 
-    abstract fun profileDao(): ProfileDao
+	abstract fun profileDao(): ProfileDao
 
-    abstract fun networkDao(): NetworkDao
+	abstract fun networkDao(): NetworkDao
 }

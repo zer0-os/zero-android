@@ -17,18 +17,18 @@ import com.zero.android.ui.theme.AppTheme
 
 @Composable
 fun NameInitialsView(modifier: Modifier = Modifier, userName: String) {
-    Box(
-        modifier =
-        modifier
-            .size(36.dp)
-            .background(color = MaterialTheme.colorScheme.primary, shape = CircleShape)
-    ) {
-        Text(
-            userName.initials,
-            modifier = Modifier.align(Alignment.Center),
-            color = AppTheme.colors.colorTextPrimary,
-            fontWeight = FontWeight.Medium,
-            fontSize = 16.sp
-        )
-    }
+	Box(
+		modifier =
+		modifier
+			.size(36.dp)
+			.background(color = MaterialTheme.colorScheme.primary, shape = CircleShape)
+	) {
+		Text(
+			userName.initials,
+			modifier = Modifier.align(Alignment.Center),
+			color = AppTheme.colors.colorTextPrimary,
+			fontWeight = FontWeight.Medium,
+			fontSize = 16.sp
+		)
+	}
 }

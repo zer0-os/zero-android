@@ -12,7 +12,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object ChatModule {
 
-    @Singleton
-    @Provides
-    fun provideChatProvider(logger: Logger): ChatProvider = SendBirdProvider(logger)
+	@Singleton
+	@Provides
+	fun provideChatProvider(logger: Logger): ChatProvider = SendBirdProvider(logger)
 }
