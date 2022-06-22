@@ -12,29 +12,32 @@ import com.zero.android.models.enums.MessageType
 import java.util.*
 
 class MessagesUiState(
-    loggedInUserId: String,
-    channelResult: Result<Channel>,
-    messages: Result<List<Message>>
+	loggedInUserId: String,
+	channelResult: Result<Channel>,
+	messages: Result<List<Message>>
 ) {
-    val currentUserId = loggedInUserId
+	val currentUserId = loggedInUserId
 
-    val channel = if (channelResult is Result.Success) {
-        channelResult.data
-    } else null
+	val channel =
+		if (channelResult is Result.Success) {
+			channelResult.data
+		} else null
 
-    private val _messages: MutableList<Message> = if (messages is Result.Success) {
-        mutableStateListOf(*messages.data.toTypedArray())
-    } else mutableListOf()
-    val messages: List<Message> = _messages
+	private val _messages: MutableList<Message> =
+		if (messages is Result.Success) {
+			mutableStateListOf(*messages.data.toTypedArray())
+		} else mutableListOf()
+	val messages: List<Message> = _messages
 
-    fun addMessage(msg: String) = DraftMessage(
-        channelUrl = null,
-        author = Member(currentUserId),
-        type = MessageType.TEXT,
-        mentionType = MessageMentionType.USER,
-        message = msg,
-        createdAt = Calendar.getInstance().timeInMillis,
-        updatedAt = Calendar.getInstance().timeInMillis,
-        status = MessageStatus.SUCCEEDED
-    )
+	fun addMessage(msg: String) =
+		DraftMessage(
+			channelUrl = null,
+			author = Member(currentUserId),
+			type = MessageType.TEXT,
+			mentionType = MessageMentionType.USER,
+			message = msg,
+			createdAt = Calendar.getInstance().timeInMillis,
+			updatedAt = Calendar.getInstance().timeInMillis,
+			status = MessageStatus.SUCCEEDED
+		)
 }

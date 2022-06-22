@@ -36,97 +36,94 @@ import com.zero.android.ui.theme.Typography
 import com.zero.android.ui.util.BackHandler
 
 enum class InputSelector {
-    TEXT,
-    ATTACHMENT,
-    IMAGE,
-    VOICE_MEMO
+	TEXT,
+	ATTACHMENT,
+	IMAGE,
+	VOICE_MEMO
 }
 
 @Preview
 @Composable
 fun UserInputPreview() {
-    UserInputPanel(onMessageSent = {})
+	UserInputPanel(onMessageSent = {})
 }
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun UserInputPanel(
-    modifier: Modifier = Modifier,
-    onMessageSent: (String) -> Unit,
-    resetScroll: () -> Unit = {},
-    addAttachment: () -> Unit = {},
-    addImage: () -> Unit = {},
-    recordMemo: () -> Unit = {},
+	modifier: Modifier = Modifier,
+	onMessageSent: (String) -> Unit,
+	resetScroll: () -> Unit = {},
+	addAttachment: () -> Unit = {},
+	addImage: () -> Unit = {},
+	recordMemo: () -> Unit = {}
 ) {
-    val keyboardController = LocalSoftwareKeyboardController.current
-    var currentInputSelector by rememberSaveable { mutableStateOf(InputSelector.TEXT) }
-    val dismissKeyboard = { currentInputSelector = InputSelector.TEXT }
+	val keyboardController = LocalSoftwareKeyboardController.current
+	var currentInputSelector by rememberSaveable { mutableStateOf(InputSelector.TEXT) }
+	val dismissKeyboard = { currentInputSelector = InputSelector.TEXT }
 
-    // Intercept back navigation if there's a InputSelector visible
-    if (currentInputSelector != InputSelector.TEXT) {
-        BackHandler(onBack = dismissKeyboard)
-    }
+	// Intercept back navigation if there's a InputSelector visible
+	if (currentInputSelector != InputSelector.TEXT) {
+		BackHandler(onBack = dismissKeyboard)
+	}
 
-    var textState by remember { mutableStateOf(TextFieldValue()) }
+	var textState by remember { mutableStateOf(TextFieldValue()) }
 
-    // Used to decide if the keyboard should be shown
-    var textFieldFocusState by remember { mutableStateOf(false) }
+	// Used to decide if the keyboard should be shown
+	var textFieldFocusState by remember { mutableStateOf(false) }
 
-    Row(
-        modifier = Modifier
-            .padding(vertical = 12.dp)
-            .fillMaxWidth()
-    ) {
-        IconButton(modifier = Modifier.align(CenterVertically), onClick = {
-            currentInputSelector = InputSelector.ATTACHMENT
-            addAttachment()
-        }) {
-            Icon(imageVector = Icons.Filled.Add, contentDescription = "cd_add_attachment")
-        }
-        UserInputText(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .align(CenterVertically),
-            textFieldValue = textState,
-            onTextChanged = { textState = it },
-            // Only show the keyboard if there's no input selector and text field has focus
-            keyboardShown = currentInputSelector == InputSelector.TEXT && textFieldFocusState,
-            // Close extended selector if text field receives focus
-            onTextFieldFocused = { focused ->
-                if (focused) {
-                    currentInputSelector = InputSelector.TEXT
-                    resetScroll()
-                }
-                textFieldFocusState = focused
-            },
-            onMessageSent = {
-                if (it.isNotEmpty()) {
-                    onMessageSent(it)
-                    textState = TextFieldValue()
-                    keyboardController?.hide()
-                }
-            },
-        )
-        IconButton(modifier = Modifier.align(CenterVertically), onClick = {
-            currentInputSelector = InputSelector.IMAGE
-            addImage()
-        }) {
-            Icon(
-                painter = painterResource(R.drawable.ic_camera),
-                contentDescription = "cd_add_attachment"
-            )
-        }
-        IconButton(modifier = Modifier.align(CenterVertically), onClick = {
-            currentInputSelector = InputSelector.VOICE_MEMO
-            recordMemo()
-        }) {
-            Icon(
-                painter = painterResource(R.drawable.ic_mic),
-                contentDescription = "cd_record_audio"
-            )
-        }
-    }
+	Row(modifier = Modifier.padding(vertical = 12.dp).fillMaxWidth()) {
+		IconButton(
+			modifier = Modifier.align(CenterVertically),
+			onClick = {
+				currentInputSelector = InputSelector.ATTACHMENT
+				addAttachment()
+			}
+		) { Icon(imageVector = Icons.Filled.Add, contentDescription = "cd_add_attachment") }
+		UserInputText(
+			modifier = Modifier.fillMaxWidth().weight(1f).align(CenterVertically),
+			textFieldValue = textState,
+			onTextChanged = { textState = it },
+			// Only show the keyboard if there's no input selector and text field has focus
+			keyboardShown = currentInputSelector == InputSelector.TEXT && textFieldFocusState,
+			// Close extended selector if text field receives focus
+			onTextFieldFocused = { focused ->
+				if (focused) {
+					currentInputSelector = InputSelector.TEXT
+					resetScroll()
+				}
+				textFieldFocusState = focused
+			},
+			onMessageSent = {
+				if (it.isNotEmpty()) {
+					onMessageSent(it)
+					textState = TextFieldValue()
+					keyboardController?.hide()
+				}
+			}
+		)
+		IconButton(
+			modifier = Modifier.align(CenterVertically),
+			onClick = {
+				currentInputSelector = InputSelector.IMAGE
+				addImage()
+			}
+		) {
+			Icon(
+				painter = painterResource(R.drawable.ic_camera),
+				contentDescription = "cd_add_attachment"
+			)
+		}
+		IconButton(
+			modifier = Modifier.align(CenterVertically),
+			onClick = {
+				currentInputSelector = InputSelector.VOICE_MEMO
+				recordMemo()
+			}
+		) {
+			Icon(painter = painterResource(R.drawable.ic_mic), contentDescription = "cd_record_audio")
+		}
+	}
 }
 
 val KeyboardShownKey = SemanticsPropertyKey<Boolean>("KeyboardShownKey")
@@ -135,54 +132,42 @@ var SemanticsPropertyReceiver.keyboardShownProperty by KeyboardShownKey
 @ExperimentalFoundationApi
 @Composable
 private fun UserInputText(
-    modifier: Modifier = Modifier,
-    keyboardType: KeyboardType = KeyboardType.Text,
-    textFieldValue: TextFieldValue,
-    keyboardShown: Boolean,
-    onMessageSent: (String) -> Unit,
-    onTextChanged: (TextFieldValue) -> Unit,
-    onTextFieldFocused: (Boolean) -> Unit
+	modifier: Modifier = Modifier,
+	keyboardType: KeyboardType = KeyboardType.Text,
+	textFieldValue: TextFieldValue,
+	keyboardShown: Boolean,
+	onMessageSent: (String) -> Unit,
+	onTextChanged: (TextFieldValue) -> Unit,
+	onTextFieldFocused: (Boolean) -> Unit
 ) {
-    Box(
-        modifier = modifier
-            .semantics {
-                keyboardShownProperty = keyboardShown
-            },
-    ) {
-        var lastFocusState by remember { mutableStateOf(false) }
-        TextField(
-            value = textFieldValue.text,
-            onValueChange = { onTextChanged(TextFieldValue(it)) },
-            placeholder = {
-                Text(stringResource(R.string.write_your_message))
-            },
-            textStyle = Typography.bodyMedium,
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.CenterStart)
-                .onFocusChanged { state ->
-                    if (lastFocusState != state.isFocused) {
-                        onTextFieldFocused(state.isFocused)
-                    }
-                    lastFocusState = state.isFocused
-                },
-            shape = RoundedCornerShape(24.dp),
-            colors =
-            TextFieldDefaults.textFieldColors(
-                textColor = AppTheme.colors.colorTextPrimary,
-                disabledTextColor = AppTheme.colors.colorTextSecondary,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent,
-                placeholderColor = AppTheme.colors.colorTextSecondaryVariant,
-                cursorColor = AppTheme.colors.colorTextPrimary,
-                containerColor = Color(0xFF191919)
-            ),
-            keyboardOptions =
-            KeyboardOptions(keyboardType = keyboardType, imeAction = ImeAction.Send),
-            keyboardActions = KeyboardActions(
-                onSend = { onMessageSent(textFieldValue.text) }
-            )
-        )
-    }
+	Box(modifier = modifier.semantics { keyboardShownProperty = keyboardShown }) {
+		var lastFocusState by remember { mutableStateOf(false) }
+		TextField(
+			value = textFieldValue.text,
+			onValueChange = { onTextChanged(TextFieldValue(it)) },
+			placeholder = { Text(stringResource(R.string.write_your_message)) },
+			textStyle = Typography.bodyMedium,
+			modifier =
+			Modifier.fillMaxWidth().align(Alignment.CenterStart).onFocusChanged { state ->
+				if (lastFocusState != state.isFocused) {
+					onTextFieldFocused(state.isFocused)
+				}
+				lastFocusState = state.isFocused
+			},
+			shape = RoundedCornerShape(24.dp),
+			colors =
+			TextFieldDefaults.textFieldColors(
+				textColor = AppTheme.colors.colorTextPrimary,
+				disabledTextColor = AppTheme.colors.colorTextSecondary,
+				focusedIndicatorColor = Color.Transparent,
+				unfocusedIndicatorColor = Color.Transparent,
+				disabledIndicatorColor = Color.Transparent,
+				placeholderColor = AppTheme.colors.colorTextSecondaryVariant,
+				cursorColor = AppTheme.colors.colorTextPrimary,
+				containerColor = Color(0xFF191919)
+			),
+			keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = ImeAction.Send),
+			keyboardActions = KeyboardActions(onSend = { onMessageSent(textFieldValue.text) })
+		)
+	}
 }

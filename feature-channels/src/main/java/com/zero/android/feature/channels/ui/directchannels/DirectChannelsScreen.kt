@@ -20,46 +20,39 @@ import com.zero.android.ui.extensions.Preview
 
 @Composable
 fun DirectChannelsRoute(
-    network: Network?,
-    viewModel: DirectChannelsViewModel = hiltViewModel(),
-    onChannelSelected:(Channel) -> Unit
+	network: Network?,
+	viewModel: DirectChannelsViewModel = hiltViewModel(),
+	onChannelSelected: (Channel) -> Unit
 ) {
-    val channels: Result<List<DirectChannel>> by viewModel.channels.collectAsState()
+	val channels: Result<List<DirectChannel>> by viewModel.channels.collectAsState()
 
-    LaunchedEffect(network?.id) { network?.let { viewModel.onNetworkUpdated(it) } }
-    DirectChannelsScreen(
-        loggedInUser = viewModel.loggedInUserId,
-        channels = channels,
-        onChannelSelected = onChannelSelected
-    )
+	LaunchedEffect(network?.id) { network?.let { viewModel.onNetworkUpdated(it) } }
+	DirectChannelsScreen(
+		loggedInUser = viewModel.loggedInUserId,
+		channels = channels,
+		onChannelSelected = onChannelSelected
+	)
 }
 
 @Composable
 fun DirectChannelsScreen(
-    loggedInUser: String,
-    channels: Result<List<DirectChannel>>,
-    onChannelSelected:(Channel) -> Unit
+	loggedInUser: String,
+	channels: Result<List<DirectChannel>>,
+	onChannelSelected: (Channel) -> Unit
 ) {
-    val directChannelUiState = DirectChannelUiState(channels)
-    val directChannels = directChannelUiState.directChannels
+	val directChannelUiState = DirectChannelUiState(channels)
+	val directChannels = directChannelUiState.directChannels
 
-    if (directChannels.isNotEmpty()) {
-        Column(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            LazyColumn {
-                items(directChannels) { channel ->
-                    ChannelsItemsList(loggedInUser, channel) {
-                        onChannelSelected(it)
-                    }
-                }
-            }
-        }
-    }
+	if (directChannels.isNotEmpty()) {
+		Column(modifier = Modifier.fillMaxWidth()) {
+			LazyColumn {
+				items(directChannels) { channel ->
+					ChannelsItemsList(loggedInUser, channel) { onChannelSelected(it) }
+				}
+			}
+		}
+	}
 }
 
-@Preview
-@Composable
-fun DirectChannelsScreenPreview() = Preview {
-
-}
+@Preview @Composable
+fun DirectChannelsScreenPreview() = Preview {}

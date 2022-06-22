@@ -13,28 +13,25 @@ import com.zero.android.ui.extensions.Preview
 import com.zero.android.ui.theme.AppTheme
 
 @Composable
-fun BottomBarDivider(
-    modifier: Modifier = Modifier,
-) {
-    Spacer(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(1.dp)
-            .background(
-                brush = Brush.horizontalGradient(
-                    colors
-                    = listOf(
-                        AppTheme.colors.surfaceInverse,
-                        AppTheme.colors.glow,
-                        AppTheme.colors.surfaceInverse,
-                    )
-                )
-            )
-    )
+fun BottomBarDivider(modifier: Modifier = Modifier) {
+	Spacer(
+		modifier =
+		modifier
+			.fillMaxWidth()
+			.height(1.dp)
+			.background(
+				brush =
+				Brush.horizontalGradient(
+					colors =
+					listOf(
+						AppTheme.colors.surfaceInverse,
+						AppTheme.colors.glow,
+						AppTheme.colors.surfaceInverse
+					)
+				)
+			)
+	)
 }
 
-@Preview
-@Composable
-fun BottomBarDividerPreview() = Preview {
-    BottomBarDivider()
-}
+@Preview @Composable
+fun BottomBarDividerPreview() = Preview { BottomBarDivider() }

@@ -45,34 +45,33 @@ fun AppTopBar(
 						contentDescription = network?.name
 					)
 				} else {
-					Icon(painter = painterResource(id = drawable.ic_menu), contentDescription = "Menu Icon", tint = AppTheme.colors.surface)
+					Icon(
+						painter = painterResource(id = drawable.ic_menu),
+						contentDescription = "Menu Icon",
+						tint = AppTheme.colors.surface
+					)
 				}
 			}
 		},
 		actions = {
-			IconButton(
-                onClick = onProfileClick,
-                modifier = Modifier.size(32.dp)
-            ) {
+			IconButton(onClick = onProfileClick, modifier = Modifier.size(32.dp)) {
 				Image(
 					painter = painterResource(drawable.img_profile_avatar),
 					contentDescription = stringResource(R.string.profile)
 				)
 			}
-            Spacer(modifier = Modifier.padding(2.dp))
-            IconButton(
-                onClick = onCreateWorldClick,
-                modifier = Modifier
-                    .border(1.dp, AppTheme.colors.glow, CircleShape)
-                    .size(32.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Add,
-                    contentDescription = stringResource(R.string.create_a_world),
-                )
-            }
-            Spacer(modifier = Modifier.padding(2.dp))
-        },
+			Spacer(modifier = Modifier.padding(2.dp))
+			IconButton(
+				onClick = onCreateWorldClick,
+				modifier = Modifier.border(1.dp, AppTheme.colors.glow, CircleShape).size(32.dp)
+			) {
+				Icon(
+					imageVector = Icons.Filled.Add,
+					contentDescription = stringResource(R.string.create_a_world)
+				)
+			}
+			Spacer(modifier = Modifier.padding(2.dp))
+		}
 	)
 }
 

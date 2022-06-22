@@ -21,52 +21,54 @@ import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
-class MessagesViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
-    private val preferences: AppPreferences,
-    private val chatRepository: ChatRepository,
-    private val channelRepository: ChannelRepository,
+class MessagesViewModel
+@Inject
+constructor(
+	savedStateHandle: SavedStateHandle,
+	private val preferences: AppPreferences,
+	private val chatRepository: ChatRepository,
+	private val channelRepository: ChannelRepository
 ) : BaseViewModel() {
-    private val channelId: String = checkNotNull(savedStateHandle[MessagesDestination.channelIdArg])
-    val isGroupChannel: Boolean = checkNotNull(savedStateHandle[MessagesDestination.channelTypeArg])
+	private val channelId: String = checkNotNull(savedStateHandle[MessagesDestination.channelIdArg])
+	val isGroupChannel: Boolean = checkNotNull(savedStateHandle[MessagesDestination.channelTypeArg])
 
-    val loggedInUserId get() = runBlocking(Dispatchers.IO) { preferences.userId() }
-    val channel = MutableStateFlow<Result<Channel>>(Result.Loading)
-    val messages = MutableStateFlow<Result<List<Message>>>(Result.Loading)
+	val loggedInUserId
+		get() = runBlocking(Dispatchers.IO) { preferences.userId() }
+	val channel = MutableStateFlow<Result<Channel>>(Result.Loading)
+	val messages = MutableStateFlow<Result<List<Message>>>(Result.Loading)
 
-    fun loadChannel() {
-        ioScope.launch {
-            val request = if (isGroupChannel) {
-                channelRepository.getGroupChannel(channelId)
-            } else {
-                channelRepository.getDirectChannel(channelId)
-            }
-            request.asResult().collectLatest {
-                channel.emit(it)
-                if (it is Result.Success) {
-                    loadChannelMessage(it.data)
-                }
-            }
-        }
-    }
+	fun loadChannel() {
+		ioScope.launch {
+			val request =
+				if (isGroupChannel) {
+					channelRepository.getGroupChannel(channelId)
+				} else {
+					channelRepository.getDirectChannel(channelId)
+				}
+			request.asResult().collectLatest {
+				channel.emit(it)
+				if (it is Result.Success) {
+					loadChannelMessage(it.data)
+				}
+			}
+		}
+	}
 
-    private fun loadChannelMessage(channel: Channel) {
-        ioScope.launch {
-            chatRepository.getMessages(channel).asResult().collectLatest {
-                messages.emit(it)
-            }
-        }
-    }
+	private fun loadChannelMessage(channel: Channel) {
+		ioScope.launch {
+			chatRepository.getMessages(channel).asResult().collectLatest { messages.emit(it) }
+		}
+	}
 
-    fun sendMessage(message: DraftMessage) {
-        ioScope.launch {
-            (channel.firstOrNull() as? Result.Success)?.data?.let { channel ->
-                chatRepository.send(channel, message).asResult().collectLatest { newMessageResult ->
-                    if (newMessageResult is Result.Success) {
-                        loadChannelMessage(channel)
-                    }
-                }
-            }
-        }
-    }
+	fun sendMessage(message: DraftMessage) {
+		ioScope.launch {
+			(channel.firstOrNull() as? Result.Success)?.data?.let { channel ->
+				chatRepository.send(channel, message).asResult().collectLatest { newMessageResult ->
+					if (newMessageResult is Result.Success) {
+						loadChannelMessage(channel)
+					}
+				}
+			}
+		}
+	}
 }

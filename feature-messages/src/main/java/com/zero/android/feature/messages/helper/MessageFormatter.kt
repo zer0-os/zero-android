@@ -1,3 +1,5 @@
+// ktlint-disable max-line-length
+
 package com.zero.android.feature.messages.helper
 
 import androidx.compose.runtime.Composable
@@ -14,17 +16,9 @@ import androidx.compose.ui.unit.sp
 import com.zero.android.ui.theme.AppTheme
 
 val symbolPattern by lazy {
-    Regex("""
-        (https?://[^\s\t\n]+)|
-        (www[^\s\t\n]+)|
-        (`[^`]+`)|
-        (@\[*([\s]*[\w]+)([\s]*[\w]+)([\s]*)\]\([^\s\t\n]+\))|
-        (@\w+)|
-        (#[^\s\t\n]+)|
-        (\*[\w]+\*)|
-        (_[\w]+_)|
-        (~[\w]+~)
-        """.trimIndent())
+    Regex(
+        """(https?://[^\s\t\n]+)|(www[^\s\t\n]+)|(`[^`]+`)|(@\[*([\s]*[\w]+)([\s]*[\w]+)([\s]*)\]\([^\s\t\n]+\))|(@\w+)|(#[^\s\t\n]+)|(\*[\w]+\*)|(_[\w]+_)|(~[\w]+~)""".trimIndent()
+    )
 }
 
 // Accepted annotations for the ClickableTextWrapper
@@ -34,6 +28,7 @@ enum class SymbolAnnotationType {
 }
 
 typealias StringAnnotation = AnnotatedString.Range<String>
+
 typealias SymbolAnnotation = Pair<AnnotatedString, StringAnnotation?>
 
 @Composable
@@ -79,14 +74,8 @@ private fun getSymbolAnnotation(
         '@' ->
             SymbolAnnotation(
                 AnnotatedString(
-                    text = matchResult.value
-                        .substringBefore("]")
-                        .replace("[", ""),
-                    spanStyle =
-                    SpanStyle(
-                        color = annotationColor,
-                        fontWeight = FontWeight.Bold
-                    )
+                    text = matchResult.value.substringBefore("]").replace("[", ""),
+                    spanStyle = SpanStyle(color = annotationColor, fontWeight = FontWeight.Bold)
                 ),
                 StringAnnotation(
                     item = matchResult.value.substring(1),
@@ -133,14 +122,13 @@ private fun getSymbolAnnotation(
                 ),
                 null
             )
-        'h','w','#' ->
+        'h',
+        'w',
+        '#' ->
             SymbolAnnotation(
                 AnnotatedString(
                     text = matchResult.value,
-                    spanStyle =
-                    SpanStyle(
-                        color = annotationColor
-                    )
+                    spanStyle = SpanStyle(color = annotationColor)
                 ),
                 StringAnnotation(
                     item = matchResult.value,

@@ -17,14 +17,14 @@ object MessagesDestination : NavDestination {
 
 fun NavGraphBuilder.chatGraph() {
 	composable(
-		route = "${MessagesDestination.route}/{${MessagesDestination.channelIdArg}}/{${MessagesDestination.channelTypeArg}}",
-		arguments = listOf(
-			navArgument(MessagesDestination.channelIdArg) {
-				type = NavType.StringType
-			},
-			navArgument(MessagesDestination.channelTypeArg) {
-				type = NavType.BoolType
-			}
+		route =
+		"${MessagesDestination.route}/{${MessagesDestination.channelIdArg}}/{${MessagesDestination.channelTypeArg}}",
+		arguments =
+		listOf(
+			navArgument(MessagesDestination.channelIdArg) { type = NavType.StringType },
+			navArgument(MessagesDestination.channelTypeArg) { type = NavType.BoolType }
 		)
-	) { MessagesRoute() }
+	) {
+		MessagesRoute()
+	}
 }

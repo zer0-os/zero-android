@@ -5,7 +5,6 @@ import com.zero.android.models.Channel
 import com.zero.android.models.DirectChannel
 import com.zero.android.models.GroupChannel
 import com.zero.android.models.enums.ChannelType
-import com.zero.android.network.model.ApiDirectChannel
 import com.zero.android.network.model.ApiGroupChannel
 import com.zero.android.network.service.ChannelService
 import kotlinx.coroutines.flow.Flow

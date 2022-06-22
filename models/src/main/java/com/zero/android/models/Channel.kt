@@ -75,7 +75,11 @@ data class GroupChannel(
 
 fun Channel.getTitle(loggedInUserId: String?): String {
 	return if (this is GroupChannel) this.name
-	else (this as DirectChannel).members.filter {
-		it.id != loggedInUserId
-	}.joinToString { it.name ?: "" }.trim()
+	else {
+		(this as DirectChannel)
+			.members
+			.filter { it.id != loggedInUserId }
+			.joinToString { it.name ?: "" }
+			.trim()
+	}
 }

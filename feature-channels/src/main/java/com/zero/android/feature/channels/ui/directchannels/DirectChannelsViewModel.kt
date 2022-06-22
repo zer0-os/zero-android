@@ -24,7 +24,8 @@ constructor(
 ) : BaseViewModel() {
 
 	private lateinit var network: Network
-	val loggedInUserId get() = runBlocking(Dispatchers.IO) { preferences.userId() }
+	val loggedInUserId
+		get() = runBlocking(Dispatchers.IO) { preferences.userId() }
 	val channels = MutableStateFlow<Result<List<DirectChannel>>>(Result.Loading)
 
 	fun onNetworkUpdated(network: Network) {

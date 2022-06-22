@@ -14,59 +14,51 @@ import com.zero.android.ui.theme.AppTheme
 
 @Composable
 fun DayHeader(dayString: String) {
-    Row(
-        modifier = Modifier
-            .padding(vertical = 8.dp, horizontal = 16.dp)
-            .height(16.dp)
-    ) {
-        PreDayHeaderLine()
-        Text(
-            text = dayString,
-            modifier = Modifier.padding(horizontal = 16.dp),
-            style = MaterialTheme.typography.labelSmall,
-            color = AppTheme.colors.colorTextSecondaryVariant
-        )
-        PostDayHeaderLine()
-    }
+	Row(modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp).height(16.dp)) {
+		PreDayHeaderLine()
+		Text(
+			text = dayString,
+			modifier = Modifier.padding(horizontal = 16.dp),
+			style = MaterialTheme.typography.labelSmall,
+			color = AppTheme.colors.colorTextSecondaryVariant
+		)
+		PostDayHeaderLine()
+	}
 }
 
 @Composable
 private fun RowScope.PreDayHeaderLine() {
-    Box(
-        modifier = Modifier
-            .weight(1f)
-            .height(0.5.dp)
-            .align(Alignment.CenterVertically)
-            .background(
-                brush = Brush.horizontalGradient(
-                    colors = listOf(
-                        AppTheme.colors.surfaceInverse,
-                        AppTheme.colors.surface
-                    )
-                )
-            )
-    )
+	Box(
+		modifier =
+		Modifier.weight(1f)
+			.height(0.5.dp)
+			.align(Alignment.CenterVertically)
+			.background(
+				brush =
+				Brush.horizontalGradient(
+					colors =
+					listOf(AppTheme.colors.surfaceInverse, AppTheme.colors.surface)
+				)
+			)
+	)
 }
 
 @Composable
 private fun RowScope.PostDayHeaderLine() {
-    Box(
-        modifier = Modifier
-            .weight(1f)
-            .height(0.5.dp)
-            .align(Alignment.CenterVertically)
-            .background(
-                brush = Brush.horizontalGradient(
-                    colors = listOf(
-                        AppTheme.colors.surface,
-                        AppTheme.colors.surfaceInverse
-                    )
-                )
-            )
-    )
+	Box(
+		modifier =
+		Modifier.weight(1f)
+			.height(0.5.dp)
+			.align(Alignment.CenterVertically)
+			.background(
+				brush =
+				Brush.horizontalGradient(
+					colors =
+					listOf(AppTheme.colors.surface, AppTheme.colors.surfaceInverse)
+				)
+			)
+	)
 }
 
-@Preview
-@Composable
-fun DayHeaderPrev() {
-}
+@Preview @Composable
+fun DayHeaderPrev() {}
