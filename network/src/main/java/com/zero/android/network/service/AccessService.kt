@@ -7,7 +7,7 @@ import retrofit2.http.POST
 
 interface AccessService {
 
-	@FormUrlEncoded
-	@POST(value = "accounts/sync")
-	suspend fun getChatAccessToken(@Field("idToken") token: String): ApiChatAccessToken
+    @FormUrlEncoded
+    @POST(value = "accounts/sync")
+    suspend fun getChatAccessToken(@Field("idToken") token: String): ApiChatAccessToken
 }

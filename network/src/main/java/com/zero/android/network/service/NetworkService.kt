@@ -6,6 +6,6 @@ import retrofit2.http.Path
 
 interface NetworkService {
 
-	@GET(value = "networks/mine/{id}")
-	suspend fun getNetworks(@Path("id") userId: String): List<ApiNetwork>
+    @GET(value = "networks/mine/{id}")
+    suspend fun getNetworks(@Path("id") userId: String): List<ApiNetwork>
 }

@@ -9,14 +9,16 @@ import javax.inject.Inject
 @HiltAndroidApp
 class ZeroApp : Application() {
 
-	@Inject lateinit var logger: Logger
+    @Inject
+    lateinit var logger: Logger
 
-	@Inject lateinit var networkInitializer: NetworkInitializer
+    @Inject
+    lateinit var networkInitializer: NetworkInitializer
 
-	override fun onCreate() {
-		super.onCreate()
+    override fun onCreate() {
+        super.onCreate()
 
-		logger.setup(BuildConfig.DEBUG)
-		networkInitializer.initialize(context = this)
-	}
+        logger.setup(BuildConfig.DEBUG)
+        networkInitializer.initialize(context = this)
+    }
 }

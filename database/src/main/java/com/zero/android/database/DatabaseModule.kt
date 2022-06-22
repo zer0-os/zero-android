@@ -21,27 +21,27 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
 
-	@Provides
-	@Singleton
-	fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
-		return PreferenceDataStoreFactory.create(
-			corruptionHandler = ReplaceFileCorruptionHandler(produceNewData = { emptyPreferences() }),
-			migrations = listOf(),
-			scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
-			produceFile = { context.preferencesDataStoreFile("app_preferences") }
-		)
-	}
+    @Provides
+    @Singleton
+    fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
+        return PreferenceDataStoreFactory.create(
+            corruptionHandler = ReplaceFileCorruptionHandler(produceNewData = { emptyPreferences() }),
+            migrations = listOf(),
+            scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
+            produceFile = { context.preferencesDataStoreFile("app_preferences") }
+        )
+    }
 
-	@Provides
-	@Singleton
-	fun provideDatabase(@ApplicationContext context: Context) = AppDatabase.getInstance(context)
+    @Provides
+    @Singleton
+    fun provideDatabase(@ApplicationContext context: Context) = AppDatabase.getInstance(context)
 
-	@Provides
-	@Singleton
-	fun providePreferences(dataStore: DataStore<Preferences>) = AppPreferences(dataStore)
+    @Provides
+    @Singleton
+    fun providePreferences(dataStore: DataStore<Preferences>) = AppPreferences(dataStore)
 
-	@Provides
-	@Singleton
-	fun provideDataCleaner(database: AppDatabase, dataStore: DataStore<Preferences>) =
-		DataCleaner(database, dataStore)
+    @Provides
+    @Singleton
+    fun provideDataCleaner(database: AppDatabase, dataStore: DataStore<Preferences>) =
+        DataCleaner(database, dataStore)
 }

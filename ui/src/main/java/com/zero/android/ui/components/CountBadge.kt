@@ -16,17 +16,17 @@ import com.zero.android.ui.theme.Typography
 
 @Composable
 fun CountBadge(
-	modifier: Modifier = Modifier,
-	style: TextStyle = Typography.labelLarge,
-	count: Int
+    modifier: Modifier = Modifier,
+    style: TextStyle = Typography.labelLarge,
+    count: Int
 ) {
-	Badge(
-		modifier = modifier.padding(horizontal = 4.dp),
-		containerColor = MaterialTheme.colorScheme.primary,
-		contentColor = AppTheme.colors.colorTextPrimary
-	) {
-		Text(text = count.toString(), style = style, color = Color.White)
-	}
+    Badge(
+        modifier = modifier.padding(horizontal = 4.dp),
+        containerColor = MaterialTheme.colorScheme.primary,
+        contentColor = AppTheme.colors.colorTextPrimary
+    ) {
+        Text(text = count.toString(), style = style, color = Color.White)
+    }
 }
 
 @Preview @Composable

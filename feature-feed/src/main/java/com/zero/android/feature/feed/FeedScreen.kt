@@ -7,10 +7,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun FeedRoute(viewModel: FeedViewModel = hiltViewModel()) {
-	FeedScreen()
+    FeedScreen()
 }
 
 @Composable
 fun FeedScreen() {
-	Column { Text(text = "Feed Screen") }
+    Column { Text(text = "Feed Screen") }
 }

@@ -16,7 +16,7 @@ import com.zero.android.ui.extensions.Preview
 fun ChannelsRoute(
     network: Network?,
     viewModel: ChannelsViewModel = hiltViewModel(),
-    onChannelSelected: (Channel) -> Unit,
+    onChannelSelected: (Channel) -> Unit
 ) {
     val uiState: GroupChannelUiState by viewModel.uiState.collectAsState()
     LaunchedEffect(network?.id) { network?.let { viewModel.onNetworkUpdated(it) } }
@@ -28,10 +28,10 @@ fun ChannelsRoute(
 @Composable
 fun ChannelsScreen(
     uiState: GroupChannelUiState,
-    onChannelSelected: (Channel) -> Unit,
+    onChannelSelected: (Channel) -> Unit
 ) {
     val pagerState = rememberPagerState(
-        initialPage = 0,
+        initialPage = 0
     )
     val coroutineScope = rememberCoroutineScope()
 
@@ -62,5 +62,4 @@ fun ChannelsScreen(
 @Preview
 @Composable
 fun ChannelsScreenPreview() = Preview {
-
 }

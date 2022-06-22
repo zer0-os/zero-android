@@ -7,10 +7,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun SearchMessageRoute(viewModel: SearchMessageViewModel = hiltViewModel()) {
-	SearchMessageScreen()
+    SearchMessageScreen()
 }
 
 @Composable
 fun SearchMessageScreen() {
-	Column { Text(text = "Search Message Screen") }
+    Column { Text(text = "Search Message Screen") }
 }

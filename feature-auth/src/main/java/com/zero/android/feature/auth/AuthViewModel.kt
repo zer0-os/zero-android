@@ -18,28 +18,28 @@ import javax.inject.Inject
 class AuthViewModel
 @Inject
 constructor(private val userRepository: UserRepository, private val logger: Logger) :
-	BaseViewModel() {
+    BaseViewModel() {
 
-	enum class AuthScreenUIState {
-		LOGIN,
-		AUTH_REQUIRED
-	}
+    enum class AuthScreenUIState {
+        LOGIN,
+        AUTH_REQUIRED
+    }
 
-	val uiState = MutableStateFlow(AuthScreenUIState.AUTH_REQUIRED)
+    val uiState = MutableStateFlow(AuthScreenUIState.AUTH_REQUIRED)
 
-	val authCallback =
-		object : AuthenticationCallback() {
-			override fun onAuthentication(credentials: Credentials) {
-				onAuth(credentials)
-			}
+    val authCallback =
+        object : AuthenticationCallback() {
+            override fun onAuthentication(credentials: Credentials) {
+                onAuth(credentials)
+            }
 
-			override fun onError(error: AuthenticationException) = logger.e(error)
-		}
+            override fun onError(error: AuthenticationException) = logger.e(error)
+        }
 
-	private fun onAuth(credentials: Credentials) {
-		CoroutineScope(Dispatchers.IO).launch {
-			userRepository.login(credentials.toAuthCredentials())
-			uiState.emit(AuthScreenUIState.LOGIN)
-		}
-	}
+    private fun onAuth(credentials: Credentials) {
+        CoroutineScope(Dispatchers.IO).launch {
+            userRepository.login(credentials.toAuthCredentials())
+            uiState.emit(AuthScreenUIState.LOGIN)
+        }
+    }
 }

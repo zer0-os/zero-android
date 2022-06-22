@@ -6,7 +6,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 
 class NetworkInitializer(private val chatProvider: ChatProvider) {
 
-	fun initialize(@ApplicationContext context: Context) {
-		chatProvider.initialize(context)
-	}
+    fun initialize(@ApplicationContext context: Context) {
+        chatProvider.initialize(context)
+    }
 }

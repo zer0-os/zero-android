@@ -17,10 +17,7 @@ import com.zero.android.feature.messages.navigation.MessagesDestination
 import com.zero.android.feature.messages.navigation.chatGraph
 import com.zero.android.feature.people.MembersRoute
 import com.zero.android.feature.people.navigation.MembersDestination
-import com.zero.android.models.DirectChannel
-import com.zero.android.models.GroupChannel
 import com.zero.android.models.Network
-import com.zero.android.models.enums.AccessType
 
 internal fun NavGraphBuilder.onboardGraph(controller: NavController) {
     authGraph(onLogin = { controller.navigate(HomeDestination.route) { popUpTo(0) } })
@@ -29,18 +26,20 @@ internal fun NavGraphBuilder.onboardGraph(controller: NavController) {
 
 internal fun NavGraphBuilder.appBottomNavGraph(controller: NavController, network: Network?) {
     composable(route = ChannelsDestination.route) {
-        ChannelsRoute(network = network) { controller.navigate(
-            route = "${MessagesDestination.route}/${it.id}/${true}",
-        )
+        ChannelsRoute(network = network) {
+            controller.navigate(
+                route = "${MessagesDestination.route}/${it.id}/${true}"
+            )
         }
     }
     composable(route = MembersDestination.route) { MembersRoute() }
     composable(route = FeedDestination.route) { FeedRoute() }
     composable(route = NotificationsDestination.route) { NotificationsRoute() }
     composable(route = DirectChannelDestination.route) {
-        DirectChannelsRoute(network = network) { controller.navigate(
-            route = "${MessagesDestination.route}/${it.id}/${false}",
-        )
+        DirectChannelsRoute(network = network) {
+            controller.navigate(
+                route = "${MessagesDestination.route}/${it.id}/${false}"
+            )
         }
     }
     chatGraph(onBackClick = { controller.navigateUp() })

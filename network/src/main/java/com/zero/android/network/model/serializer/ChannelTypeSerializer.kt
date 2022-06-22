@@ -4,5 +4,5 @@ import com.zero.android.models.enums.ChannelType
 import com.zero.android.models.enums.toChannelType
 
 object ChannelTypeSerializer : EnumSerializer<ChannelType>() {
-	override fun String?.stringToEnum() = toChannelType()
+    override fun String?.stringToEnum() = toChannelType()
 }

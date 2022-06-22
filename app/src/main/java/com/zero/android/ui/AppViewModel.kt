@@ -19,27 +19,27 @@ import javax.inject.Inject
 class AppViewModel
 @Inject
 constructor(
-	private val preferences: AppPreferences,
-	private val connectionManager: ConnectionManager
+    private val preferences: AppPreferences,
+    private val connectionManager: ConnectionManager
 ) : BaseViewModel() {
 
-	val loading = MutableStateFlow(true)
-	lateinit var startDestination: NavDestination
+    val loading = MutableStateFlow(true)
+    lateinit var startDestination: NavDestination
 
-	init {
-		checkAuthOnLaunch()
-	}
+    init {
+        checkAuthOnLaunch()
+    }
 
-	private fun checkAuthOnLaunch() {
-		val isLoggedIn = runBlocking(Dispatchers.IO) { preferences.authCredentials() != null }
-		startDestination = if (isLoggedIn) HomeDestination else AuthDestination
+    private fun checkAuthOnLaunch() {
+        val isLoggedIn = runBlocking(Dispatchers.IO) { preferences.authCredentials() != null }
+        startDestination = if (isLoggedIn) HomeDestination else AuthDestination
 
-		if (isLoggedIn) onLoggedIn() else loading.emitInScope(false)
-	}
+        if (isLoggedIn) onLoggedIn() else loading.emitInScope(false)
+    }
 
-	private fun onLoggedIn() =
-		CoroutineScope(Dispatchers.IO).launch {
-			connectionManager.connect()
-			loading.emit(false)
-		}
+    private fun onLoggedIn() =
+        CoroutineScope(Dispatchers.IO).launch {
+            connectionManager.connect()
+            loading.emit(false)
+        }
 }

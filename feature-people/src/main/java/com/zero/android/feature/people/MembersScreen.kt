@@ -7,10 +7,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun MembersRoute(viewModel: MembersViewModel = hiltViewModel()) {
-	MembersScreen()
+    MembersScreen()
 }
 
 @Composable
 fun MembersScreen() {
-	Column { Text(text = "Members Screen") }
+    Column { Text(text = "Members Screen") }
 }

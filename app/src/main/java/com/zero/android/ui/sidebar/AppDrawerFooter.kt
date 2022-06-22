@@ -21,34 +21,34 @@ import com.zero.android.ui.theme.Typography
 
 @Composable
 fun AppDrawerFooter(modifier: Modifier = Modifier, onCreateWorldClick: () -> Unit) {
-	Column(
-		modifier = modifier.fillMaxWidth(),
-		horizontalAlignment = Alignment.Start,
-		verticalArrangement = Arrangement.SpaceBetween
-	) {
-		Divider(color = AppTheme.colors.divider, modifier = modifier.fillMaxWidth(), thickness = 0.5.dp)
-		Row(
-			modifier =
-			modifier
-				.fillMaxWidth()
-				.padding(DRAWER_PADDING.dp)
-				.clickable(onClick = onCreateWorldClick),
-			verticalAlignment = Alignment.CenterVertically,
-			horizontalArrangement = Arrangement.Start
-		) {
-			Image(
-				painter = painterResource(drawable.ic_add_circle),
-				contentDescription = stringResource(string.cd_ic_circle_add),
-				contentScale = ContentScale.Fit,
-				modifier = modifier.wrapContentSize().padding(end = 8.dp)
-			)
-			Text(
-				stringResource(string.create_a_world),
-				style = Typography.bodyLarge,
-				color = AppTheme.colors.colorTextSecondaryVariant
-			)
-		}
-	}
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        Divider(color = AppTheme.colors.divider, modifier = modifier.fillMaxWidth(), thickness = 0.5.dp)
+        Row(
+            modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(DRAWER_PADDING.dp)
+                .clickable(onClick = onCreateWorldClick),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
+        ) {
+            Image(
+                painter = painterResource(drawable.ic_add_circle),
+                contentDescription = stringResource(string.cd_ic_circle_add),
+                contentScale = ContentScale.Fit,
+                modifier = modifier.wrapContentSize().padding(end = 8.dp)
+            )
+            Text(
+                stringResource(string.create_a_world),
+                style = Typography.bodyLarge,
+                color = AppTheme.colors.colorTextSecondaryVariant
+            )
+        }
+    }
 }
 
 @Preview @Composable

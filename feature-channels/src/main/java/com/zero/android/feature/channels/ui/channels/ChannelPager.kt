@@ -39,12 +39,12 @@ import com.zero.android.ui.theme.Typography
 fun ChannelPager(
     pagerState: PagerState,
     groupChannelUiState: GroupChannelUiState,
-    onClick: (Channel) -> Unit,
+    onClick: (Channel) -> Unit
 ) {
     val categories = (groupChannelUiState.categoriesUiState as ChannelCategoriesUiState.Success).categories
     HorizontalPager(
         state = pagerState,
-        count = categories.size,
+        count = categories.size
     ) { index ->
         Column(
             modifier = Modifier.fillMaxSize()
@@ -116,7 +116,7 @@ fun ChannelsItemsList(
                         modifier = Modifier
                             .wrapContentSize()
                             .align(CenterVertically),
-                        contentScale = ContentScale.Fit,
+                        contentScale = ContentScale.Fit
                     )
                     Spacer(modifier = Modifier.padding(4.dp))
                 }
@@ -127,7 +127,7 @@ fun ChannelsItemsList(
                         modifier = Modifier
                             .wrapContentSize()
                             .align(CenterVertically),
-                        contentScale = ContentScale.Fit,
+                        contentScale = ContentScale.Fit
                     )
                     Spacer(modifier = Modifier.padding(4.dp))
                 }
@@ -160,17 +160,18 @@ fun ChannelsItemsList(
         if (channel is DirectChannel) {
             if (channel.lastMessage?.author?.id?.equals(loggedInUserId, true) == true) {
                 Icon(
-                    painter = if (channel.lastMessage?.status == MessageStatus.PENDING)
+                    painter = if (channel.lastMessage?.status == MessageStatus.PENDING) {
                         painterResource(R.drawable.ic_check)
-                    else
-                        painterResource(R.drawable.ic_double_check),
+                    } else {
+                        painterResource(R.drawable.ic_double_check)
+                    },
                     contentDescription = "cd_message_status",
                     modifier = Modifier
                         .width(18.dp)
                         .constrainAs(unreadCount) {
                             bottom.linkTo(image.bottom)
                             end.linkTo(parent.end)
-                        },
+                        }
                 )
             } else {
                 if (channel.unreadMessageCount > 0) {

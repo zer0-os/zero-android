@@ -1,3 +1,5 @@
+// ktlint-disable max-line-length
+
 package com.zero.android.feature.messages.helper
 
 import androidx.compose.runtime.Composable
@@ -13,20 +15,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.sp
 import com.zero.android.ui.theme.AppTheme
 
-//FIXME: ktlint-disable max-line-length
 val symbolPattern by lazy {
-    Regex("""
-        (https?://[^\s\t\n]+)|
-        (www[^\s\t\n]+)|
-        (`[^`]+`)|
-        (@\[*([\s]*[\w]+)([\s]*[\w]+)([\s]*)\]\([^\s\t\n]+\))|
-        (@\w+)|
-        (#[^\s\t\n]+)|
-        (\*[\w]+\*)|
-        (_[\w]+_)|
-        (~[\w]+~)
-        """.trimIndent()
-    )
+    Regex("""(https?://[^\s\t\n]+)|(www[^\s\t\n]+)|(`[^`]+`)|(@\[*([\s]*[\w]+)([\s]*[\w]+)([\s]*)\]\([^\s\t\n]+\))|(@\w+)|(#[^\s\t\n]+)|(\*[\w]+\*)|(_[\w]+_)|(~[\w]+~)""".trimIndent())
 }
 
 // Accepted annotations for the ClickableTextWrapper
@@ -135,7 +125,7 @@ private fun getSymbolAnnotation(
                 ),
                 null
             )
-        'h','w','#' ->
+        'h', 'w', '#' ->
             SymbolAnnotation(
                 AnnotatedString(
                     text = matchResult.value,

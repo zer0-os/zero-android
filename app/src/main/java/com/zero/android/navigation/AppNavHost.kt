@@ -9,11 +9,11 @@ import com.zero.android.feature.auth.navigation.AuthDestination
 
 @Composable
 fun AppNavHost(
-	modifier: Modifier = Modifier,
-	navController: NavHostController = rememberNavController(),
-	startDestination: String = AuthDestination.route
+    modifier: Modifier = Modifier,
+    navController: NavHostController = rememberNavController(),
+    startDestination: String = AuthDestination.route
 ) {
-	NavHost(navController = navController, startDestination = startDestination, modifier = modifier) {
-		onboardGraph(navController)
-	}
+    NavHost(navController = navController, startDestination = startDestination, modifier = modifier) {
+        onboardGraph(navController)
+    }
 }

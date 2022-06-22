@@ -21,39 +21,39 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-	@Singleton
-	@Provides
-	fun provideAuthInterceptor(preferences: AppPreferences) = AuthInterceptor(preferences)
+    @Singleton
+    @Provides
+    fun provideAuthInterceptor(preferences: AppPreferences) = AuthInterceptor(preferences)
 
-	@Singleton
-	@Provides
-	fun provideHttpLoggingInterceptor() =
-		HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
+    @Singleton
+    @Provides
+    fun provideHttpLoggingInterceptor() =
+        HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
 
-	@Singleton
-	@Provides
-	fun provideOkHttpClient(
-		authInterceptor: AuthInterceptor,
-		loggingInterceptor: HttpLoggingInterceptor
-	) =
-		OkHttpClient.Builder()
-			.addInterceptor(authInterceptor)
-			.addInterceptor(loggingInterceptor)
-			.build()
+    @Singleton
+    @Provides
+    fun provideOkHttpClient(
+        authInterceptor: AuthInterceptor,
+        loggingInterceptor: HttpLoggingInterceptor
+    ) =
+        OkHttpClient.Builder()
+            .addInterceptor(authInterceptor)
+            .addInterceptor(loggingInterceptor)
+            .build()
 
-	@Singleton @Provides
-	fun provideJson() = Json { ignoreUnknownKeys = true }
+    @Singleton @Provides
+    fun provideJson() = Json { ignoreUnknownKeys = true }
 
-	@Singleton
-	@Provides
-	fun provideJsonConverter(json: Json): Converter.Factory =
-		json.asConverterFactory("application/json".toMediaType())
+    @Singleton
+    @Provides
+    fun provideJsonConverter(json: Json): Converter.Factory =
+        json.asConverterFactory("application/json".toMediaType())
 
-	@Singleton
-	@Provides
-	fun provideRetrofit(client: OkHttpClient, json: Converter.Factory) = Retrofit(client, json)
+    @Singleton
+    @Provides
+    fun provideRetrofit(client: OkHttpClient, json: Converter.Factory) = Retrofit(client, json)
 
-	@Singleton
-	@Provides
-	fun provideNetworkInitializer(chatProvider: ChatProvider) = NetworkInitializer(chatProvider)
+    @Singleton
+    @Provides
+    fun provideNetworkInitializer(chatProvider: ChatProvider) = NetworkInitializer(chatProvider)
 }

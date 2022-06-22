@@ -5,9 +5,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AuthCredentials(
-	val idToken: String,
-	val accessToken: String,
-	val type: String,
-	val refreshToken: String?,
-	val expiresAt: Instant
+    val idToken: String,
+    val accessToken: String,
+    val type: String,
+    val refreshToken: String?,
+    val expiresAt: Instant
 )

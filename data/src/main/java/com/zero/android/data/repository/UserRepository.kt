@@ -6,9 +6,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
 
-	suspend fun login(credentials: AuthCredentials)
+    suspend fun login(credentials: AuthCredentials)
 
-	suspend fun logout()
+    suspend fun logout()
 
-	suspend fun getUser(): Flow<User>
+    suspend fun getUser(): Flow<User>
 }

@@ -24,7 +24,7 @@ class MessagesViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val preferences: AppPreferences,
     private val chatRepository: ChatRepository,
-    private val channelRepository: ChannelRepository,
+    private val channelRepository: ChannelRepository
 ) : BaseViewModel() {
 
     private val channelId: String = checkNotNull(savedStateHandle[MessagesDestination.channelIdArg])
@@ -36,7 +36,8 @@ class MessagesViewModel @Inject constructor(
 
     val uiState: StateFlow<ChatScreenUiState> =
         combine(
-            _channel, _messages
+            _channel,
+            _messages
         ) { channelResult, messagesResult ->
             val chatChannelUiState = when (channelResult) {
                 is Result.Success -> ChatChannelUiState.Success(channelResult.data)

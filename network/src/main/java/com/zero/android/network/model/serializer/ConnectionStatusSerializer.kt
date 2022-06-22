@@ -4,5 +4,5 @@ import com.zero.android.models.enums.ConnectionStatus
 import com.zero.android.models.enums.toConnectionStatus
 
 object ConnectionStatusSerializer : EnumSerializer<ConnectionStatus>() {
-	override fun String?.stringToEnum() = toConnectionStatus()
+    override fun String?.stringToEnum() = toConnectionStatus()
 }

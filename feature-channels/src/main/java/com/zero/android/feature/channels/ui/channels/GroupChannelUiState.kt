@@ -7,7 +7,7 @@ import com.zero.android.models.fake.ChannelTab
 data class GroupChannelUiState(
     val categoriesUiState: ChannelCategoriesUiState,
     val categoryChannelsUiState: CategoryChannelsUiState
-){
+) {
     private val groupedChannels = if (categoryChannelsUiState is CategoryChannelsUiState.Success) {
         categoryChannelsUiState.channels.groupBy { if ((it as GroupChannel).category.isNullOrEmpty()) "Private" else it.category }
     } else null

@@ -12,7 +12,7 @@ import java.util.*
 data class ChatScreenUiState(
     val channelUiState: ChatChannelUiState,
     val messagesUiState: MessagesUiState
-){
+) {
     fun newMessage(msg: String, currentUserId: String) = DraftMessage(
         channelUrl = null,
         author = Member(currentUserId),

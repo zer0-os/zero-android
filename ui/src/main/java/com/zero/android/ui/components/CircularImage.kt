@@ -12,64 +12,64 @@ import coil.compose.AsyncImage
 
 @Composable
 fun SmallCircularImage(
-	modifier: Modifier = Modifier,
-	imageUrl: String? = null,
-	@DrawableRes placeHolder: Int,
-	contentDescription: String = ""
+    modifier: Modifier = Modifier,
+    imageUrl: String? = null,
+    @DrawableRes placeHolder: Int,
+    contentDescription: String = ""
 ) {
-	AsyncImage(
-		model = imageUrl,
-		placeholder = painterResource(placeHolder),
-		error = painterResource(placeHolder),
-		contentDescription = contentDescription,
-		modifier = modifier.size(36.dp).clip(CircleShape)
-	)
+    AsyncImage(
+        model = imageUrl,
+        placeholder = painterResource(placeHolder),
+        error = painterResource(placeHolder),
+        contentDescription = contentDescription,
+        modifier = modifier.size(36.dp).clip(CircleShape)
+    )
 }
 
 @Composable
 fun MediumCircularImage(
-	modifier: Modifier = Modifier,
-	imageUrl: String? = null,
-	@DrawableRes placeHolder: Int,
-	contentDescription: String = ""
+    modifier: Modifier = Modifier,
+    imageUrl: String? = null,
+    @DrawableRes placeHolder: Int,
+    contentDescription: String = ""
 ) {
-	AsyncImage(
-		model = imageUrl,
-		placeholder = painterResource(placeHolder),
-		error = painterResource(placeHolder),
-		contentDescription = contentDescription,
-		modifier = modifier.size(42.dp).clip(CircleShape)
-	)
+    AsyncImage(
+        model = imageUrl,
+        placeholder = painterResource(placeHolder),
+        error = painterResource(placeHolder),
+        contentDescription = contentDescription,
+        modifier = modifier.size(42.dp).clip(CircleShape)
+    )
 }
 
 @Composable
 fun BigCircularImage(
-	modifier: Modifier = Modifier,
-	imageUrl: String? = null,
-	@DrawableRes placeHolder: Int,
-	contentDescription: String = ""
+    modifier: Modifier = Modifier,
+    imageUrl: String? = null,
+    @DrawableRes placeHolder: Int,
+    contentDescription: String = ""
 ) {
-	AsyncImage(
-		model = imageUrl,
-		placeholder = painterResource(placeHolder),
-		error = painterResource(placeHolder),
-		contentDescription = contentDescription,
-		modifier = modifier.size(54.dp).clip(CircleShape)
-	)
+    AsyncImage(
+        model = imageUrl,
+        placeholder = painterResource(placeHolder),
+        error = painterResource(placeHolder),
+        contentDescription = contentDescription,
+        modifier = modifier.size(54.dp).clip(CircleShape)
+    )
 }
 
 @Composable
 fun LargeCircularImage(
-	modifier: Modifier = Modifier,
-	imageUrl: String? = null,
-	@DrawableRes placeHolder: Int,
-	contentDescription: String = ""
+    modifier: Modifier = Modifier,
+    imageUrl: String? = null,
+    @DrawableRes placeHolder: Int,
+    contentDescription: String = ""
 ) {
-	AsyncImage(
-		model = imageUrl,
-		placeholder = painterResource(placeHolder),
-		error = painterResource(placeHolder),
-		contentDescription = contentDescription,
-		modifier = modifier.size(64.dp).clip(CircleShape)
-	)
+    AsyncImage(
+        model = imageUrl,
+        placeholder = painterResource(placeHolder),
+        error = painterResource(placeHolder),
+        contentDescription = contentDescription,
+        modifier = modifier.size(64.dp).clip(CircleShape)
+    )
 }

@@ -19,23 +19,23 @@ import javax.inject.Inject
 class DirectChannelsViewModel
 @Inject
 constructor(
-	private val preferences: AppPreferences,
-	private val channelRepository: ChannelRepository
+    private val preferences: AppPreferences,
+    private val channelRepository: ChannelRepository
 ) : BaseViewModel() {
 
-	private lateinit var network: Network
-	val loggedInUserId
-		get() = runBlocking(Dispatchers.IO) { preferences.userId() }
-	val channels = MutableStateFlow<Result<List<DirectChannel>>>(Result.Loading)
+    private lateinit var network: Network
+    val loggedInUserId
+        get() = runBlocking(Dispatchers.IO) { preferences.userId() }
+    val channels = MutableStateFlow<Result<List<DirectChannel>>>(Result.Loading)
 
-	fun onNetworkUpdated(network: Network) {
-		this.network = network
-		loadChannels()
-	}
+    fun onNetworkUpdated(network: Network) {
+        this.network = network
+        loadChannels()
+    }
 
-	private fun loadChannels() {
-		ioScope.launch {
-			channelRepository.getDirectChannels().asResult().collectLatest { channels.emit(it) }
-		}
-	}
+    private fun loadChannels() {
+        ioScope.launch {
+            channelRepository.getDirectChannels().asResult().collectLatest { channels.emit(it) }
+        }
+    }
 }

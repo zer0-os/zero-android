@@ -13,17 +13,17 @@ import javax.inject.Inject
 class NetworkRepositoryImpl
 @Inject
 constructor(
-	private val networkDao: NetworkDao,
-	private val preferences: AppPreferences,
-	private val networkService: NetworkService
+    private val networkDao: NetworkDao,
+    private val preferences: AppPreferences,
+    private val networkService: NetworkService
 ) : NetworkRepository {
 
-	override suspend fun getNetworks() = flow {
-		networkDao.getAll().firstOrNull()?.let { networks -> emit(networks.map { it.toModel() }) }
+    override suspend fun getNetworks() = flow {
+        networkDao.getAll().firstOrNull()?.let { networks -> emit(networks.map { it.toModel() }) }
 
-		networkService.getNetworks(preferences.userId()).let { networks ->
-			networkDao.insert(*networks.map { it.toEntity() }.toTypedArray())
-			emit(networks.map { it.toModel() })
-		}
-	}
+        networkService.getNetworks(preferences.userId()).let { networks ->
+            networkDao.insert(*networks.map { it.toEntity() }.toTypedArray())
+            emit(networks.map { it.toModel() })
+        }
+    }
 }

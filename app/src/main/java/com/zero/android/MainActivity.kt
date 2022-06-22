@@ -14,10 +14,10 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-		WindowCompat.setDecorFitsSystemWindows(window, false)
-		installSplashScreen().run { setKeepOnScreenCondition { false } }
-		setContent { AppLayout(calculateWindowSizeClass(this)) }
-	}
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        installSplashScreen().run { setKeepOnScreenCondition { false } }
+        setContent { AppLayout(calculateWindowSizeClass(this)) }
+    }
 }

@@ -15,24 +15,24 @@ import com.zero.android.ui.extensions.Preview
 
 @Composable
 fun LoadingContainer(
-	modifier: Modifier = Modifier,
-	loading: Boolean,
-	size: Dp = 42.dp,
-	content: @Composable () -> Unit
+    modifier: Modifier = Modifier,
+    loading: Boolean,
+    size: Dp = 42.dp,
+    content: @Composable () -> Unit
 ) {
-	if (loading) {
-		Column(
-			modifier = modifier.fillMaxWidth().defaultMinSize(minHeight = 100.dp),
-			verticalArrangement = Arrangement.Center,
-			horizontalAlignment = Alignment.CenterHorizontally
-		) { CircularProgress(size = size) }
-	} else {
-		content()
-	}
+    if (loading) {
+        Column(
+            modifier = modifier.fillMaxWidth().defaultMinSize(minHeight = 100.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) { CircularProgress(size = size) }
+    } else {
+        content()
+    }
 }
 
 @Preview
 @Composable
 fun LoadingContainerPreview() = Preview {
-	LoadingContainer(loading = true) { Text(text = "Testing") }
+    LoadingContainer(loading = true) { Text(text = "Testing") }
 }

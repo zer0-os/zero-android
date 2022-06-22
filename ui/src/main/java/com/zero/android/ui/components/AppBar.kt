@@ -9,19 +9,19 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun AppBar(
-	modifier: Modifier = Modifier,
-	scrollBehavior: TopAppBarScrollBehavior? = null,
-	navIcon: @Composable () -> Unit,
-	title: @Composable () -> Unit,
-	actions: @Composable RowScope.() -> Unit = {}
+    modifier: Modifier = Modifier,
+    scrollBehavior: TopAppBarScrollBehavior? = null,
+    navIcon: @Composable () -> Unit,
+    title: @Composable () -> Unit,
+    actions: @Composable RowScope.() -> Unit = {}
 ) {
-	Box(modifier = Modifier) {
-		SmallTopAppBar(
-			modifier = modifier,
-			actions = actions,
-			title = title,
-			scrollBehavior = scrollBehavior,
-			navigationIcon = navIcon
-		)
-	}
+    Box(modifier = Modifier) {
+        SmallTopAppBar(
+            modifier = modifier,
+            actions = actions,
+            title = title,
+            scrollBehavior = scrollBehavior,
+            navigationIcon = navIcon
+        )
+    }
 }

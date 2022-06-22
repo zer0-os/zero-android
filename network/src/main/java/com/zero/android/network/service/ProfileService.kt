@@ -9,9 +9,9 @@ import retrofit2.http.Query
 
 interface ProfileService {
 
-	@PATCH(value = "profiles/{id}")
-	suspend fun updateProfile(@Path("id") id: String): ApiProfile
+    @PATCH(value = "profiles/{id}")
+    suspend fun updateProfile(@Path("id") id: String): ApiProfile
 
-	@GET(value = "profiles/filter")
-	suspend fun getProfiles(@Query("filter") filter: String?): ApiUser
+    @GET(value = "profiles/filter")
+    suspend fun getProfiles(@Query("filter") filter: String?): ApiUser
 }

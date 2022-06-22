@@ -7,10 +7,10 @@ import javax.inject.Inject
 class ConnectionManagerImpl
 @Inject
 constructor(private val chatProvider: ChatProvider, private val preferences: AppPreferences) :
-	ConnectionManager {
+    ConnectionManager {
 
-	override suspend fun connect() =
-		chatProvider.connect(preferences.userId(), preferences.chatToken())
+    override suspend fun connect() =
+        chatProvider.connect(preferences.userId(), preferences.chatToken())
 
-	override suspend fun disconnect() = chatProvider.disconnect()
+    override suspend fun disconnect() = chatProvider.disconnect()
 }

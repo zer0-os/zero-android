@@ -7,10 +7,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun ProfileRoute(viewModel: ProfileViewModel = hiltViewModel()) {
-	ProfileScreen()
+    ProfileScreen()
 }
 
 @Composable
 fun ProfileScreen() {
-	Column { Text(text = "Profile Screen") }
+    Column { Text(text = "Profile Screen") }
 }

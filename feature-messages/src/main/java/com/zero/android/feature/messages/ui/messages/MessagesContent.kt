@@ -43,7 +43,7 @@ fun MessagesContent(
     modifier: Modifier = Modifier,
     userChannelInfo: Pair<String, Boolean>,
     uiState: MessagesUiState,
-    onNewMessage:(String) -> Unit,
+    onNewMessage: (String) -> Unit
 ) {
     val scrollState = rememberLazyListState()
     val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior() }
@@ -55,7 +55,7 @@ fun MessagesContent(
                 Modifier
                     .fillMaxSize()
                     .background(AppTheme.colors.surfaceInverse)
-                    .nestedScroll(scrollBehavior.nestedScrollConnection),
+                    .nestedScroll(scrollBehavior.nestedScrollConnection)
             ) {
                 Messages(
                     modifier = Modifier.weight(1f),
@@ -75,7 +75,7 @@ fun MessagesContent(
                         scope.launch {
                             scrollState.scrollToItem(0)
                         }
-                    },
+                    }
                 )
             }
         }
@@ -88,7 +88,7 @@ fun Messages(
     userChannelInfo: Pair<String, Boolean>,
     uiState: MessagesUiState,
     scrollState: LazyListState,
-    coroutineScope: CoroutineScope,
+    coroutineScope: CoroutineScope
 ) {
     Box(modifier = modifier) {
         if (uiState is MessagesUiState.Success) {
@@ -118,7 +118,6 @@ fun Messages(
                                 isFirstMessageByAuthor = isFirstMessageByAuthor,
                                 isLastMessageByAuthor = isLastMessageByAuthor,
                                 onAuthorClick = {
-
                                 }
                             )
                         } else {
@@ -127,7 +126,6 @@ fun Messages(
                                 isUserMe = content.author.id == userChannelInfo.first,
                                 isFirstMessageByAuthor = isFirstMessageByAuthor,
                                 onAuthorClick = {
-
                                 }
                             )
                         }
@@ -142,7 +140,7 @@ fun Messages(
             val jumpToBottomButtonEnabled by remember {
                 derivedStateOf {
                     scrollState.firstVisibleItemIndex != 0 ||
-                            scrollState.firstVisibleItemScrollOffset > jumpThreshold
+                        scrollState.firstVisibleItemScrollOffset > jumpThreshold
                 }
             }
             JumpToBottom(
@@ -169,7 +167,7 @@ fun DirectMessage(
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = if (isUserMe) Arrangement.End else Arrangement.Start,
+            horizontalArrangement = if (isUserMe) Arrangement.End else Arrangement.Start
         ) {
             if (!isUserMe) {
                 if (isLastMessageByAuthor) {
@@ -271,7 +269,7 @@ fun DirectMessageAuthorAndTextMessage(
                         text = messageDate.format("hh:mm aa"),
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.align(Alignment.End),
-                        color = AppTheme.colors.colorTextSecondary,
+                        color = AppTheme.colors.colorTextSecondary
                     )
                 }
             }
@@ -336,7 +334,7 @@ private fun AuthorNameTimestamp(isUserMe: Boolean, msg: Message) {
             text = "${messageDate.toMessageDateFormat()} at ${messageDate.format("hh:mm aa")}",
             style = MaterialTheme.typography.bodySmall,
             modifier = Modifier.alignBy(LastBaseline),
-            color = Gray,
+            color = Gray
         )
     }
 }
@@ -345,7 +343,7 @@ private fun AuthorNameTimestamp(isUserMe: Boolean, msg: Message) {
 private fun ColumnScope.MessageContent(
     message: Message,
     isUserMe: Boolean,
-    authorClicked: (Member) -> Unit,
+    authorClicked: (Member) -> Unit
 ) {
     message.message?.let {
         if (message.fileUrl.isNullOrEmpty()) {
@@ -362,13 +360,13 @@ private fun ColumnScope.MessageContent(
             contentDescription = "",
             modifier = Modifier
                 .wrapContentWidth()
-                .defaultMinSize(160.dp),
+                .defaultMinSize(160.dp)
         )
     }
 }
 
 @Composable
-private fun ColumnScope.ChatBubbleSpacing(isFirstMessageByAuthor: Boolean){
+private fun ColumnScope.ChatBubbleSpacing(isFirstMessageByAuthor: Boolean) {
     if (isFirstMessageByAuthor) {
         // Last bubble before next author
         Spacer(modifier = Modifier.height(8.dp))

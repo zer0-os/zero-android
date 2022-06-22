@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 fun ChannelTabLayout(
     pagerState: PagerState,
     coroutineScope: CoroutineScope,
-    tabs: List<ChannelTab>,
+    tabs: List<ChannelTab>
 ) {
     val tabIndex = pagerState.currentPage
 
@@ -60,7 +60,7 @@ fun ChannelTabLayout(
                 },
                 text = {
                     TabItemWithBadge(item, isSelectedTab)
-                },
+                }
             )
         }
     }
@@ -71,7 +71,7 @@ fun TabItemWithBadge(channelTab: ChannelTab, isSelectedTab: Boolean) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .wrapContentHeight(),
+            .wrapContentHeight()
     ) {
         if (isSelectedTab) {
             Text(
@@ -88,7 +88,7 @@ fun TabItemWithBadge(channelTab: ChannelTab, isSelectedTab: Boolean) {
                     ),
                     fontWeight = FontWeight.Normal,
                     fontSize = 14.sp
-                ),
+                )
             )
         } else {
             Text(

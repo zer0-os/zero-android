@@ -46,7 +46,8 @@ fun MessagesRoute(
         chatUiState.messagesUiState,
         onNewMessage = { newMessage ->
             viewModel.sendMessage(chatUiState.newMessage(newMessage, userChannelInfo.first))
-        })
+        }
+    )
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -57,7 +58,7 @@ fun MessagesScreen(
     userChannelInfo: Pair<String, Boolean>,
     chatChannelUiState: ChatChannelUiState,
     messagesUiState: MessagesUiState,
-    onNewMessage: (String) -> Unit,
+    onNewMessage: (String) -> Unit
 ) {
     if (chatChannelUiState is ChatChannelUiState.Success) {
         val topBar: @Composable () -> Unit = {
@@ -96,7 +97,8 @@ fun MessagesScreen(
             )
         }
         Scaffold(
-            topBar = { topBar() }) {
+            topBar = { topBar() }
+        ) {
             Background {
                 MessagesContent(
                     userChannelInfo = userChannelInfo,
@@ -110,7 +112,6 @@ fun MessagesScreen(
 @Preview
 @Composable
 fun MessagesScreenPreview() = Preview {
-
 }
 
 @Composable

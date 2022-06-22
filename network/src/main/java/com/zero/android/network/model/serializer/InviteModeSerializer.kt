@@ -4,5 +4,5 @@ import com.zero.android.models.enums.InviteMode
 import com.zero.android.models.enums.toInviteMode
 
 object InviteModeSerializer : EnumSerializer<InviteMode>() {
-	override fun String?.stringToEnum() = toInviteMode()
+    override fun String?.stringToEnum() = toInviteMode()
 }

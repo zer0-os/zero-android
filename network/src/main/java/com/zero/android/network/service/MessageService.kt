@@ -10,15 +10,15 @@ import retrofit2.http.Path
 
 interface MessageService {
 
-	@FormUrlEncoded
-	@PUT(value = "messages/{id}/editChatMessage")
-	suspend fun updateMessage(
-		@Path("id") id: String,
-		@Field("channelId") channelId: String,
-		@Field("text") text: String
-	): Flow<ApiMessage>
+    @FormUrlEncoded
+    @PUT(value = "messages/{id}/editChatMessage")
+    suspend fun updateMessage(
+        @Path("id") id: String,
+        @Field("channelId") channelId: String,
+        @Field("text") text: String
+    ): Flow<ApiMessage>
 
-	@FormUrlEncoded
-	@DELETE(value = "messages/{id}/deleteChatMessage")
-	suspend fun deleteMessage(@Path("id") id: String, @Field("channelId") channelId: String)
+    @FormUrlEncoded
+    @DELETE(value = "messages/{id}/deleteChatMessage")
+    suspend fun deleteMessage(@Path("id") id: String, @Field("channelId") channelId: String)
 }
