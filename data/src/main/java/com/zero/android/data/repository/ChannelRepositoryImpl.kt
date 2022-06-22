@@ -5,6 +5,7 @@ import com.zero.android.models.Channel
 import com.zero.android.models.DirectChannel
 import com.zero.android.models.GroupChannel
 import com.zero.android.models.enums.ChannelType
+import com.zero.android.network.model.ApiDirectChannel
 import com.zero.android.network.model.ApiGroupChannel
 import com.zero.android.network.service.ChannelService
 import kotlinx.coroutines.flow.Flow
@@ -32,9 +33,9 @@ class ChannelRepositoryImpl @Inject constructor(private val channelService: Chan
 		}
 	}
 
-	override suspend fun getDirectChannel(id: String): Flow<GroupChannel> {
+	override suspend fun getDirectChannel(id: String): Flow<DirectChannel> {
 		return channelService.getChannel(id, type = ChannelType.GROUP).map {
-			(it as ApiGroupChannel).toModel()
+			(it as ApiDirectChannel).toModel()
 		}
 	}
 

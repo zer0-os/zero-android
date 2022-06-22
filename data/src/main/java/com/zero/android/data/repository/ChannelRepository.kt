@@ -16,7 +16,7 @@ interface ChannelRepository {
 
 	suspend fun getGroupChannel(id: String): Flow<GroupChannel>
 
-	suspend fun getDirectChannel(id: String): Flow<GroupChannel>
+	suspend fun getDirectChannel(id: String): Flow<DirectChannel>
 
 	suspend fun joinChannel(channel: Channel)
 

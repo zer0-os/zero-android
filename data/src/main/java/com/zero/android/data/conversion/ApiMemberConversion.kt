@@ -8,6 +8,7 @@ internal fun ApiMember.toModel() =
 		id = id,
 		name = nickname,
 		profileUrl = profileUrl,
+		profileImage = profileImage,
 		friendDiscoveryKey = friendDiscoveryKey,
 		friendName = friendName,
 		metadata = metadata,

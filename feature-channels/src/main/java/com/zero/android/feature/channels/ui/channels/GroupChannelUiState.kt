@@ -1,31 +1,30 @@
 package com.zero.android.feature.channels.ui.channels
 
-import com.zero.android.common.ui.Result
 import com.zero.android.models.Channel
-import com.zero.android.models.ChannelCategory
 import com.zero.android.models.GroupChannel
 import com.zero.android.models.fake.ChannelTab
 
-class GroupChannelUiState(
-	categories: Result<List<ChannelCategory>>,
-	channels: Result<List<Channel>>
-) {
-	private val filteredChannels =
-		if (channels is Result.Success) {
-			channels.data.filter { !(it as GroupChannel).category.isNullOrEmpty() }
-		} else emptyList()
-	private val filteredCategories =
-		if (categories is Result.Success) {
-			categories.data.filter { it.isNotEmpty() }
-		} else emptyList()
+data class GroupChannelUiState(
+    val categoriesUiState: ChannelCategoriesUiState,
+    val categoryChannelsUiState: CategoryChannelsUiState
+){
+    private val groupedChannels = if (categoryChannelsUiState is CategoryChannelsUiState.Success) {
+        categoryChannelsUiState.channels.groupBy { if ((it as GroupChannel).category.isNullOrEmpty()) "Private" else it.category }
+    } else null
 
-	val channelGroupMessages = filteredChannels.groupBy { (it as GroupChannel).category!! }
-	val channelCategories =
-		filteredCategories.map { category ->
-			val unreadGroupMessagesCount =
-				channelGroupMessages[category]?.count { it.unreadMessageCount > 0 } ?: 0
-			ChannelTab(category.hashCode().toLong(), category, unreadGroupMessagesCount)
-		}
+    fun getChannels(category: String): List<Channel> {
+        return groupedChannels?.get(category) ?: emptyList()
+    }
 }
 
-fun GroupChannelUiState.groupMessages(category: String) = channelGroupMessages[category]
+sealed interface ChannelCategoriesUiState {
+    data class Success(val categories: List<ChannelTab>) : ChannelCategoriesUiState
+    object Error : ChannelCategoriesUiState
+    object Loading : ChannelCategoriesUiState
+}
+
+sealed interface CategoryChannelsUiState {
+    data class Success(val channels: List<Channel>) : CategoryChannelsUiState
+    object Error : CategoryChannelsUiState
+    object Loading : CategoryChannelsUiState
+}

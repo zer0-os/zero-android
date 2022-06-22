@@ -52,7 +52,8 @@ internal fun UserMessage.toApi() =
 		status = sendingStatus.toType(),
 		data = data,
 		parentMessage = parentMessage?.toApi(),
-		isMuted = isSilent
+		isMuted = isSilent,
+		message = message,
 	)
 
 internal fun FileMessage.toApi() =

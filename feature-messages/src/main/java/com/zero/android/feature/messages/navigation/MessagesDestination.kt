@@ -15,16 +15,16 @@ object MessagesDestination : NavDestination {
 	const val channelTypeArg = "isGroupChannel"
 }
 
-fun NavGraphBuilder.chatGraph() {
+fun NavGraphBuilder.chatGraph(onBackClick:() -> Unit) {
 	composable(
-		route =
-		"${MessagesDestination.route}/{${MessagesDestination.channelIdArg}}/{${MessagesDestination.channelTypeArg}}",
-		arguments =
-		listOf(
-			navArgument(MessagesDestination.channelIdArg) { type = NavType.StringType },
-			navArgument(MessagesDestination.channelTypeArg) { type = NavType.BoolType }
+		route = "${MessagesDestination.route}/{${MessagesDestination.channelIdArg}}/{${MessagesDestination.channelTypeArg}}",
+		arguments = listOf(
+			navArgument(MessagesDestination.channelIdArg) {
+				type = NavType.StringType
+			},
+			navArgument(MessagesDestination.channelTypeArg) {
+				type = NavType.BoolType
+			}
 		)
-	) {
-		MessagesRoute()
-	}
+	) { MessagesRoute(onBackClick) }
 }

@@ -30,8 +30,8 @@ internal class SendBirdChannelService(private val logger: Logger) :
 	override suspend fun getCategories(networkId: String) =
 		flow<List<ChannelCategory>> {
 			getGroupChannels(networkId, ChannelType.GROUP).firstOrNull().let { channels ->
-				if (channels == null) emit(emptyList())
-				else emit(channels.filter { !it.category.isNullOrEmpty() }.map { it.category!! })
+				if (channels.isNullOrEmpty()) emit(emptyList())
+				else emit(channels.map { if (it.category.isNullOrEmpty()) "Private" else it.category })
 			}
 		}
 
@@ -70,7 +70,7 @@ internal class SendBirdChannelService(private val logger: Logger) :
 				logger.e("Failed to get direct channels", e)
 				throw e
 			}
-			trySend(channels.map { it.toDirectApi() })
+			trySend(channels.filter { it.data.isNullOrEmpty() }.map { it.toDirectApi() })
 		}
 	}
 
