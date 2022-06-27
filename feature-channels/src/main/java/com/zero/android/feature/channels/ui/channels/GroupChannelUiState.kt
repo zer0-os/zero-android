@@ -5,19 +5,18 @@ import com.zero.android.models.GroupChannel
 import com.zero.android.models.fake.ChannelTab
 
 data class GroupChannelUiState(
-	val categoriesUiState: ChannelCategoriesUiState,
-	val categoryChannelsUiState: CategoryChannelsUiState
+    val categoriesUiState: ChannelCategoriesUiState,
+    val categoryChannelsUiState: CategoryChannelsUiState
 ) {
-	private val groupedChannels =
-		if (categoryChannelsUiState is CategoryChannelsUiState.Success) {
-			categoryChannelsUiState.channels.groupBy {
-				if ((it as GroupChannel).category.isNullOrEmpty()) "Private" else it.category
-			}
-		} else null
+    private val allChannels = if (categoryChannelsUiState is CategoryChannelsUiState.Success) {
+        categoryChannelsUiState.channels
+    } else emptyList()
+    private val groupedChannels = allChannels.groupBy { (it as GroupChannel).category }
 
-	fun getChannels(category: String): List<Channel> {
-		return groupedChannels?.get(category) ?: emptyList()
-	}
+    fun getChannels(category: String): List<Channel> {
+        return if (category.equals("All", true)) allChannels
+        else groupedChannels[category] ?: emptyList()
+    }
 }
 
 sealed interface ChannelCategoriesUiState {

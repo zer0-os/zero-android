@@ -15,16 +15,16 @@ import androidx.compose.ui.unit.sp
 import com.zero.android.common.extensions.initials
 import com.zero.android.ui.theme.AppTheme
 
+private val DEFAULT_MODIFIER = Modifier.size(36.dp)
+
 @Composable
-fun NameInitialsView(modifier: Modifier = Modifier, userName: String) {
+fun NameInitialsView(modifier: Modifier = DEFAULT_MODIFIER, userName: String) {
 	Box(
-		modifier =
-		modifier
-			.size(36.dp)
+		modifier = modifier
 			.background(color = MaterialTheme.colorScheme.primary, shape = CircleShape)
 	) {
 		Text(
-			userName.initials,
+			userName.initials(),
 			modifier = Modifier.align(Alignment.Center),
 			color = AppTheme.colors.colorTextPrimary,
 			fontWeight = FontWeight.Medium,

@@ -31,7 +31,7 @@ internal class SendBirdChannelService(private val logger: Logger) :
 		flow<List<ChannelCategory>> {
 			getGroupChannels(networkId, ChannelType.GROUP).firstOrNull().let { channels ->
 				if (channels.isNullOrEmpty()) emit(emptyList())
-				else emit(channels.map { if (it.category.isNullOrEmpty()) "Private" else it.category })
+				else emit(channels.filter { !it.category.isNullOrEmpty() }.map { it.category!! })
 			}
 		}
 
