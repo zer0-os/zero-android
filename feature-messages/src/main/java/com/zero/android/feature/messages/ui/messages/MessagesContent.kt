@@ -1,5 +1,9 @@
 package com.zero.android.feature.messages.ui.messages
 
+import android.content.Context
+import android.content.Intent
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.result.ActivityResult
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,17 +19,16 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.LastBaseline
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.github.dhaval2404.imagepicker.ImagePicker
 import com.zero.android.common.R
-import com.zero.android.common.extensions.format
-import com.zero.android.common.extensions.isSameDay
-import com.zero.android.common.extensions.toDate
-import com.zero.android.common.extensions.toMessageDateFormat
+import com.zero.android.common.extensions.*
 import com.zero.android.common.util.SymbolAnnotationType
 import com.zero.android.common.util.messageFormatter
 import com.zero.android.models.Member
@@ -43,11 +46,13 @@ fun MessagesContent(
     modifier: Modifier = Modifier,
     userChannelInfo: Pair<String, Boolean>,
     uiState: MessagesUiState,
+    imageSelectorLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>,
     onNewMessage:(String) -> Unit,
 ) {
     val scrollState = rememberLazyListState()
     val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior() }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     Surface(modifier = modifier) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -76,6 +81,24 @@ fun MessagesContent(
                             scrollState.scrollToItem(0)
                         }
                     },
+                    addAttachment = {
+                        context.getActivity()?.let {
+                            ImagePicker.with(it)
+                                .galleryOnly()
+                                .createIntent { intent ->
+                                    imageSelectorLauncher.launch(intent)
+                                }
+                        }
+                    },
+                    addImage = {
+                        context.getActivity()?.let {
+                            ImagePicker.with(it)
+                                .cameraOnly()
+                                .createIntent { intent ->
+                                    imageSelectorLauncher.launch(intent)
+                                }
+                        }
+                    }
                 )
             }
         }
@@ -173,14 +196,10 @@ fun DirectMessage(
         ) {
             if (!isUserMe) {
                 if (isLastMessageByAuthor) {
-                    if (msg.author.profileImage.isNullOrEmpty()) {
-                        NameInitialsView(userName = msg.author.name ?: "")
-                    } else {
-                        SmallCircularImage(
-                            imageUrl = msg.author.profileImage,
-                            placeHolder = R.drawable.ic_user_profile_placeholder
-                        )
-                    }
+                    SmallCircularImage(
+                        imageUrl = msg.author.profileImage,
+                        placeHolder = R.drawable.ic_user_profile_placeholder
+                    )
                 } else {
                     Spacer(modifier = Modifier.width(34.dp))
                 }
@@ -207,7 +226,10 @@ fun ChannelMessage(
     isFirstMessageByAuthor: Boolean
 ) {
     Row {
-        NameInitialsView(userName = msg.author.name ?: "")
+        SmallCircularImage(
+            imageUrl = msg.author.profileImage,
+            placeHolder = R.drawable.ic_user_profile_placeholder
+        )
         GroupChannelAuthorAndTextMessage(
             modifier = Modifier
                 .padding(end = 16.dp)

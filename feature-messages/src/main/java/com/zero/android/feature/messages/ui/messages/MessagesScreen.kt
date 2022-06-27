@@ -1,6 +1,12 @@
 package com.zero.android.feature.messages.ui.messages
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,11 +23,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toFile
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.zero.android.common.R
+import com.zero.android.common.extensions.toFile
 import com.zero.android.models.Channel
 import com.zero.android.models.GroupChannel
 import com.zero.android.models.getTitle
@@ -36,16 +45,38 @@ import com.zero.android.ui.theme.AppTheme
 fun MessagesRoute(onBackClick: () -> Unit, viewModel: MessagesViewModel = hiltViewModel()) {
     val chatUiState: ChatScreenUiState by viewModel.uiState.collectAsState()
     val userChannelInfo = viewModel.loggedInUserId to viewModel.isGroupChannel
+    val context = LocalContext.current
     LaunchedEffect(Unit) { viewModel.loadChannel() }
-    MessagesScreen(
-        onBackClick,
-        userChannelInfo,
-        chatUiState.channelUiState,
-        chatUiState.messagesUiState,
-        onNewMessage = { newMessage ->
-            viewModel.sendMessage(chatUiState.newMessage(newMessage, userChannelInfo.first))
+
+    val imageSelectorLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+        onResult = {
+            val resultCode = it.resultCode
+            val data = it.data
+            if (resultCode == Activity.RESULT_OK) {
+                //Image Uri will not be null for RESULT_OK
+                val fileUri = data?.data!!
+                val file = try { fileUri.toFile() }
+                catch (e: Exception) { fileUri.toFile(context) }
+                viewModel.sendMessage(chatUiState.newMessage(
+                    file = file,
+                    currentUserId = userChannelInfo.first
+                ))
+            }
         }
     )
+    MessagesScreen(
+        onBackClick,
+        imageSelectorLauncher,
+        userChannelInfo,
+        chatUiState.channelUiState,
+        chatUiState.messagesUiState
+    ) { newMessage ->
+        viewModel.sendMessage(chatUiState.newMessage(
+            msg = newMessage,
+            currentUserId = userChannelInfo.first
+        ))
+    }
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -53,6 +84,7 @@ fun MessagesRoute(onBackClick: () -> Unit, viewModel: MessagesViewModel = hiltVi
 @Composable
 fun MessagesScreen(
     onBackClick: () -> Unit,
+    imageSelectorLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>,
     userChannelInfo: Pair<String, Boolean>,
     chatChannelUiState: ChatChannelUiState,
     messagesUiState: MessagesUiState,
@@ -93,7 +125,7 @@ fun MessagesScreen(
         }
         Scaffold(topBar = { topBar() }) {
             Background {
-                MessagesContent(userChannelInfo = userChannelInfo, uiState = messagesUiState) {
+                MessagesContent(userChannelInfo = userChannelInfo, uiState = messagesUiState, imageSelectorLauncher = imageSelectorLauncher) {
                     onNewMessage(it)
                 }
             }
