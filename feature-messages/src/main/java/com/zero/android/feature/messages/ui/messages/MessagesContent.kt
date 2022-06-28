@@ -128,7 +128,7 @@ fun Messages(
 							DirectMessage(
 								msg = content,
 								isUserMe = content.author.id == userChannelInfo.first,
-                                isSameDay = isSameDay,
+								isSameDay = isSameDay,
 								isFirstMessageByAuthor = isFirstMessageByAuthor,
 								isLastMessageByAuthor = isLastMessageByAuthor,
 								onAuthorClick = {}
@@ -170,7 +170,7 @@ fun DirectMessage(
 	onAuthorClick: (Member) -> Unit,
 	msg: Message,
 	isUserMe: Boolean,
-    isSameDay: Boolean,
+	isSameDay: Boolean,
 	isFirstMessageByAuthor: Boolean,
 	isLastMessageByAuthor: Boolean
 ) {
@@ -180,20 +180,20 @@ fun DirectMessage(
 			modifier = Modifier.fillMaxWidth(),
 			horizontalArrangement = if (isUserMe) Arrangement.End else Arrangement.Start
 		) {
-            if (!isUserMe && (isLastMessageByAuthor || !isSameDay)) {
-                SmallCircularImage(
-                    modifier = Modifier.align(Alignment.Bottom).padding(bottom = 4.dp),
-                    imageUrl = msg.author.profileImage,
-                    placeHolder = R.drawable.ic_user_profile_placeholder
-                )
-            } else {
-                Spacer(modifier = Modifier.width(36.dp))
-            }
+			if (!isUserMe && (isLastMessageByAuthor || !isSameDay)) {
+				SmallCircularImage(
+					modifier = Modifier.align(Alignment.Bottom).padding(bottom = 4.dp),
+					imageUrl = msg.author.profileImage,
+					placeHolder = R.drawable.ic_user_profile_placeholder
+				)
+			} else {
+				Spacer(modifier = Modifier.width(36.dp))
+			}
 			DirectMessageAuthorAndTextMessage(
 				modifier = Modifier.padding(end = 16.dp).weight(1f),
 				message = msg,
 				isUserMe = isUserMe,
-                isSameDay = isSameDay,
+				isSameDay = isSameDay,
 				isFirstMessageByAuthor = isFirstMessageByAuthor,
 				isLastMessageByAuthor = isLastMessageByAuthor,
 				authorClicked = onAuthorClick
@@ -234,8 +234,8 @@ fun DirectMessageAuthorAndTextMessage(
 	modifier: Modifier = Modifier,
 	message: Message,
 	isUserMe: Boolean,
-    isSameDay: Boolean,
-    isFirstMessageByAuthor: Boolean,
+	isSameDay: Boolean,
+	isFirstMessageByAuthor: Boolean,
 	isLastMessageByAuthor: Boolean,
 	authorClicked: (Member) -> Unit
 ) {
@@ -249,12 +249,13 @@ fun DirectMessageAuthorAndTextMessage(
 		Row {
 			Spacer(modifier = Modifier.width(12.dp))
 			Box(
-                modifier =
-                Modifier.background(
-                    brush = Brush.linearGradient(colors = backgroundColorsList),
-                    shape = if (isLastMessageByAuthor || !isSameDay) {
-                        if (isUserMe) ChatDirectAuthor else ChatDirectOther
-                    } else ChatDirectSame
+				modifier =
+				Modifier.background(
+					brush = Brush.linearGradient(colors = backgroundColorsList),
+					shape =
+					if (isLastMessageByAuthor || !isSameDay) {
+						if (isUserMe) ChatDirectAuthor else ChatDirectOther
+					} else ChatDirectSame
 				)
 			) {
 				Column(modifier = Modifier.padding(8.dp)) {
