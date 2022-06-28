@@ -143,7 +143,7 @@ fun ConversationAppBarTitle(loggedInUserId: String, channel: Channel, isGroupCha
             if (isGroupChannel) {
                 NameInitialsView(userName = channel.getTitle(loggedInUserId))
             } else {
-                SmallCircularImage(imageUrl = channel.members.firstOrNull()?.profileUrl, placeHolder = R.drawable.ic_user_profile_placeholder)
+                SmallCircularImage(imageUrl = channel.members.firstOrNull()?.profileImage, placeHolder = R.drawable.ic_user_profile_placeholder)
             }
         }
         Text(

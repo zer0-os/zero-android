@@ -90,7 +90,7 @@ fun ChannelsItemsList(
             LargeCircularImage(
                 modifier = imageModifier,
                 placeHolder = R.drawable.ic_user_profile_placeholder,
-                imageUrl = channel.members.firstOrNull()?.profileUrl,
+                imageUrl = channel.members.firstOrNull()?.profileImage,
                 contentDescription = channel.id
             )
         } else {
