@@ -11,10 +11,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.zero.android.common.ui.Result
 import com.zero.android.feature.channels.ui.channels.ChannelsItemsList
 import com.zero.android.models.Channel
-import com.zero.android.models.DirectChannel
 import com.zero.android.models.Network
 import com.zero.android.ui.extensions.Preview
 
@@ -24,12 +22,12 @@ fun DirectChannelsRoute(
 	viewModel: DirectChannelsViewModel = hiltViewModel(),
 	onChannelSelected: (Channel) -> Unit
 ) {
-	val channels: Result<List<DirectChannel>> by viewModel.channels.collectAsState()
+	val uiState: DirectChannelScreenUiState by viewModel.uiState.collectAsState()
 
 	LaunchedEffect(network?.id) { network?.let { viewModel.onNetworkUpdated(it) } }
 	DirectChannelsScreen(
 		loggedInUser = viewModel.loggedInUserId,
-		channels = channels,
+        uiState = uiState,
 		onChannelSelected = onChannelSelected
 	)
 }
@@ -37,21 +35,20 @@ fun DirectChannelsRoute(
 @Composable
 fun DirectChannelsScreen(
 	loggedInUser: String,
-	channels: Result<List<DirectChannel>>,
+    uiState: DirectChannelScreenUiState,
 	onChannelSelected: (Channel) -> Unit
 ) {
-	val directChannelUiState = DirectChannelUiState(channels)
-	val directChannels = directChannelUiState.directChannels
-
-	if (directChannels.isNotEmpty()) {
-		Column(modifier = Modifier.fillMaxWidth()) {
-			LazyColumn {
-				items(directChannels) { channel ->
-					ChannelsItemsList(loggedInUser, channel) { onChannelSelected(it) }
-				}
-			}
-		}
-	}
+    val directChannelsUiState = uiState.directChannelsUiState
+	if (directChannelsUiState is DirectChannelUiState.Success &&
+        directChannelsUiState.channels.isNotEmpty()) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            LazyColumn {
+                items(directChannelsUiState.channels) { channel ->
+                    ChannelsItemsList(loggedInUser, channel) { onChannelSelected(it) }
+                }
+            }
+        }
+    }
 }
 
 @Preview @Composable

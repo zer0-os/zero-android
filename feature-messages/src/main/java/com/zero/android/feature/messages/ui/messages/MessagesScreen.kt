@@ -58,7 +58,7 @@ fun MessagesRoute(onBackClick: () -> Unit, viewModel: MessagesViewModel = hiltVi
                 val fileUri = data?.data!!
                 val file = try { fileUri.toFile() }
                 catch (e: Exception) { fileUri.toFile(context) }
-                viewModel.sendMessage(chatUiState.newMessage(
+                viewModel.sendMessage(chatUiState.newFileMessage(
                     file = file,
                     currentUserId = userChannelInfo.first
                 ))
@@ -72,7 +72,7 @@ fun MessagesRoute(onBackClick: () -> Unit, viewModel: MessagesViewModel = hiltVi
         chatUiState.channelUiState,
         chatUiState.messagesUiState
     ) { newMessage ->
-        viewModel.sendMessage(chatUiState.newMessage(
+        viewModel.sendMessage(chatUiState.newTextMessage(
             msg = newMessage,
             currentUserId = userChannelInfo.first
         ))

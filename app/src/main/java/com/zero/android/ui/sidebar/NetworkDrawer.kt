@@ -57,11 +57,11 @@ fun NetworkDrawerContent(
 				network = currentNetwork!!,
 				onSettingsClick = {
 					coroutineScope.launch { drawerState.close() }
-					onNavigateToTopLevelDestination(ProfileDestination)
+					/*onNavigateToTopLevelDestination(ProfileDestination)*/
 				},
 				onInviteClick = {
 					coroutineScope.launch { drawerState.close() }
-					onNavigateToTopLevelDestination(ProfileDestination)
+					/*onNavigateToTopLevelDestination(ProfileDestination)*/
 				}
 			)
 
@@ -102,7 +102,7 @@ fun NetworkDrawerContent(
 				},
 				onCreateWorldClick = {
 					coroutineScope.launch { drawerState.close() }
-					onNavigateToTopLevelDestination(ProfileDestination)
+					/*onNavigateToTopLevelDestination(ProfileDestination)*/
 				}
 			)
 		}

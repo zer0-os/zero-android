@@ -65,8 +65,8 @@ fun HomeScreen(
 		AppTopBar(
 			network = currentNetwork,
 			openDrawer = { coroutineScope.launch { scaffoldState.drawerState.open() } },
-			onProfileClick = { navController.navigate(ProfileDestination.route) },
-			onCreateWorldClick = { navController.navigate(ProfileDestination.route) }
+			onProfileClick = { /*navController.navigate(ProfileDestination.route)*/ },
+			onCreateWorldClick = { /*navController.navigate(ProfileDestination.route)*/ }
 		)
 	}
 

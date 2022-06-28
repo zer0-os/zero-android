@@ -105,11 +105,9 @@ internal fun DraftMessage.toParams(): BaseMessageParams {
 	} else {
 		FileMessageParams().also { params ->
 			params.data = data
-			params.mentionType = mentionType.toType()
 			parentMessageId?.let { params.parentMessageId = it.toLong() }
 			params.customType = type.serializedName
 			params.mentionedUserIds = mentions
-			params.mentionType = mentionType.toType()
 
 			params.file = file
 			params.fileUrl = fileUrl

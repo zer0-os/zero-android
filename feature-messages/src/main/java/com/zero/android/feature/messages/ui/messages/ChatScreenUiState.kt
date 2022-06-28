@@ -1,9 +1,6 @@
 package com.zero.android.feature.messages.ui.messages
 
-import com.zero.android.models.Channel
-import com.zero.android.models.DraftMessage
-import com.zero.android.models.Member
-import com.zero.android.models.Message
+import com.zero.android.models.*
 import com.zero.android.models.enums.MessageMentionType
 import com.zero.android.models.enums.MessageStatus
 import com.zero.android.models.enums.MessageType
@@ -14,18 +11,28 @@ data class ChatScreenUiState(
     val channelUiState: ChatChannelUiState,
     val messagesUiState: MessagesUiState
 ) {
-    fun newMessage(msg: String? = null, file: File? = null, currentUserId: String) =
+    fun newTextMessage(msg: String, currentUserId: String) =
         DraftMessage(
             channelUrl = null,
             author = Member(currentUserId),
-            type = if (file != null) MessageType.IMAGE
-            else MessageType.TEXT,
+            type = MessageType.TEXT,
             mentionType = MessageMentionType.USER,
             message = msg,
-            file = file,
             createdAt = Calendar.getInstance().timeInMillis,
             updatedAt = Calendar.getInstance().timeInMillis,
             status = MessageStatus.SUCCEEDED
+        )
+
+    fun newFileMessage(file: File, currentUserId: String) =
+        DraftMessage(
+            channelUrl = null,
+            author = Member(currentUserId),
+            type = MessageType.IMAGE,
+            mentionType = MessageMentionType.USER,
+            file = file,
+            createdAt = Calendar.getInstance().timeInMillis,
+            updatedAt = Calendar.getInstance().timeInMillis,
+            status = MessageStatus.SUCCEEDED,
         )
 }
 
