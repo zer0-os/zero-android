@@ -32,7 +32,10 @@ import com.zero.android.common.util.SymbolAnnotationType
 import com.zero.android.common.util.messageFormatter
 import com.zero.android.models.Member
 import com.zero.android.models.Message
-import com.zero.android.ui.components.*
+import com.zero.android.ui.components.BottomBarDivider
+import com.zero.android.ui.components.DayHeader
+import com.zero.android.ui.components.JumpToBottom
+import com.zero.android.ui.components.SmallCircularImage
 import com.zero.android.ui.theme.AppTheme
 import com.zero.android.ui.theme.Gray
 import com.zero.android.ui.theme.White
@@ -125,6 +128,7 @@ fun Messages(
 							DirectMessage(
 								msg = content,
 								isUserMe = content.author.id == userChannelInfo.first,
+                                isSameDay = isSameDay,
 								isFirstMessageByAuthor = isFirstMessageByAuthor,
 								isLastMessageByAuthor = isLastMessageByAuthor,
 								onAuthorClick = {}
@@ -166,6 +170,7 @@ fun DirectMessage(
 	onAuthorClick: (Member) -> Unit,
 	msg: Message,
 	isUserMe: Boolean,
+    isSameDay: Boolean,
 	isFirstMessageByAuthor: Boolean,
 	isLastMessageByAuthor: Boolean
 ) {
@@ -175,20 +180,20 @@ fun DirectMessage(
 			modifier = Modifier.fillMaxWidth(),
 			horizontalArrangement = if (isUserMe) Arrangement.End else Arrangement.Start
 		) {
-			if (!isUserMe) {
-				if (isLastMessageByAuthor) {
-					SmallCircularImage(
-						imageUrl = msg.author.profileImage,
-						placeHolder = R.drawable.ic_user_profile_placeholder
-					)
-				} else {
-					Spacer(modifier = Modifier.width(34.dp))
-				}
-			}
+            if (!isUserMe && (isLastMessageByAuthor || !isSameDay)) {
+                SmallCircularImage(
+                    modifier = Modifier.align(Alignment.Bottom).padding(bottom = 4.dp),
+                    imageUrl = msg.author.profileImage,
+                    placeHolder = R.drawable.ic_user_profile_placeholder
+                )
+            } else {
+                Spacer(modifier = Modifier.width(36.dp))
+            }
 			DirectMessageAuthorAndTextMessage(
 				modifier = Modifier.padding(end = 16.dp).weight(1f),
 				message = msg,
 				isUserMe = isUserMe,
+                isSameDay = isSameDay,
 				isFirstMessageByAuthor = isFirstMessageByAuthor,
 				isLastMessageByAuthor = isLastMessageByAuthor,
 				authorClicked = onAuthorClick
@@ -222,14 +227,15 @@ fun ChannelMessage(
 private val ChatBubbleShape = RoundedCornerShape(4.dp, 12.dp, 12.dp, 12.dp)
 private val ChatDirectOther = RoundedCornerShape(12.dp, 12.dp, 12.dp, 4.dp)
 private val ChatDirectAuthor = RoundedCornerShape(12.dp, 12.dp, 4.dp, 12.dp)
-private val ChatDirectSame = RoundedCornerShape(12.dp, 12.dp, 12.dp, 12.dp)
+private val ChatDirectSame = RoundedCornerShape(8.dp, 8.dp, 8.dp, 8.dp)
 
 @Composable
 fun DirectMessageAuthorAndTextMessage(
 	modifier: Modifier = Modifier,
 	message: Message,
 	isUserMe: Boolean,
-	isFirstMessageByAuthor: Boolean,
+    isSameDay: Boolean,
+    isFirstMessageByAuthor: Boolean,
 	isLastMessageByAuthor: Boolean,
 	authorClicked: (Member) -> Unit
 ) {
@@ -243,14 +249,16 @@ fun DirectMessageAuthorAndTextMessage(
 		Row {
 			Spacer(modifier = Modifier.width(12.dp))
 			Box(
-				modifier =
-				Modifier.background(
-					brush = Brush.linearGradient(colors = backgroundColorsList),
-					shape = if (isUserMe) ChatDirectAuthor else ChatDirectOther
+                modifier =
+                Modifier.background(
+                    brush = Brush.linearGradient(colors = backgroundColorsList),
+                    shape = if (isLastMessageByAuthor || !isSameDay) {
+                        if (isUserMe) ChatDirectAuthor else ChatDirectOther
+                    } else ChatDirectSame
 				)
 			) {
 				Column(modifier = Modifier.padding(8.dp)) {
-					if (!isUserMe && isLastMessageByAuthor) {
+					if (!isUserMe && (isLastMessageByAuthor || !isSameDay)) {
 						Text(
 							text = message.author.name ?: "",
 							style = MaterialTheme.typography.titleMedium,
@@ -350,10 +358,10 @@ private fun ColumnScope.MessageContent(message: Message, authorClicked: (Member)
 private fun ColumnScope.ChatBubbleSpacing(isFirstMessageByAuthor: Boolean) {
 	if (isFirstMessageByAuthor) {
 		// Last bubble before next author
-		Spacer(modifier = Modifier.height(8.dp))
+		Spacer(modifier = Modifier.height(6.dp))
 	} else {
 		// Between bubbles
-		Spacer(modifier = Modifier.height(4.dp))
+		Spacer(modifier = Modifier.height(2.dp))
 	}
 }
 
