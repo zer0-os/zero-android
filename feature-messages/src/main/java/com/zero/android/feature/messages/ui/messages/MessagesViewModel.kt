@@ -47,7 +47,10 @@ constructor(
 				}
 			val messagesUiState =
 				when (messagesResult) {
-					is Result.Success -> MessagesUiState.Success(messagesResult.data.filter { it.channelUrl == channelId })
+					is Result.Success ->
+						MessagesUiState.Success(
+							messagesResult.data.filter { it.channelUrl == channelId }
+						)
 					is Result.Loading -> MessagesUiState.Loading
 					else -> MessagesUiState.Error
 				}

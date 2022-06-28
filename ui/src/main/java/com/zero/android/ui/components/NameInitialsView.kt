@@ -20,8 +20,8 @@ private val DEFAULT_MODIFIER = Modifier.size(36.dp)
 @Composable
 fun NameInitialsView(modifier: Modifier = DEFAULT_MODIFIER, userName: String) {
 	Box(
-		modifier = modifier
-			.background(color = MaterialTheme.colorScheme.primary, shape = CircleShape)
+		modifier =
+		modifier.background(color = MaterialTheme.colorScheme.primary, shape = CircleShape)
 	) {
 		Text(
 			userName.initials(),

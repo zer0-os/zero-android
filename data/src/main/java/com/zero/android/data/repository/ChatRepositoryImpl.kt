@@ -22,10 +22,10 @@ import javax.inject.Inject
 class ChatRepositoryImpl
 @Inject
 constructor(
-    private val chatService: ChatService,
-    private val chatMediaService: ChatMediaService,
-    private val chatMediaUtil: ChatMediaUtil,
-    private val messageService: MessageService
+	private val chatService: ChatService,
+	private val chatMediaService: ChatMediaService,
+	private val chatMediaUtil: ChatMediaUtil,
+	private val messageService: MessageService
 ) : ChatRepository {
 
 	override val channelChatMessages = MutableStateFlow<List<Message>>(emptyList())
@@ -54,44 +54,46 @@ constructor(
 		return chatService.getMessages(channel, id).map { messages -> messages.map { it.toModel() } }
 	}
 
-    override suspend fun send(channel: Channel, message: DraftMessage): Flow<Message> {
-        return if (message.type == MessageType.TEXT) {
-            val newMessage = chatService.send(channel, message).map { it.toModel() }
-            newMessage.collectLatest { appendNewChatMessage(it) }
-            newMessage
-        } else {
-            sendFileMessage(channel, message)
-        }
-    }
+	override suspend fun send(channel: Channel, message: DraftMessage): Flow<Message> {
+		return if (message.type == MessageType.TEXT) {
+			val newMessage = chatService.send(channel, message).map { it.toModel() }
+			newMessage.collectLatest { appendNewChatMessage(it) }
+			newMessage
+		} else {
+			sendFileMessage(channel, message)
+		}
+	}
 
-    private suspend fun sendFileMessage(channel: Channel, message: DraftMessage): Flow<Message> {
-        val uploadInfo = chatMediaService.getUploadInfo()
-        val fileMessage = if (uploadInfo.apiUrl.isNotEmpty() && uploadInfo.query != null) {
-            val fileUpload = chatMediaService.uploadMediaFile(
-                chatMediaUtil.getUploadUrl(uploadInfo),
-                chatMediaUtil.getUploadBody(message.file!!)
-            )
-            DraftMessage(
-                channelUrl = null,
-                author = message.author,
-                type = message.type,
-                mentionType = message.mentionType,
-                fileUrl = fileUpload.secureUrl,
-                fileName = fileUpload.originalFilename,
-                fileMimeType = fileUpload.type,
-                createdAt = message.createdAt,
-                updatedAt = message.updatedAt,
-                status = message.status,
-                data = JSONObject(fileUpload.dataMap).toString()
-            )
-        } else {
-            Timber.e("Upload Info is required for file upload")
-            message
-        }
-        val newMessage = chatService.send(channel, fileMessage).map { it.toModel() }
-        newMessage.collectLatest { appendNewChatMessage(it) }
-        return newMessage
-    }
+	private suspend fun sendFileMessage(channel: Channel, message: DraftMessage): Flow<Message> {
+		val uploadInfo = chatMediaService.getUploadInfo()
+		val fileMessage =
+			if (uploadInfo.apiUrl.isNotEmpty() && uploadInfo.query != null) {
+				val fileUpload =
+					chatMediaService.uploadMediaFile(
+						chatMediaUtil.getUploadUrl(uploadInfo),
+						chatMediaUtil.getUploadBody(message.file!!)
+					)
+				DraftMessage(
+					channelUrl = null,
+					author = message.author,
+					type = message.type,
+					mentionType = message.mentionType,
+					fileUrl = fileUpload.secureUrl,
+					fileName = fileUpload.originalFilename,
+					fileMimeType = fileUpload.type,
+					createdAt = message.createdAt,
+					updatedAt = message.updatedAt,
+					status = message.status,
+					data = JSONObject(fileUpload.dataMap).toString()
+				)
+			} else {
+				Timber.e("Upload Info is required for file upload")
+				message
+			}
+		val newMessage = chatService.send(channel, fileMessage).map { it.toModel() }
+		newMessage.collectLatest { appendNewChatMessage(it) }
+		return newMessage
+	}
 
 	override suspend fun reply(channel: Channel, id: String, message: DraftMessage): Flow<Message> {
 		return chatService.reply(channel, id, message).map { it.toModel() }

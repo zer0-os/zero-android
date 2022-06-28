@@ -14,7 +14,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.zero.android.common.navigation.NavDestination
 import com.zero.android.common.ui.Result
-import com.zero.android.feature.account.navigation.ProfileDestination
 import com.zero.android.models.Network
 import com.zero.android.navigation.HomeNavHost
 import com.zero.android.ui.appbar.AppBottomBar

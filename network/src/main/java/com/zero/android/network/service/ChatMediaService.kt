@@ -7,13 +7,13 @@ import retrofit2.http.*
 
 interface ChatMediaService {
 
-    @GET("upload/info")
-    suspend fun getUploadInfo(): ApiUploadInfo
+	@GET("upload/info")
+	suspend fun getUploadInfo(): ApiUploadInfo
 
-    @Multipart
-    @POST
-    suspend fun uploadMediaFile(
-        @Url url: String,
-        @Part part: MultipartBody.Part
-    ): ApiUploadedMediaInfo
+	@Multipart
+	@POST
+	suspend fun uploadMediaFile(
+		@Url url: String,
+		@Part part: MultipartBody.Part
+	): ApiUploadedMediaInfo
 }

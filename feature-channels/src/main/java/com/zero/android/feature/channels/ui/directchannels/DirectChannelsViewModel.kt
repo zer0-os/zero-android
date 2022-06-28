@@ -23,27 +23,29 @@ constructor(
 	private val channelRepository: ChannelRepository
 ) : BaseViewModel() {
 
-    private lateinit var network: Network
-    val loggedInUserId
-        get() = runBlocking(Dispatchers.IO) { preferences.userId() }
+	private lateinit var network: Network
+	val loggedInUserId
+		get() = runBlocking(Dispatchers.IO) { preferences.userId() }
 
-    private val _uiState = MutableStateFlow(DirectChannelScreenUiState(DirectChannelUiState.Loading))
-    val uiState: StateFlow<DirectChannelScreenUiState> = _uiState
+	private val _uiState = MutableStateFlow(DirectChannelScreenUiState(DirectChannelUiState.Loading))
+	val uiState: StateFlow<DirectChannelScreenUiState> = _uiState
 
 	fun onNetworkUpdated(network: Network) {
 		this.network = network
 		loadChannels()
 	}
 
-    private fun loadChannels() {
-        ioScope.launch {
-            channelRepository.getDirectChannels().asResult().collectLatest {
-                when (it) {
-                    is Result.Success -> _uiState.emit(DirectChannelScreenUiState(DirectChannelUiState.Success(it.data)))
-                    is Result.Loading -> _uiState.emit(DirectChannelScreenUiState(DirectChannelUiState.Loading))
-                    else -> _uiState.emit(DirectChannelScreenUiState(DirectChannelUiState.Error))
-                }
-            }
-        }
-    }
+	private fun loadChannels() {
+		ioScope.launch {
+			channelRepository.getDirectChannels().asResult().collectLatest {
+				when (it) {
+					is Result.Success ->
+						_uiState.emit(DirectChannelScreenUiState(DirectChannelUiState.Success(it.data)))
+					is Result.Loading ->
+						_uiState.emit(DirectChannelScreenUiState(DirectChannelUiState.Loading))
+					else -> _uiState.emit(DirectChannelScreenUiState(DirectChannelUiState.Error))
+				}
+			}
+		}
+	}
 }

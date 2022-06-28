@@ -27,7 +27,7 @@ fun DirectChannelsRoute(
 	LaunchedEffect(network?.id) { network?.let { viewModel.onNetworkUpdated(it) } }
 	DirectChannelsScreen(
 		loggedInUser = viewModel.loggedInUserId,
-        uiState = uiState,
+		uiState = uiState,
 		onChannelSelected = onChannelSelected
 	)
 }
@@ -35,20 +35,21 @@ fun DirectChannelsRoute(
 @Composable
 fun DirectChannelsScreen(
 	loggedInUser: String,
-    uiState: DirectChannelScreenUiState,
+	uiState: DirectChannelScreenUiState,
 	onChannelSelected: (Channel) -> Unit
 ) {
-    val directChannelsUiState = uiState.directChannelsUiState
+	val directChannelsUiState = uiState.directChannelsUiState
 	if (directChannelsUiState is DirectChannelUiState.Success &&
-        directChannelsUiState.channels.isNotEmpty()) {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            LazyColumn {
-                items(directChannelsUiState.channels) { channel ->
-                    ChannelsItemsList(loggedInUser, channel) { onChannelSelected(it) }
-                }
-            }
-        }
-    }
+		directChannelsUiState.channels.isNotEmpty()
+	) {
+		Column(modifier = Modifier.fillMaxWidth()) {
+			LazyColumn {
+				items(directChannelsUiState.channels) { channel ->
+					ChannelsItemsList(loggedInUser, channel) { onChannelSelected(it) }
+				}
+			}
+		}
+	}
 }
 
 @Preview @Composable

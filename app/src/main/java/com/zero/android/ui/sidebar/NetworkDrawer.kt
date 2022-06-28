@@ -16,7 +16,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import com.zero.android.common.R
 import com.zero.android.common.navigation.NavDestination
 import com.zero.android.common.ui.Result
-import com.zero.android.feature.account.navigation.ProfileDestination
 import com.zero.android.models.Network
 import com.zero.android.models.fake.FakeData
 import com.zero.android.ui.components.LoadingContainer
