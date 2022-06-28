@@ -38,9 +38,10 @@ fun ChannelTabLayout(
 		edgePadding = 0.dp,
 		modifier = Modifier.fillMaxWidth().wrapContentHeight(),
 		indicator = { tabPositions ->
+			val indicatorPosition = if (tabIndex > tabPositions.size - 1) 0 else tabIndex
 			Box(
 				modifier =
-				Modifier.tabIndicatorOffset(tabPositions[tabIndex])
+				Modifier.tabIndicatorOffset(tabPositions[indicatorPosition])
 					.height(2.dp)
 					.background(color = AppTheme.colors.glow)
 			)

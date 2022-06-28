@@ -43,94 +43,99 @@ import com.zero.android.ui.theme.AppTheme
 
 @Composable
 fun MessagesRoute(onBackClick: () -> Unit, viewModel: MessagesViewModel = hiltViewModel()) {
-    val chatUiState: ChatScreenUiState by viewModel.uiState.collectAsState()
-    val userChannelInfo = viewModel.loggedInUserId to viewModel.isGroupChannel
-    val context = LocalContext.current
-    LaunchedEffect(Unit) { viewModel.loadChannel() }
+	val chatUiState: ChatScreenUiState by viewModel.uiState.collectAsState()
+	val userChannelInfo = viewModel.loggedInUserId to viewModel.isGroupChannel
+	val context = LocalContext.current
+	LaunchedEffect(Unit) { viewModel.loadChannel() }
 
-    val imageSelectorLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult(),
-        onResult = {
-            val resultCode = it.resultCode
-            val data = it.data
-            if (resultCode == Activity.RESULT_OK) {
-                //Image Uri will not be null for RESULT_OK
-                val fileUri = data?.data!!
-                val file = try { fileUri.toFile() }
-                catch (e: Exception) { fileUri.toFile(context) }
-                viewModel.sendMessage(chatUiState.newFileMessage(
-                    file = file,
-                    currentUserId = userChannelInfo.first
-                ))
-            }
-        }
-    )
-    MessagesScreen(
-        onBackClick,
-        imageSelectorLauncher,
-        userChannelInfo,
-        chatUiState.channelUiState,
-        chatUiState.messagesUiState
-    ) { newMessage ->
-        viewModel.sendMessage(chatUiState.newTextMessage(
-            msg = newMessage,
-            currentUserId = userChannelInfo.first
-        ))
-    }
+	val imageSelectorLauncher =
+		rememberLauncherForActivityResult(
+			contract = ActivityResultContracts.StartActivityForResult(),
+			onResult = {
+				val resultCode = it.resultCode
+				val data = it.data
+				if (resultCode == Activity.RESULT_OK) {
+					// Image Uri will not be null for RESULT_OK
+					val fileUri = data?.data!!
+					val file =
+						try {
+							fileUri.toFile()
+						} catch (e: Exception) {
+							fileUri.toFile(context)
+						}
+					viewModel.sendMessage(
+						chatUiState.newFileMessage(file = file, currentUserId = userChannelInfo.first)
+					)
+				}
+			}
+		)
+	MessagesScreen(
+		onBackClick,
+		imageSelectorLauncher,
+		userChannelInfo,
+		chatUiState.channelUiState,
+		chatUiState.messagesUiState
+	) { newMessage ->
+		viewModel.sendMessage(
+			chatUiState.newTextMessage(msg = newMessage, currentUserId = userChannelInfo.first)
+		)
+	}
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MessagesScreen(
-    onBackClick: () -> Unit,
-    imageSelectorLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>,
-    userChannelInfo: Pair<String, Boolean>,
-    chatChannelUiState: ChatChannelUiState,
-    messagesUiState: MessagesUiState,
-    onNewMessage: (String) -> Unit
+	onBackClick: () -> Unit,
+	imageSelectorLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>,
+	userChannelInfo: Pair<String, Boolean>,
+	chatChannelUiState: ChatChannelUiState,
+	messagesUiState: MessagesUiState,
+	onNewMessage: (String) -> Unit
 ) {
-    if (chatChannelUiState is ChatChannelUiState.Success) {
-        val topBar: @Composable () -> Unit = {
-            AppBar(
-                scrollBehavior = null,
-                navIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "cd_back",
-                            tint = AppTheme.colors.glow
-                        )
-                    }
-                },
-                title = {
-                    ConversationAppBarTitle(
-                        userChannelInfo.first,
-                        chatChannelUiState.channel,
-                        userChannelInfo.second
-                    )
-                },
-                actions = {
-                    IconButton(onClick = {}) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_search),
-                            contentDescription = "cd_search_message"
-                        )
-                    }
-                    IconButton(onClick = {}) {
-                        Icon(imageVector = Icons.Filled.MoreVert, contentDescription = "cd_more_options")
-                    }
-                }
-            )
-        }
-        Scaffold(topBar = { topBar() }) {
-            Background {
-                MessagesContent(userChannelInfo = userChannelInfo, uiState = messagesUiState, imageSelectorLauncher = imageSelectorLauncher) {
-                    onNewMessage(it)
-                }
-            }
-        }
-    }
+	if (chatChannelUiState is ChatChannelUiState.Success) {
+		val topBar: @Composable () -> Unit = {
+			AppBar(
+				scrollBehavior = null,
+				navIcon = {
+					IconButton(onClick = onBackClick) {
+						Icon(
+							imageVector = Icons.Filled.ArrowBack,
+							contentDescription = "cd_back",
+							tint = AppTheme.colors.glow
+						)
+					}
+				},
+				title = {
+					ConversationAppBarTitle(
+						userChannelInfo.first,
+						chatChannelUiState.channel,
+						userChannelInfo.second
+					)
+				},
+				actions = {
+					IconButton(onClick = {}) {
+						Icon(
+							painter = painterResource(R.drawable.ic_search),
+							contentDescription = "cd_search_message"
+						)
+					}
+					IconButton(onClick = {}) {
+						Icon(imageVector = Icons.Filled.MoreVert, contentDescription = "cd_more_options")
+					}
+				}
+			)
+		}
+		Scaffold(topBar = { topBar() }) {
+			Background {
+				MessagesContent(
+					userChannelInfo = userChannelInfo,
+					uiState = messagesUiState,
+					imageSelectorLauncher = imageSelectorLauncher
+				) { onNewMessage(it) }
+			}
+		}
+	}
 }
 
 @Preview @Composable
@@ -138,41 +143,40 @@ fun MessagesScreenPreview() = Preview {}
 
 @Composable
 fun ConversationAppBarTitle(loggedInUserId: String, channel: Channel, isGroupChannel: Boolean) {
-    Row {
-        IconButton(modifier = Modifier.align(Alignment.CenterVertically), onClick = {}) {
-            if (isGroupChannel) {
-                NameInitialsView(userName = channel.getTitle(loggedInUserId))
-            } else {
-                SmallCircularImage(imageUrl = channel.members.firstOrNull()?.profileImage, placeHolder = R.drawable.ic_user_profile_placeholder)
-            }
-        }
-        Text(
-            channel.getTitle(loggedInUserId).lowercase(),
-            modifier = Modifier.align(Alignment.CenterVertically)
-        )
-        Spacer(modifier = Modifier.padding(6.dp))
-        if (isGroupChannel) {
-            if ((channel as GroupChannel).hasTelegramChannel) {
-                Image(
-                    painter = painterResource(R.drawable.ic_vector),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .align(Alignment.CenterVertically),
-                    contentScale = ContentScale.Fit
-                )
-                Spacer(modifier = Modifier.padding(6.dp))
-            }
-            if (channel.hasDiscordChannel) {
-                Image(
-                    painter = painterResource(R.drawable.ic_discord),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .align(Alignment.CenterVertically),
-                    contentScale = ContentScale.Fit
-                )
-            }
-        }
-    }
+	Row {
+		IconButton(modifier = Modifier.align(Alignment.CenterVertically), onClick = {}) {
+			if (isGroupChannel) {
+				NameInitialsView(userName = channel.getTitle(loggedInUserId))
+			} else {
+				SmallCircularImage(
+					imageUrl = channel.members.firstOrNull()?.profileImage,
+					placeHolder = R.drawable.ic_user_profile_placeholder
+				)
+			}
+		}
+		Text(
+			channel.getTitle(loggedInUserId).lowercase(),
+			modifier = Modifier.align(Alignment.CenterVertically)
+		)
+		Spacer(modifier = Modifier.padding(6.dp))
+		if (isGroupChannel) {
+			if ((channel as GroupChannel).hasTelegramChannel) {
+				Image(
+					painter = painterResource(R.drawable.ic_vector),
+					contentDescription = "",
+					modifier = Modifier.wrapContentSize().align(Alignment.CenterVertically),
+					contentScale = ContentScale.Fit
+				)
+				Spacer(modifier = Modifier.padding(6.dp))
+			}
+			if (channel.hasDiscordChannel) {
+				Image(
+					painter = painterResource(R.drawable.ic_discord),
+					contentDescription = "",
+					modifier = Modifier.wrapContentSize().align(Alignment.CenterVertically),
+					contentScale = ContentScale.Fit
+				)
+			}
+		}
+	}
 }

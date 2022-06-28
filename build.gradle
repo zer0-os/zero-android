@@ -33,7 +33,7 @@ buildscript {
 		"splashscreen"    : "1.0.0-rc01",
 		"constraintlayout": "1.1.0-alpha02",
 		"coil"            : "2.0.0-rc01",
-		"pager"           : "0.20.0",
+		"pager"           : "0.24.12-rc",
 		"imagePicker"     : "2.1",
 
 		// Data

@@ -12,6 +12,7 @@ import com.zero.android.models.Channel
 import com.zero.android.models.Network
 import com.zero.android.ui.extensions.Preview
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun ChannelsRoute(
 	network: Network?,
@@ -27,8 +28,8 @@ fun ChannelsRoute(
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun ChannelsScreen(uiState: GroupChannelUiState, onChannelSelected: (Channel) -> Unit) {
-	val pagerState = rememberPagerState(initialPage = 0)
 	val coroutineScope = rememberCoroutineScope()
+	val pagerState = rememberPagerState(initialPage = 0)
 
 	if (uiState.categoriesUiState is ChannelCategoriesUiState.Success &&
 		uiState.categoryChannelsUiState is CategoryChannelsUiState.Success
