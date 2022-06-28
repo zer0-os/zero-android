@@ -33,12 +33,12 @@ data class ApiUploadedMediaInfo(
     val versionId: String,
     val width: Int
 ) {
-    val dataMap by lazy {
+    val dataMap: Map<*, *> by lazy {
         mutableMapOf<String, Any>(
             "url" to secureUrl,
             "width" to width,
             "height" to height,
             "type" to type
-        ).toString()
+        )
     }
 }
