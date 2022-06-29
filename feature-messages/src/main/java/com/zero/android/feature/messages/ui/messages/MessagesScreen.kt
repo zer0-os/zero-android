@@ -1,52 +1,52 @@
 package com.zero.android.feature.messages.ui.messages
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import androidx.activity.compose.ManagedActivityResultLauncher
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.core.net.toFile
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.zero.android.common.R
 import com.zero.android.common.extensions.toFile
-import com.zero.android.models.Channel
-import com.zero.android.models.GroupChannel
-import com.zero.android.models.getTitle
+import com.zero.android.feature.messages.ui.voicememo.MemoRecorderViewModel
 import com.zero.android.ui.components.AppBar
 import com.zero.android.ui.components.Background
-import com.zero.android.ui.components.NameInitialsView
-import com.zero.android.ui.components.SmallCircularImage
 import com.zero.android.ui.extensions.Preview
 import com.zero.android.ui.theme.AppTheme
+import java.io.File
 
 @Composable
-fun MessagesRoute(onBackClick: () -> Unit, viewModel: MessagesViewModel = hiltViewModel()) {
+fun MessagesRoute(
+    onBackClick: () -> Unit,
+    viewModel: MessagesViewModel = hiltViewModel(),
+    recordMemoViewModel: MemoRecorderViewModel = hiltViewModel(),
+) {
     val chatUiState: ChatScreenUiState by viewModel.uiState.collectAsState()
+    val recordingState: Boolean by recordMemoViewModel.recordingState.collectAsState()
     val userChannelInfo = viewModel.loggedInUserId to viewModel.isGroupChannel
     val context = LocalContext.current
-    LaunchedEffect(Unit) { viewModel.loadChannel() }
+
+    LaunchedEffect(Unit) {
+        viewModel.loadChannel()
+        recordMemoViewModel.configure(context.externalCacheDir?.absolutePath)
+    }
 
     val imageSelectorLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
@@ -65,18 +65,42 @@ fun MessagesRoute(onBackClick: () -> Unit, viewModel: MessagesViewModel = hiltVi
             }
         }
     )
+    val recordMemoPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { granted ->
+            if (granted) recordMemoViewModel.startRecording()
+        }
+    )
+
     MessagesScreen(
         onBackClick,
-        imageSelectorLauncher,
         userChannelInfo,
         chatUiState.channelUiState,
-        chatUiState.messagesUiState
-    ) { newMessage ->
-        viewModel.sendMessage(chatUiState.newTextMessage(
-            msg = newMessage,
-            currentUserId = userChannelInfo.first
-        ))
-    }
+        chatUiState.messagesUiState,
+        recordingState,
+        onNewMessage = { newMessage ->
+            viewModel.sendMessage(chatUiState.newTextMessage(
+                msg = newMessage,
+                currentUserId = userChannelInfo.first
+            ))
+        },
+        onPickImage = { imageSelectorLauncher.launch(it) },
+        onRecordMemo = {
+            val isRecording = recordMemoViewModel.recordingState.value
+            if (isRecording) {
+                recordMemoViewModel.stopRecording()
+            } else {
+                recordMemoPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+            }
+        },
+        onSendMemo = {
+            recordMemoViewModel.stopRecording()
+            val file = File(recordMemoViewModel.lastMemoPath)
+            if (file.exists()) {
+                //send file to send bird
+            }
+        }
+    )
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -84,11 +108,14 @@ fun MessagesRoute(onBackClick: () -> Unit, viewModel: MessagesViewModel = hiltVi
 @Composable
 fun MessagesScreen(
     onBackClick: () -> Unit,
-    imageSelectorLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>,
     userChannelInfo: Pair<String, Boolean>,
     chatChannelUiState: ChatChannelUiState,
     messagesUiState: MessagesUiState,
-    onNewMessage: (String) -> Unit
+    isMemoRecording: Boolean,
+    onNewMessage: (String) -> Unit,
+    onPickImage:(Intent) -> Unit,
+    onRecordMemo: () -> Unit,
+    onSendMemo:() -> Unit,
 ) {
     if (chatChannelUiState is ChatChannelUiState.Success) {
         val topBar: @Composable () -> Unit = {
@@ -104,7 +131,7 @@ fun MessagesScreen(
                     }
                 },
                 title = {
-                    ConversationAppBarTitle(
+                    ChatScreenAppBarTitle(
                         userChannelInfo.first,
                         chatChannelUiState.channel,
                         userChannelInfo.second
@@ -125,9 +152,15 @@ fun MessagesScreen(
         }
         Scaffold(topBar = { topBar() }) {
             Background {
-                MessagesContent(userChannelInfo = userChannelInfo, uiState = messagesUiState, imageSelectorLauncher = imageSelectorLauncher) {
-                    onNewMessage(it)
-                }
+                MessagesContent(
+                    userChannelInfo = userChannelInfo,
+                    uiState = messagesUiState,
+                    onNewMessage = onNewMessage,
+                    onImagePicker = onPickImage,
+                    isMemoRecording = isMemoRecording,
+                    onMemoRecorder = onRecordMemo,
+                    onSendMemo = onSendMemo
+                )
             }
         }
     }
@@ -135,44 +168,3 @@ fun MessagesScreen(
 
 @Preview @Composable
 fun MessagesScreenPreview() = Preview {}
-
-@Composable
-fun ConversationAppBarTitle(loggedInUserId: String, channel: Channel, isGroupChannel: Boolean) {
-    Row {
-        IconButton(modifier = Modifier.align(Alignment.CenterVertically), onClick = {}) {
-            if (isGroupChannel) {
-                NameInitialsView(userName = channel.getTitle(loggedInUserId))
-            } else {
-                SmallCircularImage(imageUrl = channel.members.firstOrNull()?.profileImage, placeHolder = R.drawable.ic_user_profile_placeholder)
-            }
-        }
-        Text(
-            channel.getTitle(loggedInUserId).lowercase(),
-            modifier = Modifier.align(Alignment.CenterVertically)
-        )
-        Spacer(modifier = Modifier.padding(6.dp))
-        if (isGroupChannel) {
-            if ((channel as GroupChannel).hasTelegramChannel) {
-                Image(
-                    painter = painterResource(R.drawable.ic_vector),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .align(Alignment.CenterVertically),
-                    contentScale = ContentScale.Fit
-                )
-                Spacer(modifier = Modifier.padding(6.dp))
-            }
-            if (channel.hasDiscordChannel) {
-                Image(
-                    painter = painterResource(R.drawable.ic_discord),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .align(Alignment.CenterVertically),
-                    contentScale = ContentScale.Fit
-                )
-            }
-        }
-    }
-}
