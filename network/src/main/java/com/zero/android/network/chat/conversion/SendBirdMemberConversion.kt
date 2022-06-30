@@ -40,28 +40,32 @@ internal fun User.toApi() =
 internal fun ApiMember.toUser() = User.buildFromSerializedData(toSendBirdJsonString())
 
 internal fun Member.toApi(): ApiMember {
-    val properties = Json { ignoreUnknownKeys = true }.decodeFromString<ApiMemberProfile?>(profileUrl)
-    return ApiMember(
-        id = userId,
-        nickname = nickname,
-        profileUrl = profileUrl,
-        profileImage = properties?.profileImage,
-        friendDiscoveryKey = friendDiscoveryKey,
-        friendName = friendName,
-        metadata = metaData,
-        status = connectionStatus.toType(),
-        lastSeenAt = lastSeenAt,
-        isActive = isActive,
-        isBlockedByMe = isBlockedByMe,
-        isBlockingMe = isBlockingMe,
-        isMuted = isMuted
-    )
+	val properties =
+		if (profileUrl.isNullOrBlank()) ApiMemberProfile(null)
+		else Json { ignoreUnknownKeys = true }.decodeFromString<ApiMemberProfile?>(profileUrl)
+	return ApiMember(
+		id = userId,
+		nickname = nickname,
+		profileUrl = profileUrl,
+		profileImage = properties?.profileImage,
+		friendDiscoveryKey = friendDiscoveryKey,
+		friendName = friendName,
+		metadata = metaData,
+		status = connectionStatus.toType(),
+		lastSeenAt = lastSeenAt,
+		isActive = isActive,
+		isBlockedByMe = isBlockedByMe,
+		isBlockingMe = isBlockingMe,
+		isMuted = isMuted
+	)
 }
 
 internal fun ApiMember.toMember() = Member.buildFromSerializedData(toSendBirdJsonString())
 
 internal fun Sender.toApi(): ApiMember {
-	val properties = Json { ignoreUnknownKeys = true }.decodeFromString<ApiMemberProfile?>(profileUrl)
+	val properties =
+		if (profileUrl.isNullOrBlank()) ApiMemberProfile(null)
+		else Json { ignoreUnknownKeys = true }.decodeFromString<ApiMemberProfile?>(profileUrl)
 	return ApiMember(
 		id = userId,
 		nickname = nickname,
