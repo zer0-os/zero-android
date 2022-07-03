@@ -5,16 +5,23 @@ import androidx.lifecycle.viewModelScope
 import com.zero.android.common.ui.Result
 import com.zero.android.common.ui.asResult
 import com.zero.android.common.ui.base.BaseViewModel
+import com.zero.android.data.delegates.Preferences
 import com.zero.android.data.repository.ChannelRepository
 import com.zero.android.data.repository.ChatRepository
-import com.zero.android.database.AppPreferences
 import com.zero.android.feature.messages.navigation.MessagesDestination
 import com.zero.android.models.Channel
 import com.zero.android.models.DraftMessage
 import com.zero.android.models.Message
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
@@ -24,7 +31,7 @@ class MessagesViewModel
 @Inject
 constructor(
 	savedStateHandle: SavedStateHandle,
-	private val preferences: AppPreferences,
+	private val preferences: Preferences,
 	private val chatRepository: ChatRepository,
 	private val channelRepository: ChannelRepository
 ) : BaseViewModel() {

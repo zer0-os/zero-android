@@ -58,6 +58,7 @@ dependencies {
 	implementation project(":models")
 	implementation project(":data")
 	implementation project(":network")
+	implementation project(":datastore")
 	implementation project(":database")
 	implementation project(":feature-auth")
 	implementation project(":feature-account")

@@ -22,44 +22,40 @@ import com.zero.android.ui.components.SmallCircularImage
 
 @Composable
 fun ChatScreenAppBarTitle(loggedInUserId: String, channel: Channel, isGroupChannel: Boolean) {
-    Row {
-        IconButton(modifier = Modifier.align(Alignment.CenterVertically), onClick = {}) {
-            if (isGroupChannel) {
-                NameInitialsView(userName = channel.getTitle(loggedInUserId))
-            } else {
-                SmallCircularImage(
-                    imageUrl = channel.members.firstOrNull()?.profileImage,
-                    placeHolder = R.drawable.ic_user_profile_placeholder
-                )
-            }
-        }
-        Text(
-            channel.getTitle(loggedInUserId).lowercase(),
-            modifier = Modifier.align(Alignment.CenterVertically)
-        )
-        Spacer(modifier = Modifier.padding(6.dp))
-        if (isGroupChannel) {
-            if ((channel as GroupChannel).hasTelegramChannel) {
-                Image(
-                    painter = painterResource(R.drawable.ic_vector),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .align(Alignment.CenterVertically),
-                    contentScale = ContentScale.Fit
-                )
-                Spacer(modifier = Modifier.padding(6.dp))
-            }
-            if (channel.hasDiscordChannel) {
-                Image(
-                    painter = painterResource(R.drawable.ic_discord),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .align(Alignment.CenterVertically),
-                    contentScale = ContentScale.Fit
-                )
-            }
-        }
-    }
+	Row {
+		IconButton(modifier = Modifier.align(Alignment.CenterVertically), onClick = {}) {
+			if (isGroupChannel) {
+				NameInitialsView(userName = channel.getTitle(loggedInUserId))
+			} else {
+				SmallCircularImage(
+					imageUrl = channel.members.firstOrNull()?.profileImage,
+					placeHolder = R.drawable.ic_user_profile_placeholder
+				)
+			}
+		}
+		Text(
+			channel.getTitle(loggedInUserId).lowercase(),
+			modifier = Modifier.align(Alignment.CenterVertically)
+		)
+		Spacer(modifier = Modifier.padding(6.dp))
+		if (isGroupChannel) {
+			if ((channel as GroupChannel).hasTelegramChannel) {
+				Image(
+					painter = painterResource(R.drawable.ic_vector),
+					contentDescription = "",
+					modifier = Modifier.wrapContentSize().align(Alignment.CenterVertically),
+					contentScale = ContentScale.Fit
+				)
+				Spacer(modifier = Modifier.padding(6.dp))
+			}
+			if (channel.hasDiscordChannel) {
+				Image(
+					painter = painterResource(R.drawable.ic_discord),
+					contentDescription = "",
+					modifier = Modifier.wrapContentSize().align(Alignment.CenterVertically),
+					contentScale = ContentScale.Fit
+				)
+			}
+		}
+	}
 }

@@ -23,83 +23,80 @@ import com.zero.android.ui.theme.Gray
 
 @Composable
 fun ChannelMessage(
-    onAuthorClick: (Member) -> Unit,
-    msg: Message,
-    isUserMe: Boolean,
-    isFirstMessageByAuthor: Boolean
+	onAuthorClick: (Member) -> Unit,
+	msg: Message,
+	isUserMe: Boolean,
+	isFirstMessageByAuthor: Boolean
 ) {
-    Row {
-        SmallCircularImage(
-            imageUrl = msg.author.profileImage,
-            placeHolder = R.drawable.ic_user_profile_placeholder
-        )
-        CMAuthorAndTextMessage(
-            modifier = Modifier
-                .padding(end = 16.dp)
-                .weight(1f),
-            message = msg,
-            isUserMe = isUserMe,
-            isFirstMessageByAuthor = isFirstMessageByAuthor,
-            authorClicked = onAuthorClick
-        )
-    }
+	Row {
+		SmallCircularImage(
+			imageUrl = msg.author.profileImage,
+			placeHolder = R.drawable.ic_user_profile_placeholder
+		)
+		CMAuthorAndTextMessage(
+			modifier = Modifier.padding(end = 16.dp).weight(1f),
+			message = msg,
+			isUserMe = isUserMe,
+			isFirstMessageByAuthor = isFirstMessageByAuthor,
+			authorClicked = onAuthorClick
+		)
+	}
 }
 
 private val ChatBubbleShape = RoundedCornerShape(4.dp, 12.dp, 12.dp, 12.dp)
 
 @Composable
 fun CMAuthorAndTextMessage(
-    modifier: Modifier = Modifier,
-    message: Message,
-    isUserMe: Boolean,
-    isFirstMessageByAuthor: Boolean,
-    authorClicked: (Member) -> Unit
+	modifier: Modifier = Modifier,
+	message: Message,
+	isUserMe: Boolean,
+	isFirstMessageByAuthor: Boolean,
+	authorClicked: (Member) -> Unit
 ) {
-    val backgroundColorsList =
-        if (isUserMe) {
-            listOf(Color(0xFF470080), Color(0xFFB14EFF))
-        } else {
-            listOf(Color(0xFF191919), Color(0xFF0A0A0A))
-        }
-    Column {
-        Row {
-            Spacer(modifier = Modifier.width(12.dp))
-            Box(
-                modifier =
-                Modifier.background(
-                    brush = Brush.linearGradient(colors = backgroundColorsList),
-                    shape = ChatBubbleShape
-                )
-            ) {
-                Column(modifier = Modifier.padding(8.dp)) {
-                    AuthorNameTimestamp(isUserMe, message)
-                    MessageContent(message = message, authorClicked = authorClicked)
-                }
-            }
-        }
-        ChatBubbleSpacing(isFirstMessageByAuthor)
-    }
+	val backgroundColorsList =
+		if (isUserMe) {
+			listOf(Color(0xFF470080), Color(0xFFB14EFF))
+		} else {
+			listOf(Color(0xFF191919), Color(0xFF0A0A0A))
+		}
+	Column {
+		Row {
+			Spacer(modifier = Modifier.width(12.dp))
+			Box(
+				modifier =
+				Modifier.background(
+					brush = Brush.linearGradient(colors = backgroundColorsList),
+					shape = ChatBubbleShape
+				)
+			) {
+				Column(modifier = Modifier.padding(8.dp)) {
+					AuthorNameTimestamp(isUserMe, message)
+					MessageContent(message = message, authorClicked = authorClicked)
+				}
+			}
+		}
+		ChatBubbleSpacing(isFirstMessageByAuthor)
+	}
 }
 
 @Composable
 private fun AuthorNameTimestamp(isUserMe: Boolean, msg: Message) {
-    Row(modifier = Modifier.semantics(mergeDescendants = true) {}) {
-        Text(
-            text = if (isUserMe) "Me" else msg.author.name ?: "",
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.primary,
-            modifier =
-            Modifier
-                .alignBy(LastBaseline)
-                .paddingFrom(LastBaseline, after = 8.dp) // Space to 1st bubble
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        val messageDate = msg.createdAt.toDate()
-        Text(
-            text = "${messageDate.toMessageDateFormat()} at ${messageDate.format("hh:mm aa")}",
-            style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.alignBy(LastBaseline),
-            color = Gray
-        )
-    }
+	Row(modifier = Modifier.semantics(mergeDescendants = true) {}) {
+		Text(
+			text = if (isUserMe) "Me" else msg.author.name ?: "",
+			style = MaterialTheme.typography.titleMedium,
+			color = MaterialTheme.colorScheme.primary,
+			modifier =
+			Modifier.alignBy(LastBaseline)
+				.paddingFrom(LastBaseline, after = 8.dp) // Space to 1st bubble
+		)
+		Spacer(modifier = Modifier.width(8.dp))
+		val messageDate = msg.createdAt.toDate()
+		Text(
+			text = "${messageDate.toMessageDateFormat()} at ${messageDate.format("hh:mm aa")}",
+			style = MaterialTheme.typography.bodySmall,
+			modifier = Modifier.alignBy(LastBaseline),
+			color = Gray
+		)
+	}
 }

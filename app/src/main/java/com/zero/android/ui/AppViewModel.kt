@@ -4,7 +4,7 @@ import com.zero.android.common.extensions.emitInScope
 import com.zero.android.common.navigation.NavDestination
 import com.zero.android.common.ui.base.BaseViewModel
 import com.zero.android.data.manager.ConnectionManager
-import com.zero.android.database.AppPreferences
+import com.zero.android.datastore.AppPreferences
 import com.zero.android.feature.auth.navigation.AuthDestination
 import com.zero.android.navigation.HomeDestination
 import dagger.hilt.android.lifecycle.HiltViewModel

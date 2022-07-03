@@ -21,68 +21,45 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 
 @Composable
-fun WaveAnimation(
-    @DrawableRes iconResId: Int,
-    iconTint: Color,
-) {
+fun WaveAnimation(@DrawableRes iconResId: Int, iconTint: Color) {
+	val waves =
+		listOf(
+			remember { Animatable(0f) },
+			remember { Animatable(0f) },
+			remember { Animatable(0f) },
+			remember { Animatable(0f) }
+		)
+	val animationSpec =
+		infiniteRepeatable<Float>(
+			animation = tween(4000, easing = FastOutLinearInEasing),
+			repeatMode = RepeatMode.Restart
+		)
+	waves.forEachIndexed { index, animatable ->
+		LaunchedEffect(animatable) {
+			delay(index * 1000L)
+			animatable.animateTo(targetValue = 1f, animationSpec = animationSpec)
+		}
+	}
 
-    val waves = listOf(
-        remember { Animatable(0f) },
-        remember { Animatable(0f) },
-        remember { Animatable(0f) },
-        remember { Animatable(0f) },
-    )
-    val animationSpec = infiniteRepeatable<Float>(
-        animation = tween(4000, easing = FastOutLinearInEasing),
-        repeatMode = RepeatMode.Restart,
-    )
-    waves.forEachIndexed { index, animatable ->
-        LaunchedEffect(animatable) {
-            delay(index * 1000L)
-            animatable.animateTo(
-                targetValue = 1f, animationSpec = animationSpec
-            )
-        }
-    }
-
-    val dys = waves.map { it.value }
-    Box(
-        modifier = Modifier.wrapContentSize(),
-    ) {
-        dys.forEach { dy ->
-            Box(
-                Modifier
-                    .size(34.dp)
-                    .align(Center)
-                    .graphicsLayer {
-                        scaleX = dy * 4 + 1
-                        scaleY = dy * 4 + 1
-                        alpha = 1 - dy
-                    },
-            ) {
-                Box(
-                    Modifier
-                        .fillMaxSize()
-                        .background(color = Color.White, shape = CircleShape)
-                )
-            }
-        }
-        // Center Icon
-        Box(
-            Modifier
-                .size(26.dp)
-                .align(Center)
-                .background(color = Color.White, shape = CircleShape)
-        ) {
-            Icon(
-                painter = painterResource(iconResId),
-                "",
-                tint = iconTint,
-                modifier = Modifier
-                    .size(18.dp)
-                    .align(Center)
-            )
-        }
-
-    }
+	val dys = waves.map { it.value }
+	Box(modifier = Modifier.wrapContentSize()) {
+		dys.forEach { dy ->
+			Box(
+				Modifier.size(34.dp).align(Center).graphicsLayer {
+					scaleX = dy * 4 + 1
+					scaleY = dy * 4 + 1
+					alpha = 1 - dy
+				}
+			) { Box(Modifier.fillMaxSize().background(color = Color.White, shape = CircleShape)) }
+		}
+		// Center Icon
+		Box(Modifier.size(26.dp).align(Center).background(color = Color.White, shape = CircleShape)) {
+			Icon(
+				painter = painterResource(iconResId),
+				"",
+				tint = iconTint,
+				modifier = Modifier.size(18.dp).align(Center)
+			)
+		}
+	}
 }

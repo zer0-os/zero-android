@@ -1,4 +1,4 @@
-package com.zero.android.database
+package com.zero.android.datastore
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -18,7 +18,6 @@ class AppPreferences(private val dataStore: DataStore<Preferences>) {
 
 	companion object {
 		private val USER_ID = stringPreferencesKey("USER_ID")
-		private val CHAT_TOKEN = stringPreferencesKey("CHAT_TOKEN")
 		private val AUTH_CREDENTIALS = stringPreferencesKey("AUTH_CREDENTIALS")
 	}
 
@@ -41,12 +40,5 @@ class AppPreferences(private val dataStore: DataStore<Preferences>) {
 
 	suspend fun setUserId(id: String) {
 		dataStore.edit { preferences -> preferences[USER_ID] = id }
-	}
-
-	suspend fun chatToken() =
-		dataStore.data.map { preferences -> preferences[CHAT_TOKEN] }.firstOrNull()
-
-	suspend fun setChatToken(chatToken: String) {
-		dataStore.edit { preferences -> preferences[CHAT_TOKEN] = chatToken }
 	}
 }
