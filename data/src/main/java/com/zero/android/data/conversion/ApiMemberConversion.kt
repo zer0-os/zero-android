@@ -1,3 +1,4 @@
+/* ktlint-disable filename */
 package com.zero.android.data.conversion
 
 import com.zero.android.models.Member
@@ -8,6 +9,7 @@ internal fun ApiMember.toModel() =
 		id = id,
 		name = nickname,
 		profileUrl = profileUrl,
+		profileImage = profileImage,
 		friendDiscoveryKey = friendDiscoveryKey,
 		friendName = friendName,
 		metadata = metadata,

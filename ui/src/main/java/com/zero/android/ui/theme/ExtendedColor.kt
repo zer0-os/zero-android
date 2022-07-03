@@ -18,7 +18,10 @@ data class ExtendedColor(
 	val colorTextSecondaryVariant: Color,
 	val success: Color,
 	val glow: Color,
-	val divider: Color
+	val divider: Color,
+	val surface: Color,
+	val surfaceVariant: Color,
+	val surfaceInverse: Color
 )
 
 val LocalExtendedColors = staticCompositionLocalOf {
@@ -35,6 +38,9 @@ val LocalExtendedColors = staticCompositionLocalOf {
 		colorTextSecondaryVariant = Color.Unspecified,
 		success = Color.Unspecified,
 		glow = Color.Unspecified,
-		divider = Color.Unspecified
+		divider = Color.Unspecified,
+		surface = Color.Unspecified,
+		surfaceVariant = Color.Unspecified,
+		surfaceInverse = Color.Unspecified
 	)
 }

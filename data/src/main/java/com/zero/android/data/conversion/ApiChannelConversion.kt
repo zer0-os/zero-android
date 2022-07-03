@@ -1,3 +1,4 @@
+/* ktlint-disable filename */
 package com.zero.android.data.conversion
 
 import com.zero.android.models.DirectChannel

@@ -1,31 +1,56 @@
 package com.zero.android.feature.channels.ui.directchannels
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.zero.android.common.ui.Result
-import com.zero.android.models.DirectChannel
-import com.zero.android.models.fake.FakeData
+import com.zero.android.feature.channels.ui.channels.ChannelsItemsList
+import com.zero.android.models.Channel
+import com.zero.android.models.Network
 import com.zero.android.ui.extensions.Preview
 
 @Composable
-fun DirectChannelsRoute(viewModel: DirectChannelsViewModel = hiltViewModel()) {
-	val channels: Result<List<DirectChannel>> by viewModel.channels.collectAsState()
+fun DirectChannelsRoute(
+	network: Network?,
+	viewModel: DirectChannelsViewModel = hiltViewModel(),
+	onChannelSelected: (Channel) -> Unit
+) {
+	val uiState: DirectChannelScreenUiState by viewModel.uiState.collectAsState()
 
-	DirectChannelsScreen(channels = channels)
+	LaunchedEffect(network?.id) { network?.let { viewModel.onNetworkUpdated(it) } }
+	DirectChannelsScreen(
+		loggedInUser = viewModel.loggedInUserId,
+		uiState = uiState,
+		onChannelSelected = onChannelSelected
+	)
 }
 
 @Composable
-fun DirectChannelsScreen(channels: Result<List<DirectChannel>>) {
-	Column { Text(text = "Direct Channels Screen") }
+fun DirectChannelsScreen(
+	loggedInUser: String,
+	uiState: DirectChannelScreenUiState,
+	onChannelSelected: (Channel) -> Unit
+) {
+	val directChannelsUiState = uiState.directChannelsUiState
+	if (directChannelsUiState is DirectChannelUiState.Success &&
+		directChannelsUiState.channels.isNotEmpty()
+	) {
+		Column(modifier = Modifier.fillMaxWidth()) {
+			LazyColumn {
+				items(directChannelsUiState.channels) { channel ->
+					ChannelsItemsList(loggedInUser, channel) { onChannelSelected(it) }
+				}
+			}
+		}
+	}
 }
 
-@Preview
-@Composable
-fun DirectChannelsScreenPreview() = Preview {
-	DirectChannelsScreen(channels = Result.Success(FakeData.directChannels()))
-}
+@Preview @Composable
+fun DirectChannelsScreenPreview() = Preview {}

@@ -19,5 +19,8 @@ data class ApiMember(
 	@SerialName("is_active") val isActive: Boolean = true,
 	@SerialName("is_blocking_me") val isBlockingMe: Boolean = false,
 	@SerialName("ic_blocked_by_me") val isBlockedByMe: Boolean = false,
-	@SerialName("is_muted") val isMuted: Boolean = false
+	@SerialName("is_muted") val isMuted: Boolean = false,
+	val profileImage: String? = null
 )
+
+@Serializable data class ApiMemberProfile(val profileImage: String? = null)

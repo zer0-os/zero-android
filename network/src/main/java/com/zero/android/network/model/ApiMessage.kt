@@ -20,6 +20,7 @@ data class ApiMessage(
 	@SerialName("created_at") val createdAt: Long,
 	@SerialName("updated_at") val updatedAt: Long,
 	@Serializable(MessageStatusSerializer::class) val status: MessageStatus,
+	val message: String? = null,
 	val data: String? = null,
 	val parentMessage: ApiMessage? = null,
 	val isMuted: Boolean = false,

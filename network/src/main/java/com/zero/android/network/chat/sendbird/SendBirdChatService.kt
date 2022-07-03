@@ -50,9 +50,9 @@ internal class SendBirdChatService(private val logger: Logger) :
 		}
 
 	override suspend fun getMessages(channel: Channel, timestamp: Long) =
-		callbackFlow<List<ApiMessage>> {
+		callbackFlowWithAwait<List<ApiMessage>> {
 			val params = messageListParams(reverse = true)
-			getChannel(channel).getMessagesByMessageId(timestamp, params) { messages, e ->
+			getChannel(channel).getMessagesByTimestamp(timestamp, params) { messages, e ->
 				if (e != null) {
 					logger.e(e)
 					throw e

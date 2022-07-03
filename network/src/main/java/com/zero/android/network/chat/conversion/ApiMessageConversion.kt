@@ -1,3 +1,4 @@
+/* ktlint-disable filename */
 package com.zero.android.network.chat.conversion
 
 import com.zero.android.models.FileThumbnail

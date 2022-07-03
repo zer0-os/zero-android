@@ -1,3 +1,4 @@
+/* ktlint-disable filename */
 package com.zero.android.ui
 
 import androidx.compose.foundation.layout.fillMaxSize

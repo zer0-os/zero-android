@@ -26,7 +26,7 @@ fun AppDrawerFooter(modifier: Modifier = Modifier, onCreateWorldClick: () -> Uni
 		horizontalAlignment = Alignment.Start,
 		verticalArrangement = Arrangement.SpaceBetween
 	) {
-		Divider(color = AppTheme.colors.divider, modifier = modifier.fillMaxWidth(), thickness = 1.dp)
+		Divider(color = AppTheme.colors.divider, modifier = modifier.fillMaxWidth(), thickness = 0.5.dp)
 		Row(
 			modifier =
 			modifier
@@ -45,7 +45,7 @@ fun AppDrawerFooter(modifier: Modifier = Modifier, onCreateWorldClick: () -> Uni
 			Text(
 				stringResource(string.create_a_world),
 				style = Typography.bodyLarge,
-				color = AppTheme.colors.buttonSecondary
+				color = AppTheme.colors.colorTextSecondaryVariant
 			)
 		}
 	}

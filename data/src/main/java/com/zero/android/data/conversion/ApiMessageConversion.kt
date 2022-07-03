@@ -1,3 +1,4 @@
+/* ktlint-disable filename */
 package com.zero.android.data.conversion
 
 import com.zero.android.models.FileThumbnail
@@ -19,6 +20,7 @@ internal fun ApiMessage.toModel(): Message =
 		updatedAt = updatedAt,
 		status = status,
 		data = data,
+		message = message,
 		parentMessage = parentMessage?.toModel(),
 		isMuted = isMuted,
 		fileUrl = fileUrl,

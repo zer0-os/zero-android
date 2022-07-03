@@ -13,6 +13,7 @@ data class Member(
 	val id: String,
 	val name: String? = null,
 	var profileUrl: String? = null,
+	val profileImage: String? = null,
 	var friendDiscoveryKey: String? = null,
 	var friendName: String? = null,
 	var metadata: Map<String?, String?>? = null,

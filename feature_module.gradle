@@ -11,10 +11,8 @@ dependencies {
 	implementation project(":ui")
 	implementation project(":models")
 	implementation project(":data")
+	implementation project(":database")
 
 	implementation "com.google.dagger:hilt-android:${versions.hilt}"
 	kapt "com.google.dagger:hilt-compiler:${versions.hilt}"
-
-	// UI
-	implementation "io.coil-kt:coil-compose:${versions.coil}"
 }

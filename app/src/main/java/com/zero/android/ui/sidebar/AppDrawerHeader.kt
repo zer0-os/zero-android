@@ -4,12 +4,13 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
@@ -21,10 +22,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import coil.compose.rememberAsyncImagePainter
 import com.zero.android.common.R
 import com.zero.android.models.Network
 import com.zero.android.models.fake.FakeData
+import com.zero.android.ui.components.SmallCircularImage
 import com.zero.android.ui.extensions.Preview
 import com.zero.android.ui.theme.AppTheme
 import com.zero.android.ui.theme.Typography
@@ -42,17 +43,15 @@ fun AppDrawerHeader(
 		) {
 			val (imageStart, textTop, textBottom, imageEnd, inviteButton) = createRefs()
 
-			Image(
-				painter = rememberAsyncImagePainter(network.logo),
+			SmallCircularImage(
+				imageUrl = network.logo,
 				contentDescription = network.name,
-				contentScale = ContentScale.Fit,
 				modifier =
 				Modifier.constrainAs(imageStart) {
 					top.linkTo(parent.top)
 					start.linkTo(parent.start)
-				}
-					.size(36.dp)
-					.clip(CircleShape)
+				},
+				placeHolder = R.drawable.ic_circular_image_placeholder
 			)
 			Text(
 				text = network.displayName,
@@ -60,10 +59,11 @@ fun AppDrawerHeader(
 				Modifier.constrainAs(textTop) {
 					top.linkTo(imageStart.top)
 					bottom.linkTo(textBottom.top)
-					linkTo(start = imageStart.end, end = imageEnd.start, bias = 0f)
+					linkTo(start = imageStart.end, end = imageEnd.start, bias = 0.05f)
 				},
 				color = AppTheme.colors.colorTextPrimary,
-				style = Typography.bodyLarge
+				style = Typography.bodyLarge,
+				fontSize = 20.sp
 			)
 			Text(
 				text = network.name,
@@ -73,13 +73,15 @@ fun AppDrawerHeader(
 					start.linkTo(textTop.start)
 					bottom.linkTo(imageStart.bottom)
 				},
-				color = AppTheme.colors.colorTextSecondary,
+				color = AppTheme.colors.colorTextSecondaryVariant,
 				style = Typography.bodyMedium
 			)
 			Image(
 				painter = painterResource(R.drawable.ic_settings),
 				contentDescription = stringResource(R.string.cd_ic_settings),
 				contentScale = ContentScale.Fit,
+				colorFilter =
+				androidx.compose.ui.graphics.ColorFilter.Companion.tint(AppTheme.colors.surface),
 				modifier =
 				Modifier.constrainAs(imageEnd) {
 					top.linkTo(imageStart.top)
@@ -96,12 +98,8 @@ fun AppDrawerHeader(
 					top.linkTo(textBottom.bottom, margin = 16.dp)
 					start.linkTo(parent.start)
 				},
-				border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
-				shape = RoundedCornerShape(24.dp),
-				colors =
-				ButtonDefaults.outlinedButtonColors(
-					contentColor = AppTheme.colors.colorTextPrimary
-				)
+				border = BorderStroke(1.dp, AppTheme.colors.glow),
+				shape = RoundedCornerShape(24.dp)
 			) {
 				Text(
 					text = stringResource(R.string.invite_members),
@@ -109,18 +107,19 @@ fun AppDrawerHeader(
 					TextStyle(
 						shadow =
 						Shadow(
-							color = MaterialTheme.colorScheme.primary,
+							color = MaterialTheme.colorScheme.outline,
 							offset = Offset(2f, 2f),
-							blurRadius = 10f
+							blurRadius = 50f
 						)
 					),
+					color = AppTheme.colors.colorTextPrimary,
 					fontSize = 16.sp,
 					fontWeight = FontWeight.Medium
 				)
 			}
 		}
 
-		Divider(color = AppTheme.colors.divider, modifier = modifier.fillMaxWidth(), thickness = 1.dp)
+		Divider(color = AppTheme.colors.divider, modifier = modifier.fillMaxWidth(), thickness = 0.5.dp)
 	}
 }
 

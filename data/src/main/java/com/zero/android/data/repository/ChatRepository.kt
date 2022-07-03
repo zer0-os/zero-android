@@ -4,8 +4,11 @@ import com.zero.android.models.Channel
 import com.zero.android.models.DraftMessage
 import com.zero.android.models.Message
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
 interface ChatRepository {
+
+	val channelChatMessages: MutableStateFlow<List<Message>>
 
 	suspend fun getMessages(channel: Channel, timestamp: Long = Long.MAX_VALUE): Flow<List<Message>>
 
@@ -18,4 +21,6 @@ interface ChatRepository {
 	suspend fun updateMessage(id: String, channelId: String, text: String)
 
 	suspend fun deleteMessage(id: String, channelId: String)
+
+	suspend fun addChatListener(channel: Channel)
 }

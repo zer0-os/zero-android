@@ -1,43 +1,50 @@
 package com.zero.android.feature.channels.ui.channels
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.zero.android.common.ui.Result
-import com.zero.android.models.ChannelCategory
-import com.zero.android.models.GroupChannel
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.rememberPagerState
+import com.zero.android.models.Channel
 import com.zero.android.models.Network
-import com.zero.android.models.fake.FakeData
 import com.zero.android.ui.extensions.Preview
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
-fun ChannelsRoute(network: Network?, viewModel: ChannelsViewModel = hiltViewModel()) {
-	val categories: Result<List<ChannelCategory>> by viewModel.categories.collectAsState()
-	val channels: Result<List<GroupChannel>> by viewModel.channels.collectAsState()
-
+fun ChannelsRoute(
+	network: Network?,
+	viewModel: ChannelsViewModel = hiltViewModel(),
+	onChannelSelected: (Channel) -> Unit
+) {
+	val uiState: GroupChannelUiState by viewModel.uiState.collectAsState()
 	LaunchedEffect(network?.id) { network?.let { viewModel.onNetworkUpdated(it) } }
 
-	ChannelsScreen(categories = categories, channels = channels)
+	ChannelsScreen(uiState, onChannelSelected)
 }
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
-fun ChannelsScreen(
-	categories: Result<List<ChannelCategory>>,
-	channels: Result<List<GroupChannel>>
-) {
-	Column { Text(text = "Channels Screen") }
+fun ChannelsScreen(uiState: GroupChannelUiState, onChannelSelected: (Channel) -> Unit) {
+	val coroutineScope = rememberCoroutineScope()
+	val pagerState = rememberPagerState(initialPage = 0)
+
+	if (uiState.categoriesUiState is ChannelCategoriesUiState.Success &&
+		uiState.categoryChannelsUiState is CategoryChannelsUiState.Success
+	) {
+		val tabs = uiState.categoriesUiState.categories
+		if (tabs.isNotEmpty()) {
+			Column(modifier = Modifier.fillMaxWidth()) {
+				ChannelTabLayout(pagerState = pagerState, coroutineScope = coroutineScope, tabs = tabs)
+				ChannelPager(pagerState = pagerState, groupChannelUiState = uiState) {
+					onChannelSelected(it)
+				}
+			}
+		}
+	}
 }
 
-@Preview
-@Composable
-fun ChannelsScreenPreview() = Preview {
-	ChannelsScreen(
-		categories = Result.Success(listOf("One", "Two")),
-		channels = Result.Success(FakeData.groupChannels())
-	)
-}
+@Preview @Composable
+fun ChannelsScreenPreview() = Preview {}

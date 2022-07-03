@@ -7,6 +7,8 @@ import com.sendbird.android.User
 import com.zero.android.models.enums.ConnectionStatus
 import com.zero.android.models.enums.toConnectionStatus
 import com.zero.android.network.model.ApiMember
+import com.zero.android.network.model.ApiMemberProfile
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
@@ -37,11 +39,15 @@ internal fun User.toApi() =
 
 internal fun ApiMember.toUser() = User.buildFromSerializedData(toSendBirdJsonString())
 
-internal fun Member.toApi() =
-	ApiMember(
+internal fun Member.toApi(): ApiMember {
+	val properties =
+		if (profileUrl.isNullOrBlank()) ApiMemberProfile(null)
+		else Json { ignoreUnknownKeys = true }.decodeFromString<ApiMemberProfile?>(profileUrl)
+	return ApiMember(
 		id = userId,
 		nickname = nickname,
 		profileUrl = profileUrl,
+		profileImage = properties?.profileImage,
 		friendDiscoveryKey = friendDiscoveryKey,
 		friendName = friendName,
 		metadata = metaData,
@@ -52,14 +58,19 @@ internal fun Member.toApi() =
 		isBlockingMe = isBlockingMe,
 		isMuted = isMuted
 	)
+}
 
 internal fun ApiMember.toMember() = Member.buildFromSerializedData(toSendBirdJsonString())
 
-internal fun Sender.toApi() =
-	ApiMember(
+internal fun Sender.toApi(): ApiMember {
+	val properties =
+		if (profileUrl.isNullOrBlank()) ApiMemberProfile(null)
+		else Json { ignoreUnknownKeys = true }.decodeFromString<ApiMemberProfile?>(profileUrl)
+	return ApiMember(
 		id = userId,
 		nickname = nickname,
 		profileUrl = profileUrl,
+		profileImage = properties?.profileImage,
 		friendDiscoveryKey = friendDiscoveryKey,
 		friendName = friendName,
 		metadata = metaData,
@@ -68,6 +79,7 @@ internal fun Sender.toApi() =
 		isActive = isActive,
 		isBlockedByMe = isBlockedByMe
 	)
+}
 
 internal fun ApiMember.toSender() = Sender.buildFromSerializedData(toSendBirdJsonString())
 
