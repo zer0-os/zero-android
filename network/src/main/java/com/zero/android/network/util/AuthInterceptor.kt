@@ -1,6 +1,6 @@
 package com.zero.android.network.util
 
-import com.zero.android.database.AppPreferences
+import com.zero.android.datastore.AppPreferences
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Request

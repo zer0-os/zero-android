@@ -17,49 +17,47 @@ import com.zero.android.ui.theme.White
 
 @Composable
 fun ColumnScope.MessageContent(message: Message, authorClicked: (Member) -> Unit) {
-    message.message?.let {
-        if (message.fileUrl.isNullOrEmpty()) {
-            ClickableMessage(message = message, authorClicked = authorClicked)
-        }
-    }
-    message.fileUrl?.let {
-        AsyncImage(
-            model = it,
-            contentDescription = "",
-            modifier = Modifier
-                .wrapContentWidth()
-                .defaultMinSize(160.dp)
-        )
-    }
+	message.message?.let {
+		if (message.fileUrl.isNullOrEmpty()) {
+			ClickableMessage(message = message, authorClicked = authorClicked)
+		}
+	}
+	message.fileUrl?.let {
+		AsyncImage(
+			model = it,
+			contentDescription = "",
+			modifier = Modifier.wrapContentWidth().defaultMinSize(160.dp)
+		)
+	}
 }
 
 @Composable
 fun ColumnScope.ChatBubbleSpacing(isFirstMessageByAuthor: Boolean) {
-    if (isFirstMessageByAuthor) {
-        // Last bubble before next author
-        Spacer(modifier = Modifier.height(6.dp))
-    } else {
-        // Between bubbles
-        Spacer(modifier = Modifier.height(2.dp))
-    }
+	if (isFirstMessageByAuthor) {
+		// Last bubble before next author
+		Spacer(modifier = Modifier.height(6.dp))
+	} else {
+		// Between bubbles
+		Spacer(modifier = Modifier.height(2.dp))
+	}
 }
 
 @Composable
 private fun ClickableMessage(message: Message, authorClicked: (Member) -> Unit) {
-    val uriHandler = LocalUriHandler.current
-    val styledMessage =
-        (message.message ?: "").messageFormatter(annotationColor = AppTheme.colors.glow)
-    ClickableText(
-        text = styledMessage,
-        style = MaterialTheme.typography.bodyLarge.copy(color = White),
-        onClick = {
-            styledMessage.getStringAnnotations(start = it, end = it).firstOrNull()?.let { annotation ->
-                when (annotation.tag) {
-                    SymbolAnnotationType.LINK.name -> uriHandler.openUri(annotation.item)
-                    SymbolAnnotationType.PERSON.name -> authorClicked(message.author)
-                    else -> Unit
-                }
-            }
-        }
-    )
+	val uriHandler = LocalUriHandler.current
+	val styledMessage =
+		(message.message ?: "").messageFormatter(annotationColor = AppTheme.colors.glow)
+	ClickableText(
+		text = styledMessage,
+		style = MaterialTheme.typography.bodyLarge.copy(color = White),
+		onClick = {
+			styledMessage.getStringAnnotations(start = it, end = it).firstOrNull()?.let { annotation ->
+				when (annotation.tag) {
+					SymbolAnnotationType.LINK.name -> uriHandler.openUri(annotation.item)
+					SymbolAnnotationType.PERSON.name -> authorClicked(message.author)
+					else -> Unit
+				}
+			}
+		}
+	)
 }

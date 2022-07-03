@@ -1,14 +1,13 @@
-package com.zero.android.database
+package com.zero.android.datastore
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import javax.inject.Inject
 
-class DataCleaner
-constructor(private val database: AppDatabase, private val dataStore: DataStore<Preferences>) {
+class DatastoreCleaner @Inject constructor(private val dataStore: DataStore<Preferences>) {
 
 	suspend fun clean() {
-		database.clearAllTables()
 		dataStore.edit { it.clear() }
 	}
 }

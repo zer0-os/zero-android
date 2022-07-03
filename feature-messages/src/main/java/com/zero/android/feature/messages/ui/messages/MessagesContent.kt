@@ -34,142 +34,135 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MessagesContent(
-    modifier: Modifier = Modifier,
-    userChannelInfo: Pair<String, Boolean>,
-    uiState: MessagesUiState,
-    isMemoRecording: Boolean,
-    onNewMessage: (String) -> Unit,
-    onImagePicker:(Intent) -> Unit,
-    onMemoRecorder:() -> Unit,
-    onSendMemo:() -> Unit,
+	modifier: Modifier = Modifier,
+	userChannelInfo: Pair<String, Boolean>,
+	uiState: MessagesUiState,
+	isMemoRecording: Boolean,
+	onNewMessage: (String) -> Unit,
+	onImagePicker: (Intent) -> Unit,
+	onMemoRecorder: () -> Unit,
+	onSendMemo: () -> Unit
 ) {
-    val scrollState = rememberLazyListState()
-    val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior() }
-    val scope = rememberCoroutineScope()
-    val context = LocalContext.current
+	val scrollState = rememberLazyListState()
+	val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior() }
+	val scope = rememberCoroutineScope()
+	val context = LocalContext.current
 
-    Surface(modifier = modifier) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .background(AppTheme.colors.surfaceInverse)
-                    .nestedScroll(scrollBehavior.nestedScrollConnection)
-            ) {
-                Messages(
-                    modifier = Modifier.weight(1f),
-                    userChannelInfo = userChannelInfo,
-                    uiState = uiState,
-                    scrollState = scrollState,
-                    coroutineScope = scope
-                )
-                BottomBarDivider()
-                if (isMemoRecording) {
-                    RecordMemoView(
-                        onCancel = onMemoRecorder,
-                        onSendMemo = onSendMemo
-                    )
-                } else {
-                    UserInputPanel(
-                        modifier = Modifier
-                            .navigationBarsPadding()
-                            .weight(1f)
-                            .imePadding(),
-                        onMessageSent = { onNewMessage(it) },
-                        resetScroll = { scope.launch { scrollState.scrollToItem(0) } },
-                        addAttachment = {
-                            context.getActivity()?.let { showImagePicker(false, it, onImagePicker) }
-                        },
-                        addImage = {
-                            context.getActivity()?.let { showImagePicker(true, it, onImagePicker) }
-                        },
-                        recordMemo = onMemoRecorder
-                    )
-                }
-            }
-        }
-    }
+	Surface(modifier = modifier) {
+		Box(modifier = Modifier.fillMaxSize()) {
+			Column(
+				Modifier.fillMaxSize()
+					.background(AppTheme.colors.surfaceInverse)
+					.nestedScroll(scrollBehavior.nestedScrollConnection)
+			) {
+				Messages(
+					modifier = Modifier.weight(1f),
+					userChannelInfo = userChannelInfo,
+					uiState = uiState,
+					scrollState = scrollState,
+					coroutineScope = scope
+				)
+				BottomBarDivider()
+				if (isMemoRecording) {
+					RecordMemoView(onCancel = onMemoRecorder, onSendMemo = onSendMemo)
+				} else {
+					UserInputPanel(
+						modifier = Modifier.navigationBarsPadding().weight(1f).imePadding(),
+						onMessageSent = { onNewMessage(it) },
+						resetScroll = { scope.launch { scrollState.scrollToItem(0) } },
+						addAttachment = {
+							context.getActivity()?.let { showImagePicker(false, it, onImagePicker) }
+						},
+						addImage = {
+							context.getActivity()?.let { showImagePicker(true, it, onImagePicker) }
+						},
+						recordMemo = onMemoRecorder
+					)
+				}
+			}
+		}
+	}
 }
 
 private fun showImagePicker(
-    fromCamera: Boolean = false,
-    activity: Activity,
-    onImagePicker:(Intent) -> Unit,
+	fromCamera: Boolean = false,
+	activity: Activity,
+	onImagePicker: (Intent) -> Unit
 ) {
-    ImagePicker.with(activity).apply {
-        if (fromCamera) cameraOnly() else galleryOnly()
-        createIntent { onImagePicker(it) }
-    }
+	ImagePicker.with(activity).apply {
+		if (fromCamera) cameraOnly() else galleryOnly()
+		createIntent { onImagePicker(it) }
+	}
 }
 
 @Composable
 fun Messages(
-    modifier: Modifier = Modifier,
-    userChannelInfo: Pair<String, Boolean>,
-    uiState: MessagesUiState,
-    scrollState: LazyListState,
-    coroutineScope: CoroutineScope
+	modifier: Modifier = Modifier,
+	userChannelInfo: Pair<String, Boolean>,
+	uiState: MessagesUiState,
+	scrollState: LazyListState,
+	coroutineScope: CoroutineScope
 ) {
-    Box(modifier = modifier.padding(14.dp)) {
-        if (uiState is MessagesUiState.Success) {
-            val messages = uiState.messages
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                reverseLayout = true,
-                state = scrollState,
-                contentPadding =
-                WindowInsets.statusBars.add(WindowInsets(top = 90.dp)).asPaddingValues()
-            ) {
-                for (index in messages.indices) {
-                    val prevAuthor = messages.getOrNull(index - 1)?.author
-                    val nextAuthor = messages.getOrNull(index + 1)?.author
-                    val content = messages[index]
-                    val messageDate = content.createdAt.toDate()
-                    val nextMessageDate = (messages.getOrNull(index + 1)?.createdAt ?: 0).toDate()
-                    val isSameDay = nextMessageDate.isSameDay(messageDate)
-                    val isFirstMessageByAuthor = prevAuthor != content.author
-                    val isLastMessageByAuthor = nextAuthor != content.author
+	Box(modifier = modifier.padding(14.dp)) {
+		if (uiState is MessagesUiState.Success) {
+			val messages = uiState.messages
+			LazyColumn(
+				modifier = Modifier.fillMaxSize(),
+				reverseLayout = true,
+				state = scrollState,
+				contentPadding =
+				WindowInsets.statusBars.add(WindowInsets(top = 90.dp)).asPaddingValues()
+			) {
+				for (index in messages.indices) {
+					val prevAuthor = messages.getOrNull(index - 1)?.author
+					val nextAuthor = messages.getOrNull(index + 1)?.author
+					val content = messages[index]
+					val messageDate = content.createdAt.toDate()
+					val nextMessageDate = (messages.getOrNull(index + 1)?.createdAt ?: 0).toDate()
+					val isSameDay = nextMessageDate.isSameDay(messageDate)
+					val isFirstMessageByAuthor = prevAuthor != content.author
+					val isLastMessageByAuthor = nextAuthor != content.author
 
-                    item {
-                        if (!userChannelInfo.second) {
-                            DirectMessage(
-                                msg = content,
-                                isUserMe = content.author.id == userChannelInfo.first,
-                                isSameDay = isSameDay,
-                                isFirstMessageByAuthor = isFirstMessageByAuthor,
-                                isLastMessageByAuthor = isLastMessageByAuthor,
-                                onAuthorClick = {}
-                            )
-                        } else {
-                            ChannelMessage(
-                                msg = content,
-                                isUserMe = content.author.id == userChannelInfo.first,
-                                isFirstMessageByAuthor = isFirstMessageByAuthor,
-                                onAuthorClick = {}
-                            )
-                        }
-                    }
-                    if (!isSameDay) {
-                        item { DayHeader(messageDate.format("MMMM dd, yyyy")) }
-                    }
-                }
-            }
+					item {
+						if (!userChannelInfo.second) {
+							DirectMessage(
+								msg = content,
+								isUserMe = content.author.id == userChannelInfo.first,
+								isSameDay = isSameDay,
+								isFirstMessageByAuthor = isFirstMessageByAuthor,
+								isLastMessageByAuthor = isLastMessageByAuthor,
+								onAuthorClick = {}
+							)
+						} else {
+							ChannelMessage(
+								msg = content,
+								isUserMe = content.author.id == userChannelInfo.first,
+								isFirstMessageByAuthor = isFirstMessageByAuthor,
+								onAuthorClick = {}
+							)
+						}
+					}
+					if (!isSameDay) {
+						item { DayHeader(messageDate.format("MMMM dd, yyyy")) }
+					}
+				}
+			}
 
-            val jumpThreshold = with(LocalDensity.current) { JumpToBottomThreshold.toPx() }
-            val jumpToBottomButtonEnabled by remember {
-                derivedStateOf {
-                    scrollState.firstVisibleItemIndex != 0 ||
-                        scrollState.firstVisibleItemScrollOffset > jumpThreshold
-                }
-            }
-            JumpToBottom(
-                // Only show if the scroller is not at the bottom
-                enabled = jumpToBottomButtonEnabled,
-                onClicked = { coroutineScope.launch { scrollState.animateScrollToItem(0) } },
-                modifier = Modifier.align(Alignment.BottomCenter)
-            )
-        }
-    }
+			val jumpThreshold = with(LocalDensity.current) { JumpToBottomThreshold.toPx() }
+			val jumpToBottomButtonEnabled by remember {
+				derivedStateOf {
+					scrollState.firstVisibleItemIndex != 0 ||
+						scrollState.firstVisibleItemScrollOffset > jumpThreshold
+				}
+			}
+			JumpToBottom(
+				// Only show if the scroller is not at the bottom
+				enabled = jumpToBottomButtonEnabled,
+				onClicked = { coroutineScope.launch { scrollState.animateScrollToItem(0) } },
+				modifier = Modifier.align(Alignment.BottomCenter)
+			)
+		}
+	}
 }
 
 @Preview @Composable

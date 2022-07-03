@@ -1,7 +1,7 @@
 package com.zero.android.network
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import com.zero.android.database.AppPreferences
+import com.zero.android.datastore.AppPreferences
 import com.zero.android.network.chat.ChatProvider
 import com.zero.android.network.util.AuthInterceptor
 import dagger.Module

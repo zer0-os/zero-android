@@ -22,54 +22,50 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun DotsBounceAnimation(
-    modifier: Modifier = Modifier,
-    size: Dp = 16.dp,
-    color: Color = AppTheme.colors.glow,
+	modifier: Modifier = Modifier,
+	size: Dp = 16.dp,
+	color: Color = AppTheme.colors.glow
 ) {
+	val dots =
+		listOf(
+			remember { Animatable(0.15f) },
+			remember { Animatable(0.15f) },
+			remember { Animatable(0.15f) },
+			remember { Animatable(0.15f) },
+			remember { Animatable(0.15f) },
+			remember { Animatable(0.15f) },
+			remember { Animatable(0.15f) },
+			remember { Animatable(0.15f) },
+			remember { Animatable(0.15f) },
+			remember { Animatable(0.15f) },
+			remember { Animatable(0.15f) },
+			remember { Animatable(0.15f) },
+			remember { Animatable(0.15f) },
+			remember { Animatable(0.15f) },
+			remember { Animatable(0.15f) }
+		)
+	dots.forEachIndexed { index, animatable ->
+		LaunchedEffect(animatable) {
+			delay(index * 200L)
+			animatable.animateTo(
+				targetValue = 1f,
+				animationSpec =
+				infiniteRepeatable(
+					animation = tween(600, easing = FastOutLinearInEasing),
+					repeatMode = RepeatMode.Reverse
+				)
+			)
+		}
+	}
 
-    val dots = listOf(
-        remember { Animatable(0.15f) },
-        remember { Animatable(0.15f) },
-        remember { Animatable(0.15f) },
-        remember { Animatable(0.15f) },
-        remember { Animatable(0.15f) },
-        remember { Animatable(0.15f) },
-        remember { Animatable(0.15f) },
-        remember { Animatable(0.15f) },
-        remember { Animatable(0.15f) },
-        remember { Animatable(0.15f) },
-        remember { Animatable(0.15f) },
-        remember { Animatable(0.15f) },
-        remember { Animatable(0.15f) },
-        remember { Animatable(0.15f) },
-        remember { Animatable(0.15f) },
-    )
-    dots.forEachIndexed { index, animatable ->
-        LaunchedEffect(animatable) {
-            delay(index * 200L)
-            animatable.animateTo(
-                targetValue = 1f, animationSpec = infiniteRepeatable(
-                    animation = tween(600, easing = FastOutLinearInEasing),
-                    repeatMode = RepeatMode.Reverse,
-                )
-            )
-        }
-    }
-
-    val dys = dots.map { it.value }
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        dys.forEachIndexed { index, dy ->
-            Box(
-                Modifier
-                    .size(size)
-                    .scale(dy)
-                    .alpha(dy)
-                    .background(color = color, shape = CircleShape)
-            )
-        }
-    }
+	val dys = dots.map { it.value }
+	Row(
+		modifier = modifier,
+		verticalAlignment = Alignment.CenterVertically,
+		horizontalArrangement = Arrangement.Center
+	) {
+		dys.forEachIndexed { index, dy ->
+			Box(Modifier.size(size).scale(dy).alpha(dy).background(color = color, shape = CircleShape))
+		}
+	}
 }

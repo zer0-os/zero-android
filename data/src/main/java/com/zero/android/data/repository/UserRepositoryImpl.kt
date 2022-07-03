@@ -4,11 +4,12 @@ import com.zero.android.common.system.Logger
 import com.zero.android.data.conversion.toEntity
 import com.zero.android.data.conversion.toModel
 import com.zero.android.data.manager.ConnectionManager
-import com.zero.android.database.AppPreferences
-import com.zero.android.database.DataCleaner
+import com.zero.android.data.manager.DataCleaner
 import com.zero.android.database.dao.ProfileDao
 import com.zero.android.database.dao.UserDao
 import com.zero.android.database.model.toModel
+import com.zero.android.datastore.AppPreferences
+import com.zero.android.datastore.ChatPreferences
 import com.zero.android.models.AuthCredentials
 import com.zero.android.network.service.AccessService
 import com.zero.android.network.service.UserService
@@ -23,6 +24,7 @@ constructor(
 	private val userDao: UserDao,
 	private val profileDao: ProfileDao,
 	private val preferences: AppPreferences,
+	private val chatPreferences: ChatPreferences,
 	private val userService: UserService,
 	private val accessService: AccessService,
 	private val connectionManager: ConnectionManager,
@@ -53,7 +55,7 @@ constructor(
 
 	private suspend fun refreshChatAccessToken(accessToken: String) {
 		accessService.getChatAccessToken(accessToken).let {
-			preferences.setChatToken(it.chatAccessToken)
+			chatPreferences.setChatToken(it.chatAccessToken)
 		}
 	}
 

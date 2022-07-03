@@ -2,9 +2,9 @@ package com.zero.android.data.repository
 
 import com.zero.android.data.conversion.toEntity
 import com.zero.android.data.conversion.toModel
-import com.zero.android.database.AppPreferences
 import com.zero.android.database.dao.NetworkDao
 import com.zero.android.database.model.toModel
+import com.zero.android.datastore.AppPreferences
 import com.zero.android.network.service.NetworkService
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow

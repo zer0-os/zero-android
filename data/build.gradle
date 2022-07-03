@@ -11,6 +11,7 @@ dependencies {
 	implementation project(":common")
 	implementation project(":models")
 	implementation project(":network")
+	implementation project(":datastore")
 	implementation project(":database")
 
 	implementation "androidx.core:core-ktx:${versions.coreKtx}"

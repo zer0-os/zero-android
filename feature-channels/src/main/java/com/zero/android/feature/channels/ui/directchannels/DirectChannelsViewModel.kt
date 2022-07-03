@@ -3,8 +3,8 @@ package com.zero.android.feature.channels.ui.directchannels
 import com.zero.android.common.ui.Result
 import com.zero.android.common.ui.asResult
 import com.zero.android.common.ui.base.BaseViewModel
+import com.zero.android.data.delegates.Preferences
 import com.zero.android.data.repository.ChannelRepository
-import com.zero.android.database.AppPreferences
 import com.zero.android.models.Network
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +19,7 @@ import javax.inject.Inject
 class DirectChannelsViewModel
 @Inject
 constructor(
-	private val preferences: AppPreferences,
+	private val preferences: Preferences,
 	private val channelRepository: ChannelRepository
 ) : BaseViewModel() {
 

@@ -19,7 +19,6 @@ dependencies {
 	implementation "androidx.room:room-runtime:${versions.room}"
 	implementation "androidx.room:room-ktx:${versions.room}"
 	kapt "androidx.room:room-compiler:${versions.room}"
-	implementation "androidx.datastore:datastore-preferences:${versions.datastore}"
 
 	// Misc
 	implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:${versions.json}"
