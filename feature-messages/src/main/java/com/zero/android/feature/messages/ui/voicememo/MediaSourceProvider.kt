@@ -11,9 +11,10 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.io.File
 import java.io.IOException
+import kotlin.time.Duration.Companion.seconds
 
 class MediaSourceProvider(
-    val context: Context,
+    private val context: Context,
     private val fileName: String?
 ) {
     private val filePath by lazy {
@@ -29,6 +30,7 @@ class MediaSourceProvider(
 
     val currentFileState = MutableStateFlow(VoiceMessageState.DOWNLOAD)
     val mediaFileDuration = MutableStateFlow(0)
+    val currentPosition = MutableStateFlow(0f)
 
     init {
         if (currentFile.exists()) {
@@ -65,20 +67,61 @@ class MediaSourceProvider(
     }
 
     fun play() {
+        if (MemoPlayer.mediaPlayer.isPlaying) {
+            stop()
+        }
         ioScope.launch { currentFileState.emit(VoiceMessageState.PLAYING) }
-        MemoPlayer.prepareMediaPlayer(context, Uri.fromFile(currentFile)) {
+        val mediaPlayer = MemoPlayer.prepareMediaPlayer(context, Uri.fromFile(currentFile)) {
             ioScope.launch { currentFileState.emit(VoiceMessageState.STOPPED) }
-        }.start()
+        }
+        mediaPlayer.start()
+        updateCurrentProgress(mediaPlayer)
     }
 
-    fun pause() {
-        ioScope.launch { currentFileState.emit(VoiceMessageState.STOPPED) }
-        MemoPlayer.pause()
+    fun seekTo(position: Float) {
+        if (currentFileState.value == VoiceMessageState.PLAYING || currentFileState.value == VoiceMessageState.STOPPED) {
+            MemoPlayer.mediaPlayer.apply {
+                pause()
+                seekTo(position.times(1000).toInt())
+                start()
+            }
+        }
     }
+
+    private fun updateCurrentProgress(mediaPlayer: MediaPlayer) {
+        if (currentFileState.value == VoiceMessageState.PLAYING) {
+            ioScope.launch {
+                while (currentFileState.value == VoiceMessageState.PLAYING) {
+                    delay(1.seconds)
+                    currentPosition.emit((mediaPlayer.currentPosition / 1000).toFloat())
+                }
+            }
+        }
+    }
+
+    fun stop() {
+        ioScope.launch {
+            currentFileState.emit(VoiceMessageState.STOPPED)
+            currentPosition.emit(0f)
+        }
+        MemoPlayer.mediaPlayer.stop()
+    }
+
+    fun reset() {
+        try {
+            MemoPlayer.mediaPlayer.stop()
+            ioScope.launch {
+                currentFileState.emit(VoiceMessageState.DOWNLOAD)
+                mediaFileDuration.emit(0)
+                this@MediaSourceProvider.currentPosition.emit(0f)
+            }
+        } catch (e: Exception) { }
+    }
+
 }
 
 private object MemoPlayer {
-    private val mediaPlayer = MediaPlayer().apply {
+    val mediaPlayer = MediaPlayer().apply {
         setAudioAttributes(
             AudioAttributes.Builder()
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
@@ -95,13 +138,7 @@ private object MemoPlayer {
                 setDataSource(context, uri)
                 setOnCompletionListener { onPlayBackComplete.invoke() }
                 prepare()
-            } catch (e: IOException) {
-
-            }
+            } catch (e: IOException) { }
         }
-
-    fun pause() {
-        mediaPlayer.pause()
-    }
 
 }

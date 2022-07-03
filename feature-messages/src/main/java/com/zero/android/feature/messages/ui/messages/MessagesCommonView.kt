@@ -29,7 +29,9 @@ fun ColumnScope.MessageContent(message: Message, authorClicked: (Member) -> Unit
                     .defaultMinSize(160.dp)
             )
         }
-        MessageType.AUDIO -> VoiceMessage(message)
+        MessageType.AUDIO -> message.fileUrl?.let {
+            VoiceMessage(message)
+        }
         else -> message.message?.let {
             ClickableMessage(message = message, authorClicked = authorClicked)
         }

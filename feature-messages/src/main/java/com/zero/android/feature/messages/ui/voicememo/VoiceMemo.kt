@@ -3,7 +3,6 @@ package com.zero.android.feature.messages.ui.voicememo
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -21,24 +20,28 @@ enum class VoiceMessageState {
 }
 
 @Composable
-fun ColumnScope.VoiceMessage(message: Message) {
+fun VoiceMessage(message: Message) {
     val context = LocalContext.current
     val mediaSourceProvider by remember { mutableStateOf(MediaSourceProvider(context, message.fileName)) }
     val mediaFileState = mediaSourceProvider.currentFileState.collectAsState()
+    val sliderPosition = mediaSourceProvider.currentPosition.collectAsState()
     val mediaDuration = mediaSourceProvider.mediaFileDuration.collectAsState()
     val memoState = mediaFileState.value
-    var sliderPosition by remember { mutableStateOf(0f) }
+
+    DisposableEffect(Unit) {
+        onDispose { mediaSourceProvider.reset() }
+    }
 
     val iconRes = when (memoState) {
         VoiceMessageState.DOWNLOAD -> R.drawable.ic_download_circle_24
-        VoiceMessageState.PLAYING -> R.drawable.ic_pause_circle_24
+        VoiceMessageState.PLAYING -> R.drawable.ic_stop_circle_24
         else -> R.drawable.ic_play_circle_24
     }
     Row(modifier = Modifier.wrapContentWidth()) {
         if (memoState == VoiceMessageState.DOWNLOADING) {
             CircularProgressIndicator(
                 color = AppTheme.colors.glow,
-                modifier = Modifier.align(Alignment.CenterVertically)
+                modifier = Modifier.size(32.dp).align(Alignment.CenterVertically)
             )
         } else {
             IconButton(
@@ -50,7 +53,7 @@ fun ColumnScope.VoiceMessage(message: Message) {
                             }
                         }
                         VoiceMessageState.STOPPED -> mediaSourceProvider.play()
-                        VoiceMessageState.PLAYING -> mediaSourceProvider.pause()
+                        VoiceMessageState.PLAYING -> mediaSourceProvider.stop()
                         else -> {}
                     }
                 }, modifier = Modifier.align(Alignment.CenterVertically)
@@ -67,12 +70,9 @@ fun ColumnScope.VoiceMessage(message: Message) {
             modifier = Modifier
                 .width(150.dp)
                 .align(Alignment.CenterVertically),
-            value = sliderPosition,
-            onValueChange = { sliderPosition = it },
-            valueRange = 0f..100f,
-            onValueChangeFinished = {
-                // launch some business logic update with the state you hold
-            },
+            value = sliderPosition.value,
+            onValueChange = { mediaSourceProvider.seekTo(it) },
+            valueRange = 0f..mediaDuration.value.div(1000).toFloat(),
             colors = SliderDefaults.colors(
                 thumbColor = AppTheme.colors.glow,
                 activeTrackColor = AppTheme.colors.colorTextPrimary
