@@ -26,6 +26,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.zero.android.common.R
 import com.zero.android.common.extensions.toFile
 import com.zero.android.feature.messages.ui.voicememo.MemoRecorderViewModel
+import com.zero.android.models.enums.MessageType
 import com.zero.android.ui.components.AppBar
 import com.zero.android.ui.components.Background
 import com.zero.android.ui.extensions.Preview
@@ -60,7 +61,8 @@ fun MessagesRoute(
                 catch (e: Exception) { fileUri.toFile(context) }
                 viewModel.sendMessage(chatUiState.newFileMessage(
                     file = file,
-                    currentUserId = userChannelInfo.first
+                    currentUserId = userChannelInfo.first,
+                    type = MessageType.IMAGE
                 ))
             }
         }
@@ -97,7 +99,11 @@ fun MessagesRoute(
             recordMemoViewModel.stopRecording()
             val file = File(recordMemoViewModel.lastMemoPath)
             if (file.exists()) {
-                //send file to send bird
+                viewModel.sendMessage(chatUiState.newFileMessage(
+                    file = file,
+                    currentUserId = userChannelInfo.first,
+                    type = MessageType.AUDIO
+                ))
             }
         }
     )

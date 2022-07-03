@@ -35,7 +35,7 @@ class MemoRecorderViewModel
             setAudioSource(MediaRecorder.AudioSource.MIC)
             setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
             setOutputFile(filePath)
-            setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+            setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
             setAudioEncodingBitRate(16 * 44100)
             setAudioSamplingRate(44100)
         }

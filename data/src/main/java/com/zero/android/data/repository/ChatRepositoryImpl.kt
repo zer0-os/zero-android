@@ -73,17 +73,10 @@ constructor(
 						chatMediaUtil.getUploadUrl(uploadInfo),
 						chatMediaUtil.getUploadBody(message.file!!)
 					)
-				DraftMessage(
-					channelUrl = null,
-					author = message.author,
-					type = message.type,
-					mentionType = message.mentionType,
+				message.copy(
 					fileUrl = fileUpload.secureUrl,
 					fileName = fileUpload.originalFilename,
 					fileMimeType = fileUpload.type,
-					createdAt = message.createdAt,
-					updatedAt = message.updatedAt,
-					status = message.status,
 					data = JSONObject(fileUpload.dataMap).toString()
 				)
 			} else {

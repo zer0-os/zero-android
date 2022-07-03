@@ -23,11 +23,11 @@ data class ChatScreenUiState(
 			status = MessageStatus.SUCCEEDED
 		)
 
-	fun newFileMessage(file: File, currentUserId: String) =
+	fun newFileMessage(file: File, currentUserId: String, type: MessageType) =
 		DraftMessage(
 			channelUrl = null,
 			author = Member(currentUserId),
-			type = MessageType.IMAGE,
+			type = type,
 			mentionType = MessageMentionType.USER,
 			file = file,
 			createdAt = Calendar.getInstance().timeInMillis,

@@ -36,7 +36,8 @@ internal fun BaseMessage.toApi() =
 		createdAt = createdAt,
 		updatedAt = updatedAt,
 		message = message,
-		fileUrl = (this as? FileMessage)?.url
+		fileUrl = (this as? FileMessage)?.url,
+		fileName = (this as? FileMessage)?.name,
 	)
 
 internal fun UserMessage.toApi() =
