@@ -1,12 +1,15 @@
 dependencies {
 	testImplementation "junit:junit:${versions.junit}"
 	testImplementation "org.mockito:mockito-core:${versions.mockito}"
-	testImplementation "org.mockito.kotlin:mockito-kotlin:4.0.0"
-
-	androidTestImplementation "androidx.test.ext:junit:${versions.junitExt}"
+	testImplementation "org.mockito.kotlin:mockito-kotlin:${versions.mockitoKotlin}"
 	androidTestImplementation "androidx.test.espresso:espresso-core:${versions.espresso}"
-	androidTestImplementation "androidx.compose.ui:ui-test-junit4:1.1.1"
+
+	testImplementation "androidx.test:core:${versions.coreKtxTest}"
+	testImplementation "androidx.test:core-ktx:${versions.coreKtxTest}"
+	testImplementation "androidx.test.ext:junit:${versions.junitExt}"
+	testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.coroutinesTest}"
 
 	debugImplementation "androidx.compose.ui:ui-tooling:${versions.compose}"
-	debugImplementation "androidx.compose.ui:ui-test-manifest:1.1.1"
+	debugImplementation "androidx.compose.ui:ui-test-manifest:${versions.compose}"
+	androidTestImplementation "androidx.compose.ui:ui-test-junit4:${versions.compose}"
 }

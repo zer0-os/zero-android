@@ -13,7 +13,11 @@ import com.zero.android.network.service.ChatService
 import com.zero.android.network.service.MessageService
 import com.zero.android.network.util.ChatMediaUtil
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import timber.log.Timber
@@ -74,7 +78,7 @@ constructor(
 						chatMediaUtil.getUploadBody(message.file!!)
 					)
 				DraftMessage(
-					channelUrl = null,
+					channelId = channel.id,
 					author = message.author,
 					type = message.type,
 					mentionType = message.mentionType,

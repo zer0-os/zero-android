@@ -1,4 +1,3 @@
-/* ktlint-disable filename */
 package com.zero.android.network.chat.conversion
 
 import com.zero.android.models.FileThumbnail
@@ -11,7 +10,7 @@ import com.zero.android.network.model.ApiMessageReaction
 internal fun Message.toApi(): ApiMessage =
 	ApiMessage(
 		id = id,
-		channelUrl = channelUrl,
+		channelId = channelId,
 		author = author.toApi(),
 		mentions = mentions.map { it.toApi() },
 		type = type,

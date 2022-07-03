@@ -1,7 +1,6 @@
 package com.zero.android.database.dao
 
 import androidx.room.Dao
-import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import com.zero.android.database.model.ProfileEntity
@@ -13,7 +12,4 @@ interface ProfileDao {
 	@Transaction
 	@Query("SELECT * FROM profiles WHERE userId = :userId")
 	fun getByUser(userId: String): Flow<ProfileEntity>
-
-	@Transaction @Insert
-	suspend fun insert(vararg users: ProfileEntity)
 }

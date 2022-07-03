@@ -46,7 +46,6 @@ data class ApiGroupChannel(
 	val category: ChannelCategory? = null,
 	val name: String,
 	val operators: List<ApiMember>,
-	val operatorCount: Int,
 	override val members: List<ApiMember>,
 	override val memberCount: Int,
 	override val coverUrl: String? = null,

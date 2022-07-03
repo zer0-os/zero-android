@@ -1,4 +1,3 @@
-/* ktlint-disable filename */
 package com.zero.android.ui.extensions
 
 import androidx.compose.runtime.Composable

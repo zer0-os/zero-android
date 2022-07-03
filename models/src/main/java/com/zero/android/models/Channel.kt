@@ -42,7 +42,6 @@ data class GroupChannel(
 	val category: ChannelCategory? = null,
 	val name: String,
 	val operators: List<Member>,
-	val operatorCount: Int,
 	override val members: List<Member>,
 	override val memberCount: Int,
 	override val coverUrl: String? = null,

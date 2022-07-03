@@ -36,7 +36,6 @@ object FakeData {
 			createdAt = 0,
 			memberCount = 2,
 			members = listOf(Member("one"), Member("two")),
-			operatorCount = 1,
 			operators = listOf(Member("one")),
 			unreadMessageCount = unread
 		)

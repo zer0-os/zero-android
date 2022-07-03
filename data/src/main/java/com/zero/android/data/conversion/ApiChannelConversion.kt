@@ -1,6 +1,8 @@
-/* ktlint-disable filename */
 package com.zero.android.data.conversion
 
+import com.zero.android.database.model.ChannelEntity
+import com.zero.android.database.model.DirectChannelWithRefs
+import com.zero.android.database.model.toModel
 import com.zero.android.models.DirectChannel
 import com.zero.android.models.GroupChannel
 import com.zero.android.network.model.ApiDirectChannel
@@ -28,7 +30,6 @@ internal fun ApiGroupChannel.toModel() =
 		name = name,
 		isSuper = isSuper,
 		operators = operators.map { it.toModel() },
-		operatorCount = operatorCount,
 		members = members.map { it.toModel() },
 		memberCount = memberCount,
 		unreadMentionCount = unreadMentionCount,
@@ -49,4 +50,24 @@ internal fun ApiGroupChannel.toModel() =
 		type = type,
 		accessType = accessType,
 		isVideoEnabled = isVideoEnabled
+	)
+
+internal fun ApiDirectChannel.toEntity() =
+	DirectChannelWithRefs(
+		channel =
+		ChannelEntity(
+			id = id,
+			isDirectChannel = true,
+			members = members.map { it.toModel() },
+			memberCount = memberCount,
+			coverUrl = coverUrl,
+			lastMessage = lastMessage,
+			createdAt = createdAt,
+			isTemporary = isTemporary,
+			unreadMentionCount = unreadMentionCount,
+			unreadMessageCount = unreadMessageCount,
+			alerts = alerts,
+			accessCode = accessCode
+		),
+		lastMessage = lastMessage?.toEntity()
 	)

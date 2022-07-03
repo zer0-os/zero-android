@@ -25,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.zero.android.common.R
 import com.zero.android.common.extensions.toFile
 import com.zero.android.feature.messages.ui.voicememo.MemoRecorderViewModel
+import com.zero.android.feature.messages.util.MessageUtil
 import com.zero.android.ui.components.AppBar
 import com.zero.android.ui.components.Background
 import com.zero.android.ui.extensions.Preview
@@ -63,7 +64,7 @@ fun MessagesRoute(
 							fileUri.toFile(context)
 						}
 					viewModel.sendMessage(
-						chatUiState.newFileMessage(file = file, currentUserId = userChannelInfo.first)
+						MessageUtil.newFileMessage(file = file, authorId = userChannelInfo.first)
 					)
 				}
 			}
@@ -82,7 +83,7 @@ fun MessagesRoute(
 		recordingState,
 		onNewMessage = { newMessage ->
 			viewModel.sendMessage(
-				chatUiState.newTextMessage(msg = newMessage, currentUserId = userChannelInfo.first)
+				MessageUtil.newTextMessage(msg = newMessage, authorId = userChannelInfo.first)
 			)
 		},
 		onPickImage = { imageSelectorLauncher.launch(it) },
