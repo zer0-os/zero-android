@@ -6,11 +6,7 @@ import androidx.room.Junction
 import androidx.room.Relation
 import com.zero.android.models.Message
 
-@DatabaseView(
-	"""
-		SELECT * FROM messages
-	"""
-)
+@DatabaseView("SELECT * FROM messages")
 data class MessageWithRefs(
 	@Embedded val message: MessageEntity,
 	@Relation(

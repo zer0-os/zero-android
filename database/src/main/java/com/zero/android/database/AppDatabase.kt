@@ -7,10 +7,10 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.zero.android.database.converter.DateConverters
 import com.zero.android.database.converter.ListConverters
-import com.zero.android.database.dao.DirectChannelDao
-import com.zero.android.database.dao.GroupChannelDao
+import com.zero.android.database.dao.DirectChannelDaoInterface
+import com.zero.android.database.dao.GroupChannelDaoInterface
 import com.zero.android.database.dao.MemberDao
-import com.zero.android.database.dao.MessageDao
+import com.zero.android.database.dao.MessageDaoInterface
 import com.zero.android.database.dao.NetworkDao
 import com.zero.android.database.dao.ProfileDao
 import com.zero.android.database.dao.UserDao
@@ -22,6 +22,7 @@ import com.zero.android.database.model.MemberEntity
 import com.zero.android.database.model.MessageAuthorCrossRef
 import com.zero.android.database.model.MessageEntity
 import com.zero.android.database.model.MessageMentionCrossRef
+import com.zero.android.database.model.MessageWithRefs
 import com.zero.android.database.model.NetworkEntity
 import com.zero.android.database.model.ParentMessageCrossRef
 import com.zero.android.database.model.ProfileEntity
@@ -43,6 +44,7 @@ import com.zero.android.database.model.UserEntity
 		ChannelMembersCrossRef::class,
 		ChannelOperatorsCrossRef::class
 	],
+	views = [MessageWithRefs::class],
 	version = 1,
 	exportSchema = false
 )
@@ -72,9 +74,9 @@ abstract class AppDatabase : RoomDatabase() {
 
 	abstract fun networkDao(): NetworkDao
 
-	abstract fun directChannelDao(): DirectChannelDao
+	abstract fun directChannelDao(): DirectChannelDaoInterface
 
-	abstract fun groupChannelDao(): GroupChannelDao
+	abstract fun groupChannelDao(): GroupChannelDaoInterface
 
-	abstract fun messageDao(): MessageDao
+	abstract fun messageDao(): MessageDaoInterface
 }

@@ -14,9 +14,9 @@ import com.zero.android.models.enums.ChannelType
 @Entity(tableName = "channels")
 data class ChannelEntity(
 	@PrimaryKey val id: String,
-	val memberCount: Int,
+	val memberCount: Int = 0,
 	val coverUrl: String? = null,
-	val createdAt: Long,
+	val createdAt: Long = 0,
 	val isTemporary: Boolean = false,
 	val unreadMentionCount: Int = 0,
 	val unreadMessageCount: Int = 0,

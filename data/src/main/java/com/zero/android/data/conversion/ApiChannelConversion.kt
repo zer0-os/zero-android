@@ -2,7 +2,7 @@ package com.zero.android.data.conversion
 
 import com.zero.android.database.model.ChannelEntity
 import com.zero.android.database.model.DirectChannelWithRefs
-import com.zero.android.database.model.toModel
+import com.zero.android.database.model.GroupChannelWithRefs
 import com.zero.android.models.DirectChannel
 import com.zero.android.models.GroupChannel
 import com.zero.android.network.model.ApiDirectChannel
@@ -58,10 +58,8 @@ internal fun ApiDirectChannel.toEntity() =
 		ChannelEntity(
 			id = id,
 			isDirectChannel = true,
-			members = members.map { it.toModel() },
 			memberCount = memberCount,
 			coverUrl = coverUrl,
-			lastMessage = lastMessage,
 			createdAt = createdAt,
 			isTemporary = isTemporary,
 			unreadMentionCount = unreadMentionCount,
@@ -69,5 +67,40 @@ internal fun ApiDirectChannel.toEntity() =
 			alerts = alerts,
 			accessCode = accessCode
 		),
+		members = members.map { it.toEntity() },
 		lastMessage = lastMessage?.toEntity()
+	)
+
+internal fun ApiGroupChannel.toEntity() =
+	GroupChannelWithRefs(
+		channel =
+		ChannelEntity(
+			id = id,
+			isDirectChannel = false,
+			memberCount = memberCount,
+			coverUrl = coverUrl,
+			createdAt = createdAt,
+			isTemporary = isTemporary,
+			unreadMentionCount = unreadMentionCount,
+			unreadMessageCount = unreadMessageCount,
+			messageLifeSeconds = messageLifeSeconds,
+			alerts = alerts,
+			accessCode = accessCode,
+			networkId = networkId,
+			category = category,
+			name = name,
+			isSuper = isSuper,
+			isPublic = isPublic,
+			isDiscoverable = isDiscoverable,
+			isVideoEnabled = isVideoEnabled,
+			type = type,
+			isAdminOnly = properties?.isAdminOnly ?: false,
+			telegramChatId = properties?.telegramChatId,
+			discordChatId = properties?.discordChatId,
+			accessType = accessType
+		),
+		members = members.map { it.toEntity() },
+		operators = operators.map { it.toEntity() },
+		lastMessage = lastMessage?.toEntity(),
+		createdBy = createdBy?.toEntity()
 	)
