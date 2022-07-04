@@ -11,7 +11,7 @@ import androidx.room.Index
 	foreignKeys =
 	[
 		ForeignKey(
-			entity = MessageEntity::class,
+			entity = ChannelEntity::class,
 			parentColumns = ["id"],
 			childColumns = ["channelId"],
 			onDelete = ForeignKey.CASCADE
@@ -33,7 +33,7 @@ data class ChannelMembersCrossRef(val channelId: String, val memberId: String)
 	foreignKeys =
 	[
 		ForeignKey(
-			entity = MessageEntity::class,
+			entity = ChannelEntity::class,
 			parentColumns = ["id"],
 			childColumns = ["channelId"],
 			onDelete = ForeignKey.CASCADE
@@ -55,7 +55,7 @@ data class ChannelOperatorsCrossRef(val channelId: String, val memberId: String)
 	foreignKeys =
 	[
 		ForeignKey(
-			entity = MessageEntity::class,
+			entity = ChannelEntity::class,
 			parentColumns = ["id"],
 			childColumns = ["channelId"],
 			onDelete = ForeignKey.CASCADE
