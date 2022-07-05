@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.icons.Icons
@@ -46,7 +45,6 @@ fun MessagesRoute(
 
     LaunchedEffect(Unit) {
         viewModel.loadChannel()
-        recordMemoViewModel.configure(context.externalCacheDir?.absolutePath)
     }
 
     val imageSelectorLauncher = rememberLauncherForActivityResult(

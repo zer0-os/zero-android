@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.zero.android.common.util.SymbolAnnotationType
 import com.zero.android.common.util.messageFormatter
+import com.zero.android.feature.messages.ui.voicememo.mediaPlayer.MediaSourceViewModel
 import com.zero.android.feature.messages.ui.voicememo.VoiceMessage
 import com.zero.android.models.Member
 import com.zero.android.models.Message
@@ -18,7 +19,11 @@ import com.zero.android.ui.theme.AppTheme
 import com.zero.android.ui.theme.White
 
 @Composable
-fun ColumnScope.MessageContent(message: Message, authorClicked: (Member) -> Unit) {
+fun ColumnScope.MessageContent(
+    message: Message,
+    mediaSourceViewModel: MediaSourceViewModel,
+    authorClicked: (Member) -> Unit
+) {
     when (message.type) {
         MessageType.IMAGE -> message.fileUrl?.let {
             AsyncImage(
@@ -30,7 +35,7 @@ fun ColumnScope.MessageContent(message: Message, authorClicked: (Member) -> Unit
             )
         }
         MessageType.AUDIO -> message.fileUrl?.let {
-            VoiceMessage(message)
+            VoiceMessage(message, mediaSourceViewModel)
         }
         else -> message.message?.let {
             ClickableMessage(message = message, authorClicked = authorClicked)

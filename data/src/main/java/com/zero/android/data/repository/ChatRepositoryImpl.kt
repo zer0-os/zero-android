@@ -76,8 +76,7 @@ constructor(
 				message.copy(
 					fileUrl = fileUpload.secureUrl,
 					fileName = fileUpload.originalFilename,
-					fileMimeType = fileUpload.type,
-					data = JSONObject(fileUpload.dataMap).toString()
+					data = JSONObject(fileUpload.getDataMap(message.type)).toString()
 				)
 			} else {
 				Timber.e("Upload Info is required for file upload")

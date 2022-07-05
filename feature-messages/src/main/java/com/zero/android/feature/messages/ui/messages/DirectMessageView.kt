@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import com.zero.android.common.R
 import com.zero.android.common.extensions.format
 import com.zero.android.common.extensions.toDate
+import com.zero.android.feature.messages.ui.voicememo.mediaPlayer.MediaSourceViewModel
 import com.zero.android.models.Member
 import com.zero.android.models.Message
 import com.zero.android.ui.components.SmallCircularImage
@@ -27,7 +28,8 @@ fun DirectMessage(
     isUserMe: Boolean,
     isSameDay: Boolean,
     isFirstMessageByAuthor: Boolean,
-    isLastMessageByAuthor: Boolean
+    isLastMessageByAuthor: Boolean,
+    mediaSourceViewModel: MediaSourceViewModel
 ) {
     val modifier = if (isLastMessageByAuthor) Modifier.padding(top = 8.dp) else Modifier
     Column(modifier = modifier.fillMaxWidth()) {
@@ -55,7 +57,8 @@ fun DirectMessage(
                 isSameDay = isSameDay,
                 isFirstMessageByAuthor = isFirstMessageByAuthor,
                 isLastMessageByAuthor = isLastMessageByAuthor,
-                authorClicked = onAuthorClick
+                authorClicked = onAuthorClick,
+                mediaSourceViewModel = mediaSourceViewModel
             )
         }
     }
@@ -73,6 +76,7 @@ fun DMAuthorAndTextMessage(
     isSameDay: Boolean,
     isFirstMessageByAuthor: Boolean,
     isLastMessageByAuthor: Boolean,
+    mediaSourceViewModel: MediaSourceViewModel,
     authorClicked: (Member) -> Unit
 ) {
     val backgroundColorsList =
@@ -103,7 +107,7 @@ fun DMAuthorAndTextMessage(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                     }
-                    MessageContent(message = message, authorClicked = authorClicked)
+                    MessageContent(message = message, authorClicked = authorClicked, mediaSourceViewModel = mediaSourceViewModel)
                     val messageDate = message.createdAt.toDate()
                     Text(
                         text = messageDate.format("hh:mm aa"),

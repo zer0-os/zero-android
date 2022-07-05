@@ -18,12 +18,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.zero.android.common.extensions.format
 import com.zero.android.common.extensions.getActivity
 import com.zero.android.common.extensions.isSameDay
 import com.zero.android.common.extensions.toDate
 import com.zero.android.feature.messages.ui.voicememo.RecordMemoView
+import com.zero.android.feature.messages.ui.voicememo.mediaPlayer.MediaSourceViewModel
 import com.zero.android.ui.components.BottomBarDivider
 import com.zero.android.ui.components.DayHeader
 import com.zero.android.ui.components.JumpToBottom
@@ -108,11 +110,13 @@ fun Messages(
     userChannelInfo: Pair<String, Boolean>,
     uiState: MessagesUiState,
     scrollState: LazyListState,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
+    mediaSourceViewModel: MediaSourceViewModel = hiltViewModel()
 ) {
     Box(modifier = modifier.padding(14.dp)) {
         if (uiState is MessagesUiState.Success) {
             val messages = uiState.messages
+            mediaSourceViewModel.configure(messages)
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 reverseLayout = true,
@@ -138,6 +142,7 @@ fun Messages(
                                 isSameDay = isSameDay,
                                 isFirstMessageByAuthor = isFirstMessageByAuthor,
                                 isLastMessageByAuthor = isLastMessageByAuthor,
+                                mediaSourceViewModel = mediaSourceViewModel,
                                 onAuthorClick = {}
                             )
                         } else {
@@ -145,6 +150,7 @@ fun Messages(
                                 msg = content,
                                 isUserMe = content.author.id == userChannelInfo.first,
                                 isFirstMessageByAuthor = isFirstMessageByAuthor,
+                                mediaSourceViewModel = mediaSourceViewModel,
                                 onAuthorClick = {}
                             )
                         }

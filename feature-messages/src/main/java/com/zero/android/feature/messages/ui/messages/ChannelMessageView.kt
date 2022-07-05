@@ -16,6 +16,7 @@ import com.zero.android.common.R
 import com.zero.android.common.extensions.format
 import com.zero.android.common.extensions.toDate
 import com.zero.android.common.extensions.toMessageDateFormat
+import com.zero.android.feature.messages.ui.voicememo.mediaPlayer.MediaSourceViewModel
 import com.zero.android.models.Member
 import com.zero.android.models.Message
 import com.zero.android.ui.components.SmallCircularImage
@@ -26,7 +27,8 @@ fun ChannelMessage(
     onAuthorClick: (Member) -> Unit,
     msg: Message,
     isUserMe: Boolean,
-    isFirstMessageByAuthor: Boolean
+    isFirstMessageByAuthor: Boolean,
+    mediaSourceViewModel: MediaSourceViewModel
 ) {
     Row {
         SmallCircularImage(
@@ -40,7 +42,8 @@ fun ChannelMessage(
             message = msg,
             isUserMe = isUserMe,
             isFirstMessageByAuthor = isFirstMessageByAuthor,
-            authorClicked = onAuthorClick
+            authorClicked = onAuthorClick,
+            mediaSourceViewModel = mediaSourceViewModel
         )
     }
 }
@@ -52,6 +55,7 @@ fun CMAuthorAndTextMessage(
     modifier: Modifier = Modifier,
     message: Message,
     isUserMe: Boolean,
+    mediaSourceViewModel: MediaSourceViewModel,
     isFirstMessageByAuthor: Boolean,
     authorClicked: (Member) -> Unit
 ) {
@@ -73,7 +77,7 @@ fun CMAuthorAndTextMessage(
             ) {
                 Column(modifier = Modifier.padding(8.dp)) {
                     AuthorNameTimestamp(isUserMe, message)
-                    MessageContent(message = message, authorClicked = authorClicked)
+                    MessageContent(message = message, authorClicked = authorClicked, mediaSourceViewModel = mediaSourceViewModel)
                 }
             }
         }

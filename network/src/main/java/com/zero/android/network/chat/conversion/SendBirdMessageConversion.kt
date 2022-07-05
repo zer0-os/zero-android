@@ -7,9 +7,8 @@ import com.sendbird.android.constant.StringSet.value
 import com.zero.android.models.DraftMessage
 import com.zero.android.models.FileThumbnail
 import com.zero.android.models.enums.*
-import com.zero.android.network.model.ApiFileThumbnail
-import com.zero.android.network.model.ApiMessage
-import com.zero.android.network.model.ApiMessageReaction
+import com.zero.android.network.model.*
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToJsonElement
@@ -25,20 +24,25 @@ private fun ApiMessage.toSendBirdJsonString(): ByteArray {
 	return Base64.decode(json.commonAsUtf8ToByteArray(), 0)
 }
 
-internal fun BaseMessage.toApi() =
-	ApiMessage(
-		id = messageId.toString(),
-		type = customType.toMessageType(),
-		mentionType = mentionType.toType(),
-		channelUrl = channelUrl,
-		author = sender.toApi(),
-		status = sendingStatus.toType(),
-		createdAt = createdAt,
-		updatedAt = updatedAt,
-		message = message,
-		fileUrl = (this as? FileMessage)?.url,
-		fileName = (this as? FileMessage)?.name,
-	)
+internal fun BaseMessage.toApi(): ApiMessage {
+    val data = if (this is FileMessage && data.isNotEmpty()) {
+        Json { ignoreUnknownKeys = true }.decodeFromString<ApiFileData?>(data)
+    } else null
+    return ApiMessage(
+        id = messageId.toString(),
+        type = if (this is FileMessage) data?.type.toMessageType()
+        else customType.toMessageType(),
+        mentionType = mentionType.toType(),
+        channelUrl = channelUrl,
+        author = sender.toApi(),
+        status = sendingStatus.toType(),
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+        message = message,
+        fileUrl = (this as? FileMessage)?.url,
+        fileName = (this as? FileMessage)?.name,
+    )
+}
 
 internal fun UserMessage.toApi() =
 	ApiMessage(
