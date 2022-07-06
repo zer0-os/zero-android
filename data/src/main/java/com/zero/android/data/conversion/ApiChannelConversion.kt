@@ -57,6 +57,7 @@ internal fun ApiDirectChannel.toEntity() =
 		channel =
 		ChannelEntity(
 			id = id,
+			lastMessageId = lastMessage?.id,
 			isDirectChannel = true,
 			memberCount = memberCount,
 			coverUrl = coverUrl,
@@ -76,6 +77,8 @@ internal fun ApiGroupChannel.toEntity() =
 		channel =
 		ChannelEntity(
 			id = id,
+			lastMessageId = lastMessage?.id,
+			authorId = createdBy?.id ?: "",
 			isDirectChannel = false,
 			memberCount = memberCount,
 			coverUrl = coverUrl,

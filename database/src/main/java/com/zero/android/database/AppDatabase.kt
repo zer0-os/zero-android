@@ -14,17 +14,14 @@ import com.zero.android.database.dao.MessageDaoInterface
 import com.zero.android.database.dao.NetworkDao
 import com.zero.android.database.dao.ProfileDao
 import com.zero.android.database.dao.UserDao
-import com.zero.android.database.model.ChannelAuthorCrossRef
 import com.zero.android.database.model.ChannelEntity
 import com.zero.android.database.model.ChannelMembersCrossRef
 import com.zero.android.database.model.ChannelOperatorsCrossRef
 import com.zero.android.database.model.MemberEntity
-import com.zero.android.database.model.MessageAuthorCrossRef
 import com.zero.android.database.model.MessageEntity
 import com.zero.android.database.model.MessageMentionCrossRef
 import com.zero.android.database.model.MessageWithRefs
 import com.zero.android.database.model.NetworkEntity
-import com.zero.android.database.model.ParentMessageCrossRef
 import com.zero.android.database.model.ProfileEntity
 import com.zero.android.database.model.UserEntity
 
@@ -37,10 +34,7 @@ import com.zero.android.database.model.UserEntity
 		MessageEntity::class,
 		MemberEntity::class,
 		ChannelEntity::class,
-		ParentMessageCrossRef::class,
-		MessageAuthorCrossRef::class,
 		MessageMentionCrossRef::class,
-		ChannelAuthorCrossRef::class,
 		ChannelMembersCrossRef::class,
 		ChannelOperatorsCrossRef::class
 	],

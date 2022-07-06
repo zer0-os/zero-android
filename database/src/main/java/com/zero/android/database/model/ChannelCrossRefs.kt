@@ -47,25 +47,3 @@ data class ChannelMembersCrossRef(val channelId: String, val memberId: String)
 	]
 )
 data class ChannelOperatorsCrossRef(val channelId: String, val memberId: String)
-
-@Entity(
-	tableName = "channel_author_relation",
-	primaryKeys = ["channelId", "memberId"],
-	indices = [Index("channelId"), Index("memberId")],
-	foreignKeys =
-	[
-		ForeignKey(
-			entity = ChannelEntity::class,
-			parentColumns = ["id"],
-			childColumns = ["channelId"],
-			onDelete = ForeignKey.CASCADE
-		),
-		ForeignKey(
-			entity = MemberEntity::class,
-			parentColumns = ["id"],
-			childColumns = ["memberId"],
-			onDelete = ForeignKey.NO_ACTION
-		)
-	]
-)
-data class ChannelAuthorCrossRef(val channelId: String, val memberId: String)

@@ -11,8 +11,10 @@ import com.zero.android.database.model.MessageWithRefs
 import com.zero.android.models.enums.MessageStatus
 import com.zero.android.models.enums.MessageType
 import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -21,75 +23,99 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class ChannelEntityTest : BaseDatabaseTest() {
 
-	@Test
-	fun directChannel() = runTest {
-		val members = listOf(MemberEntity(id = "memberOne"), MemberEntity(id = "memberTwo"))
-		val channel =
-			ChannelEntity(id = "directChannelId", isDirectChannel = true, memberCount = members.size)
-
-		val group =
-			DirectChannelWithRefs(
-				channel = channel,
-				members = members,
-				lastMessage =
-				MessageWithRefs(
-					message =
-					MessageEntity(
-						id = "lastMessageId",
-						channelId = channel.id,
-						type = MessageType.TEXT,
-						status = MessageStatus.PENDING
-					),
-					author = MemberEntity(id = "authorId"),
-					mentions =
-					listOf(MemberEntity(id = "memberOne"), MemberEntity(id = "memberTwo"))
-				)
+	private val directChannel =
+		DirectChannelWithRefs(
+			channel =
+			ChannelEntity(
+				id = "directChannelId",
+				lastMessageId = "directLastMessageId",
+				isDirectChannel = true,
+				memberCount = 2
+			),
+			members = listOf(MemberEntity(id = "memberOne"), MemberEntity(id = "memberTwo")),
+			lastMessage =
+			MessageWithRefs(
+				message =
+				MessageEntity(
+					id = "directLastMessageId",
+					authorId = "authorId",
+					channelId = "directChannelId",
+					type = MessageType.TEXT,
+					status = MessageStatus.PENDING
+				),
+				author = MemberEntity(id = "authorId"),
+				mentions =
+				listOf(MemberEntity(id = "memberOne"), MemberEntity(id = "memberTwo"))
 			)
+		)
 
-		channelDao.insert(group)
+	private val groupChannel =
+		GroupChannelWithRefs(
+			createdBy = MemberEntity(id = "memberFive"),
+			channel =
+			ChannelEntity(
+				id = "groupChannelId",
+				lastMessageId = "groupLastMessageId",
+				isDirectChannel = false,
+				memberCount = 2
+			),
+			members = listOf(MemberEntity(id = "memberFive"), MemberEntity(id = "memberFour")),
+			operators = listOf(MemberEntity(id = "memberFive")),
+			lastMessage =
+			MessageWithRefs(
+				message =
+				MessageEntity(
+					id = "groupLastMessageId",
+					authorId = "authorId",
+					channelId = "groupChannelId",
+					type = MessageType.TEXT,
+					status = MessageStatus.PENDING
+				),
+				author = MemberEntity(id = "authorId"),
+				mentions =
+				listOf(MemberEntity(id = "memberOne"), MemberEntity(id = "memberThree"))
+			)
+		)
 
-		val data = channelDao.getDirectChannelById("directChannelId").first()
-		assertEquals(group.channel.id, data.channel.id)
-		assertEquals(group.lastMessage?.message?.id, data.lastMessage?.message?.id)
-		assertEquals(group.channel.id, data.lastMessage?.message?.channelId)
-		assertEquals(group.members.size, data.members.size)
+	@Test
+	fun insertDirectChannel() = runTest {
+		channelDao.insert(directChannel)
+
+		val data = channelDao.getDirectChannelById(directChannel.channel.id).first()
+		assertEquals(directChannel.channel.id, data.channel.id)
+		assertEquals(directChannel.lastMessage?.message?.id, data.lastMessage?.message?.id)
+		assertEquals(directChannel.channel.id, data.lastMessage?.message?.channelId)
+		assertEquals(directChannel.members.size, data.members.size)
 	}
 
 	@Test
-	fun groupChannel() = runTest {
-		val members = listOf(MemberEntity(id = "memberFive"), MemberEntity(id = "memberFour"))
-		val channel =
-			ChannelEntity(id = "groupChannelId", isDirectChannel = false, memberCount = members.size)
+	fun insertGroupChannel() = runTest {
+		channelDao.insert(groupChannel)
 
-		val group =
-			GroupChannelWithRefs(
-				createdBy = MemberEntity(id = "memberFive"),
-				channel = channel,
-				members = members,
-				operators = listOf(MemberEntity(id = "memberFive")),
-				lastMessage =
-				MessageWithRefs(
-					message =
-					MessageEntity(
-						id = "messageId2",
-						channelId = channel.id,
-						type = MessageType.TEXT,
-						status = MessageStatus.PENDING
-					),
-					author = MemberEntity(id = "authorId"),
-					mentions =
-					listOf(MemberEntity(id = "memberOne"), MemberEntity(id = "memberThree"))
-				)
-			)
+		val data = channelDao.getGroupChannelById(groupChannel.channel.id).first()
+		assertEquals(groupChannel.channel.id, data.channel.id)
+		assertEquals(groupChannel.lastMessage?.message?.id, data.lastMessage?.message?.id)
+		assertEquals(groupChannel.lastMessage?.author?.id, data.lastMessage?.author?.id)
+		assertEquals(groupChannel.channel.id, data.lastMessage?.message?.channelId)
+		assertEquals(groupChannel.members.size, data.members.size)
+		assertEquals(groupChannel.operators.size, data.operators.size)
+	}
 
-		channelDao.insert(group)
+	@Test
+	fun deleteDirectChannel() = runTest {
+		channelDao.insert(directChannel)
+		channelDao.delete(directChannel.channel)
 
-		val data = channelDao.getGroupChannelById("groupChannelId").first()
-		assertEquals(group.channel.id, data.channel.id)
-		assertEquals(group.lastMessage?.message?.id, data.lastMessage?.message?.id)
-		assertEquals(group.lastMessage?.author?.id, data.lastMessage?.author?.id)
-		assertEquals(group.channel.id, data.lastMessage?.message?.channelId)
-		assertEquals(group.members.size, data.members.size)
-		assertEquals(group.operators.size, data.operators.size)
+		assertNull(channelDao.getDirectChannelById(directChannel.channel.id).firstOrNull())
+		assertNull(messageDao.getById(directChannel.lastMessage?.message?.id!!).firstOrNull())
+	}
+
+	@Test
+	fun deleteGroupChannel() = runTest {
+		channelDao.insert(groupChannel)
+		channelDao.delete(groupChannel.channel)
+
+		assertNull(channelDao.getDirectChannelById(groupChannel.channel.id).firstOrNull())
+		assertNull(messageDao.getById(groupChannel.lastMessage?.message?.id!!).firstOrNull())
 	}
 }

@@ -2,6 +2,7 @@ package com.zero.android.database.model
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.zero.android.models.FileThumbnail
 import com.zero.android.models.Member
@@ -13,6 +14,7 @@ import com.zero.android.models.enums.MessageType
 
 @Entity(
 	tableName = "messages",
+	indices = [Index("channelId"), Index("authorId")],
 	foreignKeys =
 	[
 		ForeignKey(
@@ -20,11 +22,32 @@ import com.zero.android.models.enums.MessageType
 			parentColumns = ["id"],
 			childColumns = ["channelId"],
 			onDelete = ForeignKey.CASCADE
+		),
+		ForeignKey(
+			entity = MemberEntity::class,
+			parentColumns = ["id"],
+			childColumns = ["authorId"],
+			onDelete = ForeignKey.RESTRICT
+		),
+		ForeignKey(
+			entity = MessageEntity::class,
+			parentColumns = ["id"],
+			childColumns = ["parentMessageId"],
+			onDelete = ForeignKey.SET_NULL
+		),
+		ForeignKey(
+			entity = MemberEntity::class,
+			parentColumns = ["id"],
+			childColumns = ["parentMessageAuthorId"],
+			onDelete = ForeignKey.SET_NULL
 		)
 	]
 )
 data class MessageEntity(
 	@PrimaryKey val id: String,
+	val authorId: String,
+	val parentMessageId: String? = null,
+	val parentMessageAuthorId: String? = null,
 	val channelId: String,
 	val type: MessageType,
 	val mentionType: MessageMentionType = MessageMentionType.UNKNOWN,

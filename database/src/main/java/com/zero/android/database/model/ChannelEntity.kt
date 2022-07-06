@@ -1,6 +1,7 @@
 package com.zero.android.database.model
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.zero.android.models.ChannelCategory
 import com.zero.android.models.DirectChannel
@@ -11,9 +12,22 @@ import com.zero.android.models.enums.AccessType
 import com.zero.android.models.enums.AlertType
 import com.zero.android.models.enums.ChannelType
 
-@Entity(tableName = "channels")
+@Entity(
+	tableName = "channels",
+	foreignKeys =
+	[
+		ForeignKey(
+			entity = MemberEntity::class,
+			parentColumns = ["id"],
+			childColumns = ["authorId"],
+			onDelete = ForeignKey.RESTRICT
+		)
+	]
+)
 data class ChannelEntity(
 	@PrimaryKey val id: String,
+	val lastMessageId: String? = null,
+	val authorId: String? = null,
 	val memberCount: Int = 0,
 	val coverUrl: String? = null,
 	val createdAt: Long = 0,

@@ -6,7 +6,7 @@ import androidx.room.Relation
 
 data class DirectChannelWithRefs(
 	@Embedded val channel: ChannelEntity,
-	@Relation(parentColumn = "id", entityColumn = "channelId")
+	@Relation(parentColumn = "lastMessageId", entityColumn = "id")
 	val lastMessage: MessageWithRefs? = null,
 	@Relation(
 		parentColumn = "id",
@@ -23,18 +23,9 @@ data class DirectChannelWithRefs(
 
 data class GroupChannelWithRefs(
 	@Embedded val channel: ChannelEntity,
-	@Relation(parentColumn = "id", entityColumn = "channelId") val lastMessage: MessageWithRefs?,
-	@Relation(
-		parentColumn = "id",
-		entityColumn = "id",
-		associateBy =
-		Junction(
-			value = ChannelAuthorCrossRef::class,
-			parentColumn = "channelId",
-			entityColumn = "memberId"
-		)
-	)
-	val createdBy: MemberEntity? = null,
+	@Relation(parentColumn = "lastMessageId", entityColumn = "id")
+	val lastMessage: MessageWithRefs?,
+	@Relation(parentColumn = "authorId", entityColumn = "id") val createdBy: MemberEntity? = null,
 	@Relation(
 		parentColumn = "id",
 		entityColumn = "id",

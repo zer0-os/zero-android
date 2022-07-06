@@ -21,7 +21,7 @@ abstract class BaseDatabaseTest {
 	protected lateinit var messageDao: MessageDao
 
 	@Before
-	open fun onCreateDB() {
+	fun onCreateDB() {
 		val context = ApplicationProvider.getApplicationContext<Context>()
 		db = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).build()
 

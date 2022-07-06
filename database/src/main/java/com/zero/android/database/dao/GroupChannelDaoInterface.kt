@@ -3,7 +3,6 @@ package com.zero.android.database.dao
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
-import com.zero.android.database.model.ChannelAuthorCrossRef
 import com.zero.android.database.model.ChannelMembersCrossRef
 import com.zero.android.database.model.ChannelOperatorsCrossRef
 import com.zero.android.database.model.GroupChannelWithRefs
@@ -27,11 +26,11 @@ abstract class GroupChannelDaoInterface : ChannelDaoInterface() {
 		vararg data: GroupChannelWithRefs
 	) {
 		for (item in data) {
-			insert(item.channel)
-
 			val members = item.members.toMutableList()
 			item.createdBy?.let { members.add(it) }
 			memberDao.insert(*members.toTypedArray())
+
+			insert(item.channel)
 
 			item.lastMessage?.let { messageDao.insert(it) }
 
@@ -42,10 +41,6 @@ abstract class GroupChannelDaoInterface : ChannelDaoInterface() {
 			item.operators
 				.map { ChannelOperatorsCrossRef(channelId = item.channel.id, memberId = it.id) }
 				.let { insert(*it.toTypedArray()) }
-
-			item.createdBy?.let { author ->
-				insert(ChannelAuthorCrossRef(channelId = item.channel.id, memberId = author.id))
-			}
 		}
 	}
 }
