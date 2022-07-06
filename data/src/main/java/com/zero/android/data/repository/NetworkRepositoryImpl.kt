@@ -9,6 +9,7 @@ import com.zero.android.network.service.ChannelCategoryService
 import com.zero.android.network.service.NetworkService
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.mapNotNull
 import javax.inject.Inject
 
 class NetworkRepositoryImpl
@@ -29,5 +30,8 @@ constructor(
 		}
 	}
 
-	override suspend fun getCategories(networkId: String) = categoryService.getCategories(networkId)
+	override suspend fun getCategories(networkId: String) = flow {
+		networkDao.getCategories(networkId).mapNotNull { emit(it) }
+		categoryService.getCategories(networkId).firstOrNull()?.let { emit(it) }
+	}
 }
