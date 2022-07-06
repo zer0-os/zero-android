@@ -9,7 +9,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface ChatService {
 
-	suspend fun listen(channelId: String, listener: ChatListener)
+	suspend fun addListener(channelId: String, listener: ChatListener)
+
+	suspend fun removeListener(channelId: String)
 
 	suspend fun getMessages(
 		channel: Channel,

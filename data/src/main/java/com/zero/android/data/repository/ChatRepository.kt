@@ -22,5 +22,7 @@ interface ChatRepository {
 
 	suspend fun deleteMessage(id: String, channelId: String)
 
-	suspend fun addChatListener(channel: Channel)
+	suspend fun addListener(id: String)
+
+	suspend fun removeListener(id: String)
 }

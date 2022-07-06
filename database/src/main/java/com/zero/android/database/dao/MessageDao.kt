@@ -14,5 +14,8 @@ constructor(private val messageDao: MessageDaoInterface, private val memberDao: 
 
 	suspend fun insert(vararg data: MessageWithRefs) = messageDao.insert(memberDao, *data)
 
+	suspend fun update(vararg data: MessageWithRefs) =
+		messageDao.update(*data.map { it.message }.toTypedArray())
+
 	suspend fun delete(message: MessageEntity) = messageDao.delete(message)
 }

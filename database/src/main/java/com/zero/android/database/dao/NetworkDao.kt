@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import com.zero.android.database.model.NetworkEntity
 import com.zero.android.models.ChannelCategory
 import kotlinx.coroutines.flow.Flow
@@ -25,7 +26,10 @@ interface NetworkDao {
 	fun getCategories(id: String): Flow<List<ChannelCategory>>
 
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
-	suspend fun insert(vararg users: NetworkEntity)
+	suspend fun insert(vararg networks: NetworkEntity)
 
-	@Delete suspend fun delete(user: NetworkEntity)
+	@Update(onConflict = OnConflictStrategy.REPLACE)
+	suspend fun update(vararg network: NetworkEntity)
+
+	@Delete suspend fun delete(network: NetworkEntity)
 }

@@ -43,9 +43,9 @@ constructor(
 		return messagesResult
 	}
 
-	override suspend fun addChatListener(channel: Channel) {
-		chatService.listen(
-			channel.id,
+	override suspend fun addListener(id: String) {
+		chatService.addListener(
+			id,
 			object : ChatListener {
 				override fun onMessageReceived(var1: ApiChannel, var2: ApiMessage) {
 					runBlocking(Dispatchers.IO) { appendNewChatMessage(var2.toModel()) }
@@ -53,6 +53,8 @@ constructor(
 			}
 		)
 	}
+
+	override suspend fun removeListener(id: String) = chatService.removeListener(id)
 
 	override suspend fun getMessages(channel: Channel, id: String): Flow<List<Message>> {
 		return chatService.getMessages(channel, id).map { messages -> messages.map { it.toModel() } }

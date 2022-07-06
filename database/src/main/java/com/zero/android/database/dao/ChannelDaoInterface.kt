@@ -15,6 +15,9 @@ abstract class ChannelDaoInterface {
 	protected abstract suspend fun insert(vararg channels: ChannelEntity)
 
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
+	protected abstract suspend fun update(vararg channels: ChannelEntity)
+
+	@Insert(onConflict = OnConflictStrategy.REPLACE)
 	protected abstract suspend fun insert(vararg refs: ChannelMembersCrossRef)
 
 	@Insert(onConflict = OnConflictStrategy.REPLACE)

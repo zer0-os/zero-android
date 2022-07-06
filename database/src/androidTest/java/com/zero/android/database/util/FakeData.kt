@@ -89,6 +89,6 @@ object FakeData {
 				status = MessageStatus.PENDING
 			),
 			parentMessageAuthor = MemberEntity(id = "memberThree"),
-			mentions = listOf(MemberEntity(id = "mentionOneId"), MemberEntity(id = "mentionTwoId"))
+			mentions = listOf(MemberEntity(id = "memberOne"), MemberEntity(id = "memberTwo"))
 		)
 }

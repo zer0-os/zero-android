@@ -28,5 +28,10 @@ constructor(
 	suspend fun insert(vararg data: GroupChannelWithRefs) =
 		groupChannelDao.insert(messageDao, memberDao, *data)
 
+	suspend fun update(vararg data: DirectChannelWithRefs) =
+		directChannelDao.update(messageDao, *data)
+
+	suspend fun update(vararg data: GroupChannelWithRefs) = groupChannelDao.update(messageDao, *data)
+
 	suspend fun delete(entity: ChannelEntity) = groupChannelDao.delete(entity)
 }

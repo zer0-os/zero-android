@@ -38,6 +38,16 @@ class MessageDaoTest : BaseDatabaseTest() {
 	}
 
 	@Test
+	fun updateMessage() = runTest {
+		messageDao.insert(message)
+		messageDao.update(FakeData.MessageWithRefs(channelId = "channelId", authorId = "memberTwo"))
+
+		val data = messageDao.getById(message.message.id).first()
+		assertEquals("channelId", data.message.channelId)
+		assertEquals("memberTwo", data.author.id)
+	}
+
+	@Test
 	fun deleteConstraints() = runTest {
 		messageDao.insert(message)
 

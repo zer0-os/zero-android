@@ -43,4 +43,12 @@ abstract class GroupChannelDaoInterface : ChannelDaoInterface() {
 				.let { insert(*it.toTypedArray()) }
 		}
 	}
+
+	@Transaction
+	internal open suspend fun update(messageDao: MessageDao, vararg data: GroupChannelWithRefs) {
+		for (item in data) {
+			item.lastMessage?.let { messageDao.insert() }
+			update(item.channel)
+		}
+	}
 }

@@ -86,7 +86,7 @@ constructor(
 
 	private fun configureChat(channel: Channel) {
 		ioScope.launch {
-			chatRepository.addChatListener(channel)
+			chatRepository.addListener(channel.id)
 			chatRepository.getMessages(channel)
 		}
 	}
@@ -97,5 +97,10 @@ constructor(
 				chatRepository.send(channel, message)
 			}
 		}
+	}
+
+	override fun onCleared() {
+		runBlocking { chatRepository.removeListener(channelId) }
+		super.onCleared()
 	}
 }
