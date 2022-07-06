@@ -3,13 +3,7 @@ package com.zero.android.database
 import android.database.sqlite.SQLiteConstraintException
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.zero.android.database.base.BaseDatabaseTest
-import com.zero.android.database.model.ChannelEntity
-import com.zero.android.database.model.DirectChannelWithRefs
-import com.zero.android.database.model.MemberEntity
-import com.zero.android.database.model.MessageEntity
-import com.zero.android.database.model.MessageWithRefs
-import com.zero.android.models.enums.MessageStatus
-import com.zero.android.models.enums.MessageType
+import com.zero.android.database.util.FakeData
 import junit.framework.Assert.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -21,41 +15,14 @@ import org.junit.runner.RunWith
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(AndroidJUnit4::class)
-class MessageEntityTest : BaseDatabaseTest() {
+class MessageDaoTest : BaseDatabaseTest() {
 
-	private val message =
-		MessageWithRefs(
-			message =
-			MessageEntity(
-				id = "messageId",
-				authorId = "authorId",
-				parentMessageId = "parentMessageId",
-				parentMessageAuthorId = "parentAuthorId",
-				channelId = "channelId",
-				type = MessageType.TEXT,
-				status = MessageStatus.PENDING
-			),
-			author = MemberEntity(id = "authorId"),
-			parentMessage =
-			MessageEntity(
-				id = "parentMessageId",
-				authorId = "parentAuthorId",
-				channelId = "channelId",
-				type = MessageType.TEXT,
-				status = MessageStatus.PENDING
-			),
-			parentMessageAuthor = MemberEntity(id = "parentAuthorId"),
-			mentions = listOf(MemberEntity(id = "mentionOneId"), MemberEntity(id = "mentionTwoId"))
-		)
+	private val message = FakeData.MessageWithRefs(channelId = "channelId")
 
 	@Before
 	fun setup() = runTest {
-		channelDao.insert(
-			DirectChannelWithRefs(
-				channel = ChannelEntity("channelId", isDirectChannel = false),
-				members = emptyList()
-			)
-		)
+		db.networkDao().insert(FakeData.NetworkEntity())
+		channelDao.insert(FakeData.DirectChannelWithRefs(id = "channelId", lastMessage = null))
 	}
 
 	@Test

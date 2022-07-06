@@ -2,80 +2,26 @@ package com.zero.android.database
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.zero.android.database.base.BaseDatabaseTest
-import com.zero.android.database.model.ChannelEntity
-import com.zero.android.database.model.DirectChannelWithRefs
-import com.zero.android.database.model.GroupChannelWithRefs
-import com.zero.android.database.model.MemberEntity
-import com.zero.android.database.model.MessageEntity
-import com.zero.android.database.model.MessageWithRefs
-import com.zero.android.models.enums.MessageStatus
-import com.zero.android.models.enums.MessageType
+import com.zero.android.database.util.FakeData
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.test.runTest
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(AndroidJUnit4::class)
-class ChannelEntityTest : BaseDatabaseTest() {
+class ChannelDaoTest : BaseDatabaseTest() {
 
-	private val directChannel =
-		DirectChannelWithRefs(
-			channel =
-			ChannelEntity(
-				id = "directChannelId",
-				lastMessageId = "directLastMessageId",
-				isDirectChannel = true,
-				memberCount = 2
-			),
-			members = listOf(MemberEntity(id = "memberOne"), MemberEntity(id = "memberTwo")),
-			lastMessage =
-			MessageWithRefs(
-				message =
-				MessageEntity(
-					id = "directLastMessageId",
-					authorId = "authorId",
-					channelId = "directChannelId",
-					type = MessageType.TEXT,
-					status = MessageStatus.PENDING
-				),
-				author = MemberEntity(id = "authorId"),
-				mentions =
-				listOf(MemberEntity(id = "memberOne"), MemberEntity(id = "memberTwo"))
-			)
-		)
-
+	private val directChannel = FakeData.DirectChannelWithRefs(id = "directChannelId")
 	private val groupChannel =
-		GroupChannelWithRefs(
-			createdBy = MemberEntity(id = "memberFive"),
-			channel =
-			ChannelEntity(
-				id = "groupChannelId",
-				lastMessageId = "groupLastMessageId",
-				isDirectChannel = false,
-				memberCount = 2
-			),
-			members = listOf(MemberEntity(id = "memberFive"), MemberEntity(id = "memberFour")),
-			operators = listOf(MemberEntity(id = "memberFive")),
-			lastMessage =
-			MessageWithRefs(
-				message =
-				MessageEntity(
-					id = "groupLastMessageId",
-					authorId = "authorId",
-					channelId = "groupChannelId",
-					type = MessageType.TEXT,
-					status = MessageStatus.PENDING
-				),
-				author = MemberEntity(id = "authorId"),
-				mentions =
-				listOf(MemberEntity(id = "memberOne"), MemberEntity(id = "memberThree"))
-			)
-		)
+		FakeData.GroupChannelWithRefs(id = "groupChannelId", networkId = "networkId")
+
+	@Before fun setup() = runTest { db.networkDao().insert(FakeData.NetworkEntity(id = "networkId")) }
 
 	@Test
 	fun insertDirectChannel() = runTest {

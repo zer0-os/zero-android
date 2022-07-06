@@ -25,8 +25,8 @@ abstract class DirectChannelDaoInterface : ChannelDaoInterface() {
 		vararg data: DirectChannelWithRefs
 	) {
 		for (item in data) {
-			insert(item.channel)
 			memberDao.insert(*item.members.toTypedArray())
+			insert(item.channel)
 			item.lastMessage?.let { messageDao.insert(it) }
 
 			item.members

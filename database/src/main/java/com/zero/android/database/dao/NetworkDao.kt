@@ -1,7 +1,13 @@
 package com.zero.android.database.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
 import com.zero.android.database.model.NetworkEntity
+import com.zero.android.models.ChannelCategory
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -14,6 +20,9 @@ interface NetworkDao {
 	@Transaction
 	@Query("SELECT * FROM networks WHERE id = :id")
 	fun getById(id: String): Flow<NetworkEntity>
+
+	@Query("SELECT DISTINCT category from channels WHERE networkId = :id AND category IS NOT NULL")
+	fun getCategories(id: String): Flow<List<ChannelCategory>>
 
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
 	suspend fun insert(vararg users: NetworkEntity)

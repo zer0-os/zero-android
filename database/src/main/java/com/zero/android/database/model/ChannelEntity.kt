@@ -17,6 +17,12 @@ import com.zero.android.models.enums.ChannelType
 	foreignKeys =
 	[
 		ForeignKey(
+			entity = NetworkEntity::class,
+			parentColumns = ["id"],
+			childColumns = ["networkId"],
+			onDelete = ForeignKey.CASCADE
+		),
+		ForeignKey(
 			entity = MemberEntity::class,
 			parentColumns = ["id"],
 			childColumns = ["authorId"],
@@ -37,7 +43,7 @@ data class ChannelEntity(
 	val messageLifeSeconds: Int = 0,
 	val alerts: AlertType = AlertType.ALL,
 	val accessCode: String? = null,
-	val networkId: String = "",
+	val networkId: String? = null,
 	val category: ChannelCategory? = null,
 	val name: String = "",
 	val isSuper: Boolean = false,
@@ -87,7 +93,7 @@ fun ChannelEntity.toGroupModel(
 		accessCode = accessCode,
 		members = members,
 		lastMessage = lastMessage,
-		networkId = networkId,
+		networkId = networkId ?: "",
 		category = category,
 		name = name,
 		isSuper = isSuper,

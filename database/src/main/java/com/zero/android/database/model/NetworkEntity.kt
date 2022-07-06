@@ -13,13 +13,13 @@ data class NetworkEntity(
 	val name: String,
 	val displayName: String,
 	val logo: String?,
-	val backgroundImageUrl: String?,
-	val lightModeBackgroundImageUrl: String?,
+	val backgroundImageUrl: String? = null,
+	val lightModeBackgroundImageUrl: String? = null,
 	val isPublic: Boolean,
-	val locationShareType: String?,
-	val disabledApps: List<String>?,
+	val locationShareType: String? = null,
+	val disabledApps: List<String>? = null,
 	val inviteMode: InviteMode,
-	@Embedded(prefix = "permissions_") val permissions: NetworkPermissions?,
+	@Embedded(prefix = "permissions_") val permissions: NetworkPermissions? = null,
 	val unreadCount: Int = 0,
 	val isSelected: Boolean = false
 )
