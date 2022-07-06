@@ -15,8 +15,6 @@ import javax.inject.Inject
 class ChannelRepositoryImpl @Inject constructor(private val channelService: ChannelService) :
 	ChannelRepository {
 
-	override suspend fun getCategories(networkId: String) = channelService.getCategories(networkId)
-
 	override suspend fun getDirectChannels(): Flow<List<DirectChannel>> {
 		return channelService.getDirectChannels().map { channels -> channels.map { it.toModel() } }
 	}

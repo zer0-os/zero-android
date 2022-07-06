@@ -1,12 +1,9 @@
-package com.zero.android.data.repository
+package com.zero.android.network.service
 
 import com.zero.android.models.ChannelCategory
-import com.zero.android.models.Network
 import kotlinx.coroutines.flow.Flow
 
-interface NetworkRepository {
-
-	suspend fun getNetworks(): Flow<List<Network>>
+interface ChannelCategoryService {
 
 	suspend fun getCategories(networkId: String): Flow<List<ChannelCategory>>
 }

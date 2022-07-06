@@ -17,6 +17,7 @@ import com.zero.android.network.chat.conversion.toDirectApi
 import com.zero.android.network.chat.conversion.toGroupApi
 import com.zero.android.network.chat.conversion.toOpenParams
 import com.zero.android.network.chat.conversion.toParams
+import com.zero.android.network.service.ChannelCategoryService
 import com.zero.android.network.service.ChannelService
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
@@ -25,7 +26,7 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
 internal class SendBirdChannelService(private val logger: Logger) :
-	SendBirdBaseService(), ChannelService {
+	SendBirdBaseService(), ChannelService, ChannelCategoryService {
 
 	override suspend fun getCategories(networkId: String) =
 		flow<List<ChannelCategory>> {

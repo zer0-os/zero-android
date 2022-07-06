@@ -21,7 +21,7 @@ interface NetworkDao {
 	@Query("SELECT * FROM networks WHERE id = :id")
 	fun getById(id: String): Flow<NetworkEntity>
 
-	@Query("SELECT DISTINCT category from channels WHERE networkId = :id AND category IS NOT NULL")
+	@Query("SELECT DISTINCT category from channels WHERE networkId = :id AND isDirectChannel = 0")
 	fun getCategories(id: String): Flow<List<ChannelCategory>>
 
 	@Insert(onConflict = OnConflictStrategy.REPLACE)

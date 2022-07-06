@@ -5,18 +5,28 @@ import com.zero.android.common.ui.Result
 import com.zero.android.common.ui.asResult
 import com.zero.android.common.ui.base.BaseViewModel
 import com.zero.android.data.repository.ChannelRepository
+import com.zero.android.data.repository.NetworkRepository
 import com.zero.android.models.ChannelCategory
 import com.zero.android.models.GroupChannel
 import com.zero.android.models.Network
 import com.zero.android.models.fake.ChannelTab
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ChannelsViewModel @Inject constructor(private val channelRepository: ChannelRepository) :
-	BaseViewModel() {
+class ChannelsViewModel
+@Inject
+constructor(
+	private val networkRepository: NetworkRepository,
+	private val channelRepository: ChannelRepository
+) : BaseViewModel() {
 
 	private lateinit var network: Network
 	private val _categories = MutableStateFlow<Result<List<ChannelCategory>>>(Result.Loading)
@@ -73,7 +83,7 @@ class ChannelsViewModel @Inject constructor(private val channelRepository: Chann
 
 	private fun loadCategories() {
 		ioScope.launch {
-			channelRepository.getCategories(network.id).asResult().collectLatest { _categories.emit(it) }
+			networkRepository.getCategories(network.id).asResult().collectLatest { _categories.emit(it) }
 		}
 	}
 
