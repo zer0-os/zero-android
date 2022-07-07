@@ -17,7 +17,7 @@ abstract class GroupChannelDaoInterface : ChannelDaoInterface() {
 
 	@Transaction
 	@Query("SELECT * FROM channels WHERE id = :id AND isDirectChannel = 0")
-	abstract fun getById(id: String): Flow<GroupChannelWithRefs>
+	abstract fun get(id: String): Flow<GroupChannelWithRefs>
 
 	@Transaction
 	internal open suspend fun insert(

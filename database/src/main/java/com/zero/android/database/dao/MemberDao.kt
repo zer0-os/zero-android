@@ -15,5 +15,5 @@ abstract class MemberDao : BaseDao<MemberEntity>() {
 
 	@Transaction
 	@Query("SELECT * FROM members WHERE id = :id")
-	abstract fun getById(id: String): Flow<MemberEntity>
+	abstract fun get(id: String): Flow<MemberEntity>
 }

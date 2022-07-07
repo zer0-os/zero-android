@@ -39,7 +39,7 @@ constructor(private val channelDao: ChannelDao, private val channelService: Chan
 	}
 
 	override suspend fun getGroupChannel(id: String) = flow {
-		channelDao.getGroupChannelById(id).mapNotNull { channel -> emit(channel.toModel()) }
+		channelDao.getGroupChannel(id).mapNotNull { channel -> emit(channel.toModel()) }
 		channelService.getChannel(id, type = ChannelType.GROUP).map {
 			it as ApiGroupChannel
 			channelDao.upsert(it.toEntity())
@@ -48,7 +48,7 @@ constructor(private val channelDao: ChannelDao, private val channelService: Chan
 	}
 
 	override suspend fun getDirectChannel(id: String) = flow {
-		channelDao.getDirectChannelById(id).mapNotNull { channel -> emit(channel.toModel()) }
+		channelDao.getDirectChannel(id).mapNotNull { channel -> emit(channel.toModel()) }
 		channelService.getChannel(id, type = ChannelType.GROUP).map {
 			it as ApiDirectChannel
 			channelDao.upsert(it.toEntity())

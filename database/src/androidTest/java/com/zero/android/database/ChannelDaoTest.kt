@@ -28,7 +28,7 @@ class ChannelDaoTest : BaseDatabaseTest() {
 		channelDao.upsert(directChannel)
 		channelDao.upsert(directChannel) // Checking 2nd insert
 
-		val data = channelDao.getDirectChannelById(directChannel.channel.id).first()
+		val data = channelDao.getDirectChannel(directChannel.channel.id).first()
 		assertEquals(directChannel.channel.id, data.channel.id)
 		assertEquals(directChannel.lastMessage?.message?.id, data.lastMessage?.message?.id)
 		assertEquals(directChannel.channel.id, data.lastMessage?.message?.channelId)
@@ -40,7 +40,7 @@ class ChannelDaoTest : BaseDatabaseTest() {
 		channelDao.upsert(groupChannel)
 		channelDao.upsert(groupChannel) // Checking 2nd insert
 
-		val data = channelDao.getGroupChannelById(groupChannel.channel.id).first()
+		val data = channelDao.getGroupChannel(groupChannel.channel.id).first()
 		assertEquals(groupChannel.channel.id, data.channel.id)
 		assertEquals(groupChannel.lastMessage?.message?.id, data.lastMessage?.message?.id)
 		assertEquals(groupChannel.lastMessage?.author?.id, data.lastMessage?.author?.id)
@@ -54,8 +54,8 @@ class ChannelDaoTest : BaseDatabaseTest() {
 		channelDao.upsert(directChannel)
 		channelDao.delete(directChannel.channel)
 
-		assertNull(channelDao.getDirectChannelById(directChannel.channel.id).firstOrNull())
-		assertNull(messageDao.getById(directChannel.lastMessage?.message?.id!!).firstOrNull())
+		assertNull(channelDao.getDirectChannel(directChannel.channel.id).firstOrNull())
+		assertNull(messageDao.get(directChannel.lastMessage?.message?.id!!).firstOrNull())
 	}
 
 	@Test
@@ -63,7 +63,7 @@ class ChannelDaoTest : BaseDatabaseTest() {
 		channelDao.upsert(groupChannel)
 		channelDao.delete(groupChannel.channel)
 
-		assertNull(channelDao.getDirectChannelById(groupChannel.channel.id).firstOrNull())
-		assertNull(messageDao.getById(groupChannel.lastMessage?.message?.id!!).firstOrNull())
+		assertNull(channelDao.getDirectChannel(groupChannel.channel.id).firstOrNull())
+		assertNull(messageDao.get(groupChannel.lastMessage?.message?.id!!).firstOrNull())
 	}
 }

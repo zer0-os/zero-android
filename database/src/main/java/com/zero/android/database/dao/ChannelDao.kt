@@ -18,9 +18,9 @@ constructor(
 
 	fun getDirectChannels() = directChannelDao.getAll()
 
-	fun getGroupChannelById(id: String) = groupChannelDao.getById(id)
+	fun getGroupChannel(id: String) = groupChannelDao.get(id)
 
-	fun getDirectChannelById(id: String) = directChannelDao.getById(id)
+	fun getDirectChannel(id: String) = directChannelDao.get(id)
 
 	suspend fun upsert(vararg data: DirectChannelWithRefs) =
 		directChannelDao.upsert(messageDao, memberDao, *data)

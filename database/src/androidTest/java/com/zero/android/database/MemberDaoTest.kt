@@ -22,7 +22,7 @@ class MemberDaoTest : BaseDatabaseTest() {
 		db.memberDao().insert(member)
 		db.memberDao().insert(member) // Checking 2nd insert
 
-		assertNotNull(db.memberDao().getById(member.id))
+		assertNotNull(db.memberDao().get(member.id))
 	}
 
 	@Test
@@ -30,7 +30,7 @@ class MemberDaoTest : BaseDatabaseTest() {
 		db.memberDao().insert(member)
 		db.memberDao().update(MemberEntity(id = member.id, name = "Name"))
 
-		val data = db.memberDao().getById(member.id).first()
+		val data = db.memberDao().get(member.id).first()
 		assertEquals("Name", data.name)
 	}
 
@@ -39,6 +39,6 @@ class MemberDaoTest : BaseDatabaseTest() {
 		db.memberDao().insert(member)
 		db.memberDao().delete(member)
 
-		assertNull(db.memberDao().getById(member.id).firstOrNull())
+		assertNull(db.memberDao().get(member.id).firstOrNull())
 	}
 }

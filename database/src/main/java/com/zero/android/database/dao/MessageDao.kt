@@ -8,13 +8,13 @@ class MessageDao
 @Inject
 constructor(private val messageDao: MessageDaoInterface, private val memberDao: MemberDao) {
 
-	fun getById(id: String) = messageDao.getById(id)
+	fun get(id: String) = messageDao.get(id)
 
 	fun getByChannel(channelId: String) = messageDao.getByChannel(channelId)
 
-	suspend fun insert(vararg data: MessageWithRefs) = upsert(*data)
-
 	suspend fun upsert(vararg data: MessageWithRefs) = messageDao.upsert(memberDao, *data)
+
+	suspend fun delete(id: String) = messageDao.delete(id)
 
 	suspend fun delete(message: MessageEntity) = messageDao.delete(message)
 }

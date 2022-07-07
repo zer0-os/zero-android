@@ -16,7 +16,7 @@ abstract class DirectChannelDaoInterface : ChannelDaoInterface() {
 
 	@Transaction
 	@Query("SELECT * FROM channels WHERE id = :id AND isDirectChannel = 1")
-	abstract fun getById(id: String): Flow<DirectChannelWithRefs>
+	abstract fun get(id: String): Flow<DirectChannelWithRefs>
 
 	@Transaction
 	internal open suspend fun insert(

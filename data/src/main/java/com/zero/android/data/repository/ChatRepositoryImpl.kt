@@ -1,6 +1,8 @@
 package com.zero.android.data.repository
 
+import com.zero.android.data.conversion.toEntity
 import com.zero.android.data.conversion.toModel
+import com.zero.android.database.dao.MessageDao
 import com.zero.android.models.Channel
 import com.zero.android.models.DraftMessage
 import com.zero.android.models.Message
@@ -11,7 +13,7 @@ import com.zero.android.network.model.ApiMessage
 import com.zero.android.network.service.ChatMediaService
 import com.zero.android.network.service.ChatService
 import com.zero.android.network.service.MessageService
-import com.zero.android.network.util.ChatMediaUtil
+import com.zero.android.network.util.NetworkMediaUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +30,8 @@ class ChatRepositoryImpl
 constructor(
 	private val chatService: ChatService,
 	private val chatMediaService: ChatMediaService,
-	private val chatMediaUtil: ChatMediaUtil,
+	private val networkMediaUtil: NetworkMediaUtil,
+	private val messageDao: MessageDao,
 	private val messageService: MessageService
 ) : ChatRepository {
 
@@ -62,9 +65,10 @@ constructor(
 
 	override suspend fun send(channel: Channel, message: DraftMessage): Flow<Message> {
 		return if (message.type == MessageType.TEXT) {
-			val newMessage = chatService.send(channel, message).map { it.toModel() }
-			newMessage.collectLatest { appendNewChatMessage(it) }
-			newMessage
+			chatService.send(channel, message).map {
+				messageDao.upsert(it.toEntity())
+				it.toModel().also { appendNewChatMessage(it) }
+			}
 		} else {
 			sendFileMessage(channel, message)
 		}
@@ -76,8 +80,8 @@ constructor(
 			if (uploadInfo.apiUrl.isNotEmpty() && uploadInfo.query != null) {
 				val fileUpload =
 					chatMediaService.uploadMediaFile(
-						chatMediaUtil.getUploadUrl(uploadInfo),
-						chatMediaUtil.getUploadBody(message.file!!)
+						networkMediaUtil.getUploadUrl(uploadInfo),
+						networkMediaUtil.getUploadBody(message.file!!)
 					)
 				DraftMessage(
 					channelId = channel.id,
@@ -102,15 +106,20 @@ constructor(
 	}
 
 	override suspend fun reply(channel: Channel, id: String, message: DraftMessage): Flow<Message> {
-		return chatService.reply(channel, id, message).map { it.toModel() }
+		return chatService.reply(channel, id, message).map {
+			messageDao.upsert(it.toEntity())
+			it.toModel()
+		}
 	}
 
 	override suspend fun updateMessage(id: String, channelId: String, text: String) {
-		messageService.updateMessage(id, channelId, text)
+		messageService.updateMessage(id, channelId, text).firstOrNull()?.let {
+			messageDao.upsert(it.toEntity())
+		}
 	}
 
 	override suspend fun deleteMessage(id: String, channelId: String) {
-		return messageService.deleteMessage(id, channelId)
+		return messageService.deleteMessage(id, channelId).also { messageDao.delete(id) }
 	}
 
 	private suspend fun appendNewChatMessage(message: Message) {

@@ -21,7 +21,7 @@ abstract class UserDao {
 
 	@Transaction
 	@Query("SELECT * FROM users WHERE id = :id")
-	abstract fun getById(id: String): Flow<UserWithProfile>
+	abstract fun get(id: String): Flow<UserWithProfile>
 
 	@Transaction
 	open suspend fun insert(data: UserWithProfile) {

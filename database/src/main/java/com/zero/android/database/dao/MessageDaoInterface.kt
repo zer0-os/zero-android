@@ -15,7 +15,7 @@ abstract class MessageDaoInterface : BaseDao<MessageEntity>() {
 
 	@Transaction
 	@Query("SELECT * FROM messages WHERE id = :id")
-	abstract fun getById(id: String): Flow<MessageWithRefs>
+	abstract fun get(id: String): Flow<MessageWithRefs>
 
 	@Transaction
 	@Query("SELECT * FROM messages WHERE channelId = :channelId")
@@ -40,4 +40,7 @@ abstract class MessageDaoInterface : BaseDao<MessageEntity>() {
 
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
 	protected abstract suspend fun insert(vararg refs: MessageMentionCrossRef)
+
+	@Query("DELETE FROM messages WHERE id = :id")
+	abstract suspend fun delete(id: String)
 }

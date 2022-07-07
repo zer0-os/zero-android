@@ -13,7 +13,7 @@ interface ProfileDao {
 
 	@Transaction
 	@Query("SELECT * FROM profiles WHERE userId = :userId")
-	fun getById(userId: String): Flow<ProfileEntity>
+	fun get(userId: String): Flow<ProfileEntity>
 
 	@Update(onConflict = OnConflictStrategy.REPLACE)
 	suspend fun update(vararg profiles: ProfileEntity)

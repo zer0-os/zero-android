@@ -30,7 +30,7 @@ class MessageDaoTest : BaseDatabaseTest() {
 		messageDao.upsert(message)
 		messageDao.upsert(message) // Checking 2nd insert
 
-		val data = messageDao.getById(message.message.id).first()
+		val data = messageDao.get(message.message.id).first()
 		assertEquals(message.message.id, data.message.id)
 		assertEquals(message.parentMessage?.id, data.parentMessage?.id)
 		assertEquals(message.parentMessageAuthor?.id, data.parentMessageAuthor?.id)
@@ -43,7 +43,7 @@ class MessageDaoTest : BaseDatabaseTest() {
 		messageDao.upsert(message)
 		messageDao.upsert(FakeData.MessageWithRefs(channelId = "channelId", authorId = "memberTwo"))
 
-		val data = messageDao.getById(message.message.id).first()
+		val data = messageDao.get(message.message.id).first()
 		assertEquals("channelId", data.message.channelId)
 		assertEquals("memberTwo", data.author.id)
 	}
@@ -59,7 +59,7 @@ class MessageDaoTest : BaseDatabaseTest() {
 			messageDao.delete(message.parentMessage!!)
 		} catch (_: SQLiteConstraintException) {}
 
-		val data = messageDao.getById(message.message.id).first()
+		val data = messageDao.get(message.message.id).first()
 		assertEquals(message.parentMessage?.id, data.parentMessage?.id)
 		assertEquals(message.parentMessageAuthor?.id, data.parentMessageAuthor?.id)
 		assertEquals(message.author.id, data.author.id)
@@ -71,11 +71,11 @@ class MessageDaoTest : BaseDatabaseTest() {
 		messageDao.upsert(message)
 		messageDao.delete(message.message)
 
-		assertNull(messageDao.getById(message.message.id).firstOrNull())
-		assertNotNull(db.memberDao().getById(message.author.id).first())
-		assertNotNull(db.memberDao().getById(message.parentMessageAuthor!!.id).firstOrNull())
-		assertNotNull(messageDao.getById(message.parentMessage!!.id).firstOrNull())
-		assertNotNull(db.memberDao().getById(message.mentions!![0].id).firstOrNull())
-		assertNotNull(db.memberDao().getById(message.mentions!![1].id).firstOrNull())
+		assertNull(messageDao.get(message.message.id).firstOrNull())
+		assertNotNull(db.memberDao().get(message.author.id).first())
+		assertNotNull(db.memberDao().get(message.parentMessageAuthor!!.id).firstOrNull())
+		assertNotNull(messageDao.get(message.parentMessage!!.id).firstOrNull())
+		assertNotNull(db.memberDao().get(message.mentions!![0].id).firstOrNull())
+		assertNotNull(db.memberDao().get(message.mentions!![1].id).firstOrNull())
 	}
 }
