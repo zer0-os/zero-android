@@ -7,7 +7,7 @@ import com.zero.android.models.enums.ConnectionStatus
 
 @Entity(tableName = "members")
 data class MemberEntity(
-	@PrimaryKey val id: String,
+	@PrimaryKey override val id: String,
 	val name: String? = null,
 	var profileUrl: String? = null,
 	val profileImage: String? = null,
@@ -20,7 +20,7 @@ data class MemberEntity(
 	val isBlockingMe: Boolean = false,
 	val isBlockedByMe: Boolean = false,
 	val isMuted: Boolean = false
-)
+) : BaseEntity
 
 fun MemberEntity.toModel() =
 	Member(

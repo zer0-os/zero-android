@@ -44,7 +44,7 @@ import com.zero.android.models.enums.MessageType
 	]
 )
 data class MessageEntity(
-	@PrimaryKey val id: String,
+	@PrimaryKey override val id: String,
 	val authorId: String,
 	val parentMessageId: String? = null,
 	val parentMessageAuthorId: String? = null,
@@ -62,7 +62,7 @@ data class MessageEntity(
 	val fileThumbnails: List<FileThumbnail>? = null,
 	val fileMimeType: String? = null,
 	val reactions: List<MessageReaction> = emptyList()
-)
+) : BaseEntity
 
 fun MessageEntity.toModel(author: Member) =
 	Message(

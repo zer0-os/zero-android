@@ -20,7 +20,7 @@ class MemberDaoTest : BaseDatabaseTest() {
 	@Test
 	fun insertMember() = runTest {
 		db.memberDao().insert(member)
-		db.memberDao().insert(member) // Checking same member twice
+		db.memberDao().insert(member) // Checking 2nd insert
 
 		assertNotNull(db.memberDao().getById(member.id))
 	}

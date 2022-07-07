@@ -25,7 +25,7 @@ constructor(
 		networkDao.getAll().firstOrNull()?.let { networks -> emit(networks.map { it.toModel() }) }
 
 		networkService.getNetworks(preferences.userId()).let { networks ->
-			networkDao.insert(*networks.map { it.toEntity() }.toTypedArray())
+			networkDao.upsert(networks.map { it.toEntity() })
 			emit(networks.map { it.toModel() })
 		}
 	}

@@ -25,7 +25,8 @@ class ChannelDaoTest : BaseDatabaseTest() {
 
 	@Test
 	fun insertDirectChannel() = runTest {
-		channelDao.insert(directChannel)
+		channelDao.upsert(directChannel)
+		channelDao.upsert(directChannel) // Checking 2nd insert
 
 		val data = channelDao.getDirectChannelById(directChannel.channel.id).first()
 		assertEquals(directChannel.channel.id, data.channel.id)
@@ -36,7 +37,8 @@ class ChannelDaoTest : BaseDatabaseTest() {
 
 	@Test
 	fun insertGroupChannel() = runTest {
-		channelDao.insert(groupChannel)
+		channelDao.upsert(groupChannel)
+		channelDao.upsert(groupChannel) // Checking 2nd insert
 
 		val data = channelDao.getGroupChannelById(groupChannel.channel.id).first()
 		assertEquals(groupChannel.channel.id, data.channel.id)
@@ -49,7 +51,7 @@ class ChannelDaoTest : BaseDatabaseTest() {
 
 	@Test
 	fun deleteDirectChannel() = runTest {
-		channelDao.insert(directChannel)
+		channelDao.upsert(directChannel)
 		channelDao.delete(directChannel.channel)
 
 		assertNull(channelDao.getDirectChannelById(directChannel.channel.id).firstOrNull())
@@ -58,7 +60,7 @@ class ChannelDaoTest : BaseDatabaseTest() {
 
 	@Test
 	fun deleteGroupChannel() = runTest {
-		channelDao.insert(groupChannel)
+		channelDao.upsert(groupChannel)
 		channelDao.delete(groupChannel.channel)
 
 		assertNull(channelDao.getDirectChannelById(groupChannel.channel.id).firstOrNull())

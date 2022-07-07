@@ -25,7 +25,7 @@ constructor(private val channelDao: ChannelDao, private val channelService: Chan
 	override suspend fun getDirectChannels() = flow {
 		channelDao.getDirectChannels().mapNotNull { channels -> emit(channels.map { it.toModel() }) }
 		channelService.getDirectChannels().firstOrNull()?.let { channels ->
-			channelDao.insert(*channels.map { it.toEntity() }.toTypedArray())
+			channelDao.upsert(*channels.map { it.toEntity() }.toTypedArray())
 			emit(channels.map { it.toModel() })
 		}
 	}
@@ -33,7 +33,7 @@ constructor(private val channelDao: ChannelDao, private val channelService: Chan
 	override suspend fun getGroupChannels(networkId: String) = flow {
 		channelDao.getGroupChannels().mapNotNull { channels -> emit(channels.map { it.toModel() }) }
 		channelService.getGroupChannels(networkId, ChannelType.GROUP).firstOrNull()?.let { channels ->
-			channelDao.insert(*channels.map { it.toEntity() }.toTypedArray())
+			channelDao.upsert(*channels.map { it.toEntity() }.toTypedArray())
 			emit(channels.map { it.toModel() })
 		}
 	}
@@ -42,7 +42,7 @@ constructor(private val channelDao: ChannelDao, private val channelService: Chan
 		channelDao.getGroupChannelById(id).mapNotNull { channel -> emit(channel.toModel()) }
 		channelService.getChannel(id, type = ChannelType.GROUP).map {
 			it as ApiGroupChannel
-			channelDao.insert(it.toEntity())
+			channelDao.upsert(it.toEntity())
 			emit(it.toModel())
 		}
 	}
@@ -51,7 +51,7 @@ constructor(private val channelDao: ChannelDao, private val channelService: Chan
 		channelDao.getDirectChannelById(id).mapNotNull { channel -> emit(channel.toModel()) }
 		channelService.getChannel(id, type = ChannelType.GROUP).map {
 			it as ApiDirectChannel
-			channelDao.insert(it.toEntity())
+			channelDao.upsert(it.toEntity())
 			emit(it.toModel())
 		}
 	}

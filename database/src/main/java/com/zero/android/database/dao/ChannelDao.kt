@@ -22,16 +22,11 @@ constructor(
 
 	fun getDirectChannelById(id: String) = directChannelDao.getById(id)
 
-	suspend fun insert(vararg data: DirectChannelWithRefs) =
-		directChannelDao.insert(messageDao, memberDao, *data)
+	suspend fun upsert(vararg data: DirectChannelWithRefs) =
+		directChannelDao.upsert(messageDao, memberDao, *data)
 
-	suspend fun insert(vararg data: GroupChannelWithRefs) =
-		groupChannelDao.insert(messageDao, memberDao, *data)
-
-	suspend fun update(vararg data: DirectChannelWithRefs) =
-		directChannelDao.update(messageDao, *data)
-
-	suspend fun update(vararg data: GroupChannelWithRefs) = groupChannelDao.update(messageDao, *data)
+	suspend fun upsert(vararg data: GroupChannelWithRefs) =
+		groupChannelDao.upsert(messageDao, memberDao, *data)
 
 	suspend fun delete(entity: ChannelEntity) = groupChannelDao.delete(entity)
 }

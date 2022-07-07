@@ -23,23 +23,22 @@ abstract class DirectChannelDaoInterface : ChannelDaoInterface() {
 		messageDao: MessageDao,
 		memberDao: MemberDao,
 		vararg data: DirectChannelWithRefs
+	) = upsert(messageDao, memberDao, *data)
+
+	@Transaction
+	internal open suspend fun upsert(
+		messageDao: MessageDao,
+		memberDao: MemberDao,
+		vararg data: DirectChannelWithRefs
 	) {
 		for (item in data) {
-			memberDao.insert(*item.members.toTypedArray())
-			insert(item.channel)
-			item.lastMessage?.let { messageDao.insert(it) }
+			upsert(item.channel)
+			item.lastMessage?.let { messageDao.upsert(it) }
 
+			memberDao.upsert(item.members)
 			item.members
 				.map { ChannelMembersCrossRef(channelId = item.channel.id, memberId = it.id) }
 				.let { insert(*it.toTypedArray()) }
-		}
-	}
-
-	@Transaction
-	internal open suspend fun update(messageDao: MessageDao, vararg data: DirectChannelWithRefs) {
-		for (item in data) {
-			item.lastMessage?.let { messageDao.insert() }
-			update(item.channel)
 		}
 	}
 }

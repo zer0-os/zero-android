@@ -15,10 +15,10 @@ import com.zero.android.models.enums.MessageType
 @Suppress("TestFunctionName")
 object FakeData {
 
-	fun NetworkEntity(id: String = "networkId") =
+	fun NetworkEntity(id: String = "networkId", name: String = "name") =
 		NetworkEntity(
 			id = id,
-			name = "name",
+			name = name,
 			displayName = "name",
 			logo = "",
 			isPublic = false,

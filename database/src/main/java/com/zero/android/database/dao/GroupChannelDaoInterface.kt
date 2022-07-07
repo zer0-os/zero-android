@@ -24,15 +24,22 @@ abstract class GroupChannelDaoInterface : ChannelDaoInterface() {
 		messageDao: MessageDao,
 		memberDao: MemberDao,
 		vararg data: GroupChannelWithRefs
+	) = upsert(messageDao, memberDao, *data)
+
+	@Transaction
+	internal open suspend fun upsert(
+		messageDao: MessageDao,
+		memberDao: MemberDao,
+		vararg data: GroupChannelWithRefs
 	) {
 		for (item in data) {
 			val members = item.members.toMutableList()
 			item.createdBy?.let { members.add(it) }
-			memberDao.insert(*members.toTypedArray())
+			memberDao.upsert(members)
 
-			insert(item.channel)
+			upsert(item.channel)
 
-			item.lastMessage?.let { messageDao.insert(it) }
+			item.lastMessage?.let { messageDao.upsert(it) }
 
 			item.members
 				.map { ChannelMembersCrossRef(channelId = item.channel.id, memberId = it.id) }
@@ -41,14 +48,6 @@ abstract class GroupChannelDaoInterface : ChannelDaoInterface() {
 			item.operators
 				.map { ChannelOperatorsCrossRef(channelId = item.channel.id, memberId = it.id) }
 				.let { insert(*it.toTypedArray()) }
-		}
-	}
-
-	@Transaction
-	internal open suspend fun update(messageDao: MessageDao, vararg data: GroupChannelWithRefs) {
-		for (item in data) {
-			item.lastMessage?.let { messageDao.insert() }
-			update(item.channel)
 		}
 	}
 }

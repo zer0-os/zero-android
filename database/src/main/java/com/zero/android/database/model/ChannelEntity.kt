@@ -31,7 +31,7 @@ import com.zero.android.models.enums.ChannelType
 	]
 )
 data class ChannelEntity(
-	@PrimaryKey val id: String,
+	@PrimaryKey override val id: String,
 	val lastMessageId: String? = null,
 	val authorId: String? = null,
 	val memberCount: Int = 0,
@@ -56,7 +56,7 @@ data class ChannelEntity(
 	val discordChatId: String? = null,
 	val accessType: AccessType = AccessType.PUBLIC,
 	val isDirectChannel: Boolean
-)
+) : BaseEntity
 
 fun ChannelEntity.toDirectModel(members: List<Member>, lastMessage: Message? = null) =
 	DirectChannel(

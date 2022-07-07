@@ -38,7 +38,7 @@ class NetworkDaoTest : BaseDatabaseTest() {
 	@Test
 	fun getCategories() = runTest {
 		db.networkDao().insert(network)
-		channelDao.insert(
+		channelDao.upsert(
 			FakeData.GroupChannelWithRefs(
 				id = "groupOneId",
 				networkId = network.id,

@@ -12,10 +12,9 @@ constructor(private val messageDao: MessageDaoInterface, private val memberDao: 
 
 	fun getByChannel(channelId: String) = messageDao.getByChannel(channelId)
 
-	suspend fun insert(vararg data: MessageWithRefs) = messageDao.insert(memberDao, *data)
+	suspend fun insert(vararg data: MessageWithRefs) = upsert(*data)
 
-	suspend fun update(vararg data: MessageWithRefs) =
-		messageDao.update(*data.map { it.message }.toTypedArray())
+	suspend fun upsert(vararg data: MessageWithRefs) = messageDao.upsert(memberDao, *data)
 
 	suspend fun delete(message: MessageEntity) = messageDao.delete(message)
 }

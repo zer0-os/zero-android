@@ -22,12 +22,13 @@ class MessageDaoTest : BaseDatabaseTest() {
 	@Before
 	fun setup() = runTest {
 		db.networkDao().insert(FakeData.NetworkEntity())
-		channelDao.insert(FakeData.DirectChannelWithRefs(id = "channelId", lastMessage = null))
+		channelDao.upsert(FakeData.DirectChannelWithRefs(id = "channelId", lastMessage = null))
 	}
 
 	@Test
 	fun insertMessage() = runTest {
-		messageDao.insert(message)
+		messageDao.upsert(message)
+		messageDao.upsert(message) // Checking 2nd insert
 
 		val data = messageDao.getById(message.message.id).first()
 		assertEquals(message.message.id, data.message.id)
@@ -39,8 +40,8 @@ class MessageDaoTest : BaseDatabaseTest() {
 
 	@Test
 	fun updateMessage() = runTest {
-		messageDao.insert(message)
-		messageDao.update(FakeData.MessageWithRefs(channelId = "channelId", authorId = "memberTwo"))
+		messageDao.upsert(message)
+		messageDao.upsert(FakeData.MessageWithRefs(channelId = "channelId", authorId = "memberTwo"))
 
 		val data = messageDao.getById(message.message.id).first()
 		assertEquals("channelId", data.message.channelId)
@@ -49,7 +50,7 @@ class MessageDaoTest : BaseDatabaseTest() {
 
 	@Test
 	fun deleteConstraints() = runTest {
-		messageDao.insert(message)
+		messageDao.upsert(message)
 
 		try {
 			db.memberDao().delete(message.author)
@@ -67,7 +68,7 @@ class MessageDaoTest : BaseDatabaseTest() {
 
 	@Test
 	fun deleteMessage() = runTest {
-		messageDao.insert(message)
+		messageDao.upsert(message)
 		messageDao.delete(message.message)
 
 		assertNull(messageDao.getById(message.message.id).firstOrNull())

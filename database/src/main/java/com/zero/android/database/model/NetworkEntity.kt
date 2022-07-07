@@ -9,7 +9,7 @@ import com.zero.android.models.enums.InviteMode
 
 @Entity(tableName = "networks")
 data class NetworkEntity(
-	@PrimaryKey val id: String,
+	@PrimaryKey override val id: String,
 	val name: String,
 	val displayName: String,
 	val logo: String?,
@@ -22,7 +22,7 @@ data class NetworkEntity(
 	@Embedded(prefix = "permissions_") val permissions: NetworkPermissions? = null,
 	val unreadCount: Int = 0,
 	val isSelected: Boolean = false
-)
+) : BaseEntity
 
 fun NetworkEntity.toModel() =
 	Network(
