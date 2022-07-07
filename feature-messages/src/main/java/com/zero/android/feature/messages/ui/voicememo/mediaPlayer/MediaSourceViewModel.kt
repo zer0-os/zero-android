@@ -19,8 +19,10 @@ class MediaSourceViewModel @Inject constructor(
     fun configure(messages: List<Message>) {
         ioScope.launch {
             messages.filter { it.type == MessageType.AUDIO }.forEach {
-                val mediaSource = MediaSourceProvider(it.fileName, mediaPlayerRepository)
-                voiceMemoMediaSources[it.id] = mediaSource
+                if (!voiceMemoMediaSources.containsKey(it.id)) {
+                    val mediaSource = MediaSourceProvider(it.fileName, mediaPlayerRepository)
+                    voiceMemoMediaSources[it.id] = mediaSource
+                }
             }
         }
     }

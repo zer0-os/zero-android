@@ -113,6 +113,9 @@ fun Messages(
     coroutineScope: CoroutineScope,
     mediaSourceViewModel: MediaSourceViewModel = hiltViewModel()
 ) {
+    DisposableEffect(Unit) {
+        onDispose { mediaSourceViewModel.dispose() }
+    }
     Box(modifier = modifier.padding(14.dp)) {
         if (uiState is MessagesUiState.Success) {
             val messages = uiState.messages

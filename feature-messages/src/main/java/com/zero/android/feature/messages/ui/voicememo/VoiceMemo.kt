@@ -21,23 +21,18 @@ enum class VoiceMessageState {
 
 @Composable
 fun VoiceMessage(message: Message, viewModel: MediaSourceViewModel) {
-    val mediaSourceProvider = viewModel.getMediaSource(message)
-    val mediaFileState = mediaSourceProvider.currentFileState.collectAsState()
-    val sliderPosition = mediaSourceProvider.currentPosition.collectAsState()
-    val mediaDuration = mediaSourceProvider.mediaFileDuration.collectAsState()
-    val memoState = mediaFileState.value
+    val mediaSourceProvider by remember(message.id) { mutableStateOf(viewModel.getMediaSource(message)) }
+    val mediaFileState by mediaSourceProvider.currentFileState.collectAsState()
+    val sliderPosition by mediaSourceProvider.currentPosition.collectAsState()
+    val mediaDuration by mediaSourceProvider.mediaFileDuration.collectAsState()
 
-    DisposableEffect(Unit) {
-        onDispose { viewModel.dispose() }
-    }
-
-    val iconRes = when (memoState) {
+    val iconRes = when (mediaFileState) {
         VoiceMessageState.DOWNLOAD -> R.drawable.ic_download_circle_24
         VoiceMessageState.PLAYING -> R.drawable.ic_stop_circle_24
         else -> R.drawable.ic_play_circle_24
     }
     Row(modifier = Modifier.wrapContentWidth()) {
-        if (memoState == VoiceMessageState.DOWNLOADING) {
+        if (mediaFileState == VoiceMessageState.DOWNLOADING) {
             CircularProgressIndicator(
                 color = AppTheme.colors.glow,
                 modifier = Modifier
@@ -47,7 +42,7 @@ fun VoiceMessage(message: Message, viewModel: MediaSourceViewModel) {
         } else {
             IconButton(
                 onClick = {
-                    when (memoState) {
+                    when (mediaFileState) {
                         VoiceMessageState.DOWNLOAD -> viewModel.downloadAndPrepareMedia(message)
                         VoiceMessageState.STOPPED -> viewModel.play(message)
                         VoiceMessageState.PLAYING -> viewModel.stop()
@@ -67,21 +62,21 @@ fun VoiceMessage(message: Message, viewModel: MediaSourceViewModel) {
             modifier = Modifier
                 .width(150.dp)
                 .align(Alignment.CenterVertically),
-            value = sliderPosition.value,
+            value = sliderPosition,
             onValueChange = { viewModel.seekMediaTo(message, it) },
-            valueRange = 0f..mediaDuration.value.div(1000).toFloat(),
+            valueRange = 0f..mediaDuration.div(1000).toFloat(),
             colors = SliderDefaults.colors(
                 thumbColor = AppTheme.colors.glow,
                 activeTrackColor = AppTheme.colors.colorTextPrimary
             )
         )
         Spacer(modifier = Modifier.size(4.dp))
-        if (memoState == VoiceMessageState.PLAYING) {
-            ReverseTimer(startTime = mediaDuration.value, modifier = Modifier.align(Alignment.CenterVertically))
+        if (mediaFileState == VoiceMessageState.PLAYING) {
+            ReverseTimer(startTime = mediaDuration, modifier = Modifier.align(Alignment.CenterVertically))
         } else {
             Text(
-                text = if (mediaDuration.value > 0) {
-                    mediaDuration.value.convertDurationToString()
+                text = if (mediaDuration > 0) {
+                    mediaDuration.convertDurationToString()
                 } else "-", modifier = Modifier.align(Alignment.CenterVertically),
                 fontSize = 14.sp
             )
