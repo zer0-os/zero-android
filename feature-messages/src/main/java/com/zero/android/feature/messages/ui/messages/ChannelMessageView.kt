@@ -32,12 +32,16 @@ fun ChannelMessage(
     isFirstMessageByAuthor: Boolean,
     mediaSourceViewModel: MediaSourceViewModel,
     onAuthorClick: (Member) -> Unit,
-    onMessageLongClick:(Message) -> Unit,
+    onMessageLongClick: (Message) -> Unit,
 ) {
     Row(modifier = Modifier
         .combinedClickable(
             onClick = { },
-            onLongClick = { onMessageLongClick(msg) }
+            onLongClick = {
+                if (isUserMe) {
+                    onMessageLongClick(msg)
+                }
+            }
         )) {
         SmallCircularImage(
             imageUrl = msg.author.profileImage,
@@ -85,7 +89,11 @@ fun CMAuthorAndTextMessage(
             ) {
                 Column(modifier = Modifier.padding(8.dp)) {
                     AuthorNameTimestamp(isUserMe, message)
-                    MessageContent(message = message, authorClicked = authorClicked, mediaSourceViewModel = mediaSourceViewModel)
+                    MessageContent(
+                        message = message,
+                        authorClicked = authorClicked,
+                        mediaSourceViewModel = mediaSourceViewModel
+                    )
                 }
             }
         }

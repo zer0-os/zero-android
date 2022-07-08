@@ -169,7 +169,7 @@ fun MessagesScreen(
                 },
                 actions = {
                     if (actionMessage != null) {
-                        if (actionMessage!!.type == MessageType.TEXT && actionMessage!!.author.id == userChannelInfo.first) {
+                        if (actionMessage!!.type == MessageType.TEXT) {
                             IconButton(onClick = {
                                 editableMessage = actionMessage
                                 actionMessage = null

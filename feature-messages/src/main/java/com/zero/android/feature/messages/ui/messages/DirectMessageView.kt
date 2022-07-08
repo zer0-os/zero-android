@@ -33,14 +33,18 @@ fun DirectMessage(
     isLastMessageByAuthor: Boolean,
     mediaSourceViewModel: MediaSourceViewModel,
     onAuthorClick: (Member) -> Unit,
-    onMessageLongClick:(Message) -> Unit,
+    onMessageLongClick: (Message) -> Unit,
 ) {
     val modifier = if (isLastMessageByAuthor) Modifier.padding(top = 8.dp) else Modifier
     Column(modifier = modifier
         .fillMaxWidth()
         .combinedClickable(
             onClick = { },
-            onLongClick = { onMessageLongClick(msg) }
+            onLongClick = {
+                if (isUserMe) {
+                    onMessageLongClick(msg)
+                }
+            }
         )
     ) {
         Row(
@@ -113,11 +117,18 @@ fun DMAuthorAndTextMessage(
                             text = message.author.name ?: "",
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.paddingFrom(LastBaseline, after = 8.dp) // Space to 1st bubble
+                            modifier = Modifier.paddingFrom(
+                                LastBaseline,
+                                after = 8.dp
+                            ) // Space to 1st bubble
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                     }
-                    MessageContent(message = message, authorClicked = authorClicked, mediaSourceViewModel = mediaSourceViewModel)
+                    MessageContent(
+                        message = message,
+                        authorClicked = authorClicked,
+                        mediaSourceViewModel = mediaSourceViewModel
+                    )
                     val messageDate = message.createdAt.toDate()
                     Text(
                         text = messageDate.format("hh:mm aa"),
