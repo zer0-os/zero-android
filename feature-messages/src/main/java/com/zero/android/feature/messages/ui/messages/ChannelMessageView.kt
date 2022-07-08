@@ -1,6 +1,8 @@
 package com.zero.android.feature.messages.ui.messages
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -22,15 +24,21 @@ import com.zero.android.models.Message
 import com.zero.android.ui.components.SmallCircularImage
 import com.zero.android.ui.theme.Gray
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ChannelMessage(
-    onAuthorClick: (Member) -> Unit,
     msg: Message,
     isUserMe: Boolean,
     isFirstMessageByAuthor: Boolean,
-    mediaSourceViewModel: MediaSourceViewModel
+    mediaSourceViewModel: MediaSourceViewModel,
+    onAuthorClick: (Member) -> Unit,
+    onMessageLongClick:(Message) -> Unit,
 ) {
-    Row {
+    Row(modifier = Modifier
+        .combinedClickable(
+            onClick = { },
+            onLongClick = { onMessageLongClick(msg) }
+        )) {
         SmallCircularImage(
             imageUrl = msg.author.profileImage,
             placeHolder = R.drawable.ic_user_profile_placeholder

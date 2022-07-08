@@ -91,4 +91,16 @@ constructor(
 			}
 		}
 	}
+
+    fun deleteMessage(message: Message) {
+        ioScope.launch {
+            chatRepository.deleteMessage(message, channelId)
+        }
+    }
+
+    fun updateMessage(message: Message) {
+        ioScope.launch {
+            chatRepository.updateMessage(message.id, channelId, message.message ?: "")
+        }
+    }
 }

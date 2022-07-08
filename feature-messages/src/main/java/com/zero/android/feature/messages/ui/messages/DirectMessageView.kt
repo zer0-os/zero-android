@@ -1,6 +1,8 @@
 package com.zero.android.feature.messages.ui.messages
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -21,18 +23,26 @@ import com.zero.android.models.Message
 import com.zero.android.ui.components.SmallCircularImage
 import com.zero.android.ui.theme.AppTheme
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DirectMessage(
-    onAuthorClick: (Member) -> Unit,
     msg: Message,
     isUserMe: Boolean,
     isSameDay: Boolean,
     isFirstMessageByAuthor: Boolean,
     isLastMessageByAuthor: Boolean,
-    mediaSourceViewModel: MediaSourceViewModel
+    mediaSourceViewModel: MediaSourceViewModel,
+    onAuthorClick: (Member) -> Unit,
+    onMessageLongClick:(Message) -> Unit,
 ) {
     val modifier = if (isLastMessageByAuthor) Modifier.padding(top = 8.dp) else Modifier
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(modifier = modifier
+        .fillMaxWidth()
+        .combinedClickable(
+            onClick = { },
+            onLongClick = { onMessageLongClick(msg) }
+        )
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = if (isUserMe) Arrangement.End else Arrangement.Start

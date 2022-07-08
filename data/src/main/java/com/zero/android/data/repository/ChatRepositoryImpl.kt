@@ -7,6 +7,7 @@ import com.zero.android.models.Message
 import com.zero.android.models.enums.MessageType
 import com.zero.android.network.chat.ChatListener
 import com.zero.android.network.model.ApiChannel
+import com.zero.android.network.model.ApiDeleteMessage
 import com.zero.android.network.model.ApiMessage
 import com.zero.android.network.service.ChatMediaService
 import com.zero.android.network.service.ChatService
@@ -91,13 +92,28 @@ constructor(
 		return chatService.reply(channel, id, message).map { it.toModel() }
 	}
 
-	override suspend fun updateMessage(id: String, channelId: String, text: String) {
-		messageService.updateMessage(id, channelId, text)
-	}
+    override suspend fun updateMessage(id: String, channelId: String, text: String) {
+        val response = messageService.updateMessage(id, channelId, text)
+        if (response.isSuccessful) {
+            channelChatMessages.update { messages ->
+                val updatedMessage = messages.firstOrNull { it.id == id }?.copy(
+                    message = text
+                )
+                if (updatedMessage != null) {
+                    messages.toMutableList().apply { this[messages.indexOfFirst { it.id == id }] = updatedMessage }
+                } else messages
+            }
+        }
+    }
 
-	override suspend fun deleteMessage(id: String, channelId: String) {
-		return messageService.deleteMessage(id, channelId)
-	}
+    override suspend fun deleteMessage(message: Message, channelId: String) {
+        val response = messageService.deleteMessage(message.id, ApiDeleteMessage(channelId))
+        if (response.isSuccessful) {
+            channelChatMessages.update { messages ->
+                messages.toMutableList().apply { this.remove(message) }
+            }
+        }
+    }
 
 	private suspend fun appendNewChatMessage(message: Message) {
 		val messages = channelChatMessages.firstOrNull()?.toMutableList() ?: mutableListOf()
