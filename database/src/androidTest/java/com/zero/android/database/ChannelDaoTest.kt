@@ -29,10 +29,10 @@ class ChannelDaoTest : BaseDatabaseTest() {
 		channelDao.upsert(directChannel) // Checking 2nd insert
 
 		val data = channelDao.getDirectChannel(directChannel.channel.id).first()
-		assertEquals(directChannel.channel.id, data.channel.id)
-		assertEquals(directChannel.lastMessage?.message?.id, data.lastMessage?.message?.id)
-		assertEquals(directChannel.channel.id, data.lastMessage?.message?.channelId)
-		assertEquals(directChannel.members.size, data.members.size)
+		assertEquals(directChannel.channel.id, data?.channel?.id)
+		assertEquals(directChannel.lastMessage?.message?.id, data?.lastMessage?.message?.id)
+		assertEquals(directChannel.channel.id, data?.lastMessage?.message?.channelId)
+		assertEquals(directChannel.members.size, data?.members?.size)
 	}
 
 	@Test
@@ -41,12 +41,12 @@ class ChannelDaoTest : BaseDatabaseTest() {
 		channelDao.upsert(groupChannel) // Checking 2nd insert
 
 		val data = channelDao.getGroupChannel(groupChannel.channel.id).first()
-		assertEquals(groupChannel.channel.id, data.channel.id)
-		assertEquals(groupChannel.lastMessage?.message?.id, data.lastMessage?.message?.id)
-		assertEquals(groupChannel.lastMessage?.author?.id, data.lastMessage?.author?.id)
-		assertEquals(groupChannel.channel.id, data.lastMessage?.message?.channelId)
-		assertEquals(groupChannel.members.size, data.members.size)
-		assertEquals(groupChannel.operators.size, data.operators.size)
+		assertEquals(groupChannel.channel.id, data?.channel?.id)
+		assertEquals(groupChannel.lastMessage?.message?.id, data?.lastMessage?.message?.id)
+		assertEquals(groupChannel.lastMessage?.author?.id, data?.lastMessage?.author?.id)
+		assertEquals(groupChannel.channel.id, data?.lastMessage?.message?.channelId)
+		assertEquals(groupChannel.members.size, data?.members?.size)
+		assertEquals(groupChannel.operators.size, data?.operators?.size)
 	}
 
 	@Test

@@ -31,11 +31,11 @@ class MessageDaoTest : BaseDatabaseTest() {
 		messageDao.upsert(message) // Checking 2nd insert
 
 		val data = messageDao.get(message.message.id).first()
-		assertEquals(message.message.id, data.message.id)
-		assertEquals(message.parentMessage?.id, data.parentMessage?.id)
-		assertEquals(message.parentMessageAuthor?.id, data.parentMessageAuthor?.id)
-		assertEquals(message.author.id, data.author.id)
-		assertEquals(message.mentions?.size, data.mentions?.size)
+		assertEquals(message.message.id, data?.message?.id)
+		assertEquals(message.parentMessage?.id, data?.parentMessage?.id)
+		assertEquals(message.parentMessageAuthor?.id, data?.parentMessageAuthor?.id)
+		assertEquals(message.author.id, data?.author?.id)
+		assertEquals(message.mentions?.size, data?.mentions?.size)
 	}
 
 	@Test
@@ -44,8 +44,8 @@ class MessageDaoTest : BaseDatabaseTest() {
 		messageDao.upsert(FakeData.MessageWithRefs(channelId = "channelId", authorId = "memberTwo"))
 
 		val data = messageDao.get(message.message.id).first()
-		assertEquals("channelId", data.message.channelId)
-		assertEquals("memberTwo", data.author.id)
+		assertEquals("channelId", data?.message?.channelId)
+		assertEquals("memberTwo", data?.author?.id)
 	}
 
 	@Test
@@ -60,10 +60,10 @@ class MessageDaoTest : BaseDatabaseTest() {
 		} catch (_: SQLiteConstraintException) {}
 
 		val data = messageDao.get(message.message.id).first()
-		assertEquals(message.parentMessage?.id, data.parentMessage?.id)
-		assertEquals(message.parentMessageAuthor?.id, data.parentMessageAuthor?.id)
-		assertEquals(message.author.id, data.author.id)
-		assertEquals(message.mentions?.size, data.mentions?.size)
+		assertEquals(message.parentMessage?.id, data?.parentMessage?.id)
+		assertEquals(message.parentMessageAuthor?.id, data?.parentMessageAuthor?.id)
+		assertEquals(message.author.id, data?.author?.id)
+		assertEquals(message.mentions?.size, data?.mentions?.size)
 	}
 
 	@Test

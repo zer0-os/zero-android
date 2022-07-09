@@ -23,7 +23,7 @@ class NetworkDaoTest : BaseDatabaseTest() {
 		db.networkDao().insert(network)
 
 		val data = db.networkDao().get(network.id).first()
-		assertEquals(network.id, data.id)
+		assertEquals(network.id, data?.id)
 	}
 
 	@Test

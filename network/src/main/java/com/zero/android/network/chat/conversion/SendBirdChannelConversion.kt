@@ -27,10 +27,11 @@ internal fun BaseChannel.toApi(): ApiChannel {
 }
 
 private fun getNetworkId(customType: String): String? {
-	return Regex(pattern = "network:([-a-zA-Z0-9]+)").matchEntire(customType)?.value
+	return Regex(pattern = "network:([-a-zA-Z0-9]+)").matchEntire(customType)?.groups?.get(1)?.value
 }
 
-internal fun String.encodeToNetworkId() = if (this.isNotEmpty()) "network:$this" else null
+internal fun String.encodeToNetworkId() =
+	if (this.isNotEmpty() && getNetworkId(this).isNullOrEmpty()) "network:$this" else this
 
 internal val OpenChannel.networkId
 	get() = customType?.let { getNetworkId(it) }

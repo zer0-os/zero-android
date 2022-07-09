@@ -12,12 +12,12 @@ import kotlinx.coroutines.flow.Flow
 abstract class GroupChannelDaoInterface : ChannelDaoInterface() {
 
 	@Transaction
-	@Query("SELECT * FROM channels WHERE isDirectChannel = 0")
-	abstract fun getAll(): Flow<List<GroupChannelWithRefs>>
+	@Query("SELECT * FROM channels WHERE isDirectChannel = 0 AND networkId = :networkId")
+	abstract fun getByNetwork(networkId: String): Flow<List<GroupChannelWithRefs>>
 
 	@Transaction
 	@Query("SELECT * FROM channels WHERE id = :id AND isDirectChannel = 0")
-	abstract fun get(id: String): Flow<GroupChannelWithRefs>
+	abstract fun get(id: String): Flow<GroupChannelWithRefs?>
 
 	@Transaction
 	internal open suspend fun insert(

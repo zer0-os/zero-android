@@ -27,19 +27,19 @@ class BaseDaoTest : BaseDatabaseTest() {
 	@Test
 	fun update() = runTest {
 		db.networkDao().insert(FakeData.NetworkEntity("one", name = "old name"))
-		db.networkDao().get("one").first().let { assertEquals("old name", it.name) }
+		db.networkDao().get("one").first().let { assertEquals("old name", it?.name) }
 
 		db.networkDao().update(FakeData.NetworkEntity("one", name = "new name"))
-		db.networkDao().get("one").first().let { assertEquals("new name", it.name) }
+		db.networkDao().get("one").first().let { assertEquals("new name", it?.name) }
 	}
 
 	@Test
 	fun upsertSingle() = runTest {
 		db.networkDao().insert(FakeData.NetworkEntity("one", name = "old name"))
-		db.networkDao().get("one").first().let { assertEquals("old name", it.name) }
+		db.networkDao().get("one").first().let { assertEquals("old name", it?.name) }
 
 		db.networkDao().upsert(FakeData.NetworkEntity("one", name = "new name"))
-		db.networkDao().get("one").first().let { assertEquals("new name", it.name) }
+		db.networkDao().get("one").first().let { assertEquals("new name", it?.name) }
 	}
 
 	@Test

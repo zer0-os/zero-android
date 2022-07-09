@@ -15,7 +15,7 @@ abstract class MessageDaoInterface : BaseDao<MessageEntity>() {
 
 	@Transaction
 	@Query("SELECT * FROM messages WHERE id = :id")
-	abstract fun get(id: String): Flow<MessageWithRefs>
+	abstract fun get(id: String): Flow<MessageWithRefs?>
 
 	@Transaction
 	@Query("SELECT * FROM messages WHERE channelId = :channelId")

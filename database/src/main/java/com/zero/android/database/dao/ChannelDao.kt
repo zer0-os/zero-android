@@ -14,7 +14,7 @@ constructor(
 	private val messageDao: MessageDao
 ) {
 
-	fun getGroupChannels() = groupChannelDao.getAll()
+	fun getGroupChannels(networkId: String) = groupChannelDao.getByNetwork(networkId)
 
 	fun getDirectChannels() = directChannelDao.getAll()
 

@@ -31,7 +31,7 @@ class MemberDaoTest : BaseDatabaseTest() {
 		db.memberDao().update(MemberEntity(id = member.id, name = "Name"))
 
 		val data = db.memberDao().get(member.id).first()
-		assertEquals("Name", data.name)
+		assertEquals("Name", data?.name)
 	}
 
 	@Test
