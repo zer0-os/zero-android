@@ -6,10 +6,10 @@ import com.zero.android.common.ui.asResult
 import com.zero.android.common.ui.base.BaseViewModel
 import com.zero.android.data.repository.ChannelRepository
 import com.zero.android.data.repository.NetworkRepository
+import com.zero.android.feature.channels.model.ChannelTab
 import com.zero.android.models.ChannelCategory
 import com.zero.android.models.GroupChannel
 import com.zero.android.models.Network
-import com.zero.android.models.fake.ChannelTab
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

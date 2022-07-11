@@ -1,4 +1,4 @@
-package com.zero.android.database.util
+package com.zero.android.database.model.fake
 
 import com.zero.android.database.model.ChannelEntity
 import com.zero.android.database.model.DirectChannelWithRefs
@@ -13,7 +13,7 @@ import com.zero.android.models.enums.MessageStatus
 import com.zero.android.models.enums.MessageType
 
 @Suppress("TestFunctionName")
-object FakeData {
+object FakeEntity {
 
 	fun NetworkEntity(id: String = "networkId", name: String = "name") =
 		NetworkEntity(

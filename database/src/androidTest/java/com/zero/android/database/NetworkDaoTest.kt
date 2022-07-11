@@ -2,7 +2,7 @@ package com.zero.android.database
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.zero.android.database.base.BaseDatabaseTest
-import com.zero.android.database.util.FakeData
+import com.zero.android.database.model.fake.FakeEntity
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -16,7 +16,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class NetworkDaoTest : BaseDatabaseTest() {
 
-	private val network = FakeData.NetworkEntity()
+	private val network = FakeEntity.NetworkEntity()
 
 	@Test
 	fun insertNetwork() = runTest {
@@ -39,19 +39,19 @@ class NetworkDaoTest : BaseDatabaseTest() {
 	fun getCategories() = runTest {
 		db.networkDao().insert(network)
 		channelDao.upsert(
-			FakeData.GroupChannelWithRefs(
+			FakeEntity.GroupChannelWithRefs(
 				id = "groupOneId",
 				networkId = network.id,
 				category = "one",
 				lastMessage = null
 			),
-			FakeData.GroupChannelWithRefs(
+			FakeEntity.GroupChannelWithRefs(
 				id = "groupTwoId",
 				networkId = network.id,
 				category = "two",
 				lastMessage = null
 			),
-			FakeData.GroupChannelWithRefs(
+			FakeEntity.GroupChannelWithRefs(
 				id = "groupThreeId",
 				networkId = network.id,
 				category = "one",

@@ -3,7 +3,7 @@ package com.zero.android.database
 import android.database.sqlite.SQLiteConstraintException
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.zero.android.database.base.BaseDatabaseTest
-import com.zero.android.database.util.FakeData
+import com.zero.android.database.model.fake.FakeEntity
 import junit.framework.Assert.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -17,12 +17,12 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class MessageDaoTest : BaseDatabaseTest() {
 
-	private val message = FakeData.MessageWithRefs(channelId = "channelId")
+	private val message = FakeEntity.MessageWithRefs(channelId = "channelId")
 
 	@Before
 	fun setup() = runTest {
-		db.networkDao().insert(FakeData.NetworkEntity())
-		channelDao.upsert(FakeData.DirectChannelWithRefs(id = "channelId", lastMessage = null))
+		db.networkDao().insert(FakeEntity.NetworkEntity())
+		channelDao.upsert(FakeEntity.DirectChannelWithRefs(id = "channelId", lastMessage = null))
 	}
 
 	@Test
@@ -41,7 +41,7 @@ class MessageDaoTest : BaseDatabaseTest() {
 	@Test
 	fun updateMessage() = runTest {
 		messageDao.upsert(message)
-		messageDao.upsert(FakeData.MessageWithRefs(channelId = "channelId", authorId = "memberTwo"))
+		messageDao.upsert(FakeEntity.MessageWithRefs(channelId = "channelId", authorId = "memberTwo"))
 
 		val data = messageDao.get(message.message.id).first()
 		assertEquals("channelId", data?.message?.channelId)

@@ -6,7 +6,7 @@ import com.zero.android.models.Member
 import com.zero.android.models.Network
 import com.zero.android.models.enums.ConnectionStatus
 
-object FakeData {
+object FakeModel {
 
 	fun Network(id: String = "id") =
 		Network(

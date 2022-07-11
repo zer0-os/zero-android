@@ -13,7 +13,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.zero.android.common.R
 import com.zero.android.models.Network
-import com.zero.android.models.fake.FakeData
+import com.zero.android.models.fake.FakeModel
 import com.zero.android.ui.components.CountBadge
 import com.zero.android.ui.components.MediumCircularImage
 import com.zero.android.ui.extensions.Preview
@@ -85,4 +85,4 @@ fun DrawerItem(modifier: Modifier = Modifier, item: Network, onItemClick: (Netwo
 
 @Preview(showBackground = false)
 @Composable
-fun DrawerItemPreview() = Preview { DrawerItem(item = FakeData.Network(), onItemClick = {}) }
+fun DrawerItemPreview() = Preview { DrawerItem(item = FakeModel.Network(), onItemClick = {}) }
