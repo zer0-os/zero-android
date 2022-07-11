@@ -1,24 +1,45 @@
 package com.zero.android.database.dao
 
-import androidx.room.*
-import com.zero.android.database.model.UserAndProfileRelation
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
+import com.zero.android.database.model.ProfileEntity
 import com.zero.android.database.model.UserEntity
+import com.zero.android.database.model.UserWithProfile
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface UserDao {
+abstract class UserDao {
 
 	@Transaction
 	@Query("SELECT * FROM users")
-	fun getAll(): Flow<List<UserAndProfileRelation>>
+	abstract fun getAll(): Flow<List<UserWithProfile>>
 
 	@Transaction
 	@Query("SELECT * FROM users WHERE id = :id")
-	fun getById(id: String): Flow<UserAndProfileRelation>
+	abstract fun get(id: String): Flow<UserWithProfile>
 
-	@Transaction @Insert
-	suspend fun insert(vararg users: UserEntity)
+	@Transaction
+	open suspend fun insert(data: UserWithProfile) {
+		insert(data.user)
+		insert(data.profile)
+	}
+
+	@Transaction
+	@Insert(onConflict = OnConflictStrategy.REPLACE)
+	abstract suspend fun insert(user: UserEntity)
+
+	@Update(onConflict = OnConflictStrategy.REPLACE)
+	abstract suspend fun update(user: UserEntity)
+
+	@Transaction
+	@Insert(onConflict = OnConflictStrategy.REPLACE)
+	internal abstract suspend fun insert(profile: ProfileEntity)
 
 	@Transaction @Delete
-	suspend fun delete(user: UserEntity)
+	abstract suspend fun delete(user: UserEntity)
 }

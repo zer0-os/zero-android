@@ -5,6 +5,7 @@ import com.zero.android.network.chat.sendbird.SendBirdChannelService
 import com.zero.android.network.chat.sendbird.SendBirdChatService
 import com.zero.android.network.service.AccessService
 import com.zero.android.network.service.AccountService
+import com.zero.android.network.service.ChannelCategoryService
 import com.zero.android.network.service.ChannelService
 import com.zero.android.network.service.ChatMediaService
 import com.zero.android.network.service.ChatService
@@ -45,6 +46,11 @@ object ServiceModule {
 	@Singleton
 	@Provides
 	fun provideChannelService(logger: Logger): ChannelService = SendBirdChannelService(logger)
+
+	@Singleton
+	@Provides
+	fun provideChannelCategoryService(channelService: ChannelService): ChannelCategoryService =
+		channelService as ChannelCategoryService
 
 	@Singleton
 	@Provides

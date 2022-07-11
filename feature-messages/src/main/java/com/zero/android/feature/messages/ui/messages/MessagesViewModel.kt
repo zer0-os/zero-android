@@ -56,7 +56,7 @@ constructor(
 				when (messagesResult) {
 					is Result.Success ->
 						MessagesUiState.Success(
-							messagesResult.data.filter { it.channelUrl == channelId }
+							messagesResult.data.filter { it.channelId == channelId }
 						)
 					is Result.Loading -> MessagesUiState.Loading
 					else -> MessagesUiState.Error
@@ -86,7 +86,7 @@ constructor(
 
 	private fun configureChat(channel: Channel) {
 		ioScope.launch {
-			chatRepository.addChatListener(channel)
+			chatRepository.addListener(channel.id)
 			chatRepository.getMessages(channel)
 		}
 	}
@@ -97,5 +97,10 @@ constructor(
 				chatRepository.send(channel, message)
 			}
 		}
+	}
+
+	override fun onCleared() {
+		runBlocking { chatRepository.removeListener(channelId) }
+		super.onCleared()
 	}
 }

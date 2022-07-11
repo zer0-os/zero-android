@@ -27,10 +27,11 @@ internal fun BaseChannel.toApi(): ApiChannel {
 }
 
 private fun getNetworkId(customType: String): String? {
-	return Regex(pattern = "network:([-a-zA-Z0-9]+)").matchEntire(customType)?.value
+	return Regex(pattern = "network:([-a-zA-Z0-9]+)").matchEntire(customType)?.groups?.get(1)?.value
 }
 
-internal fun String.encodeToNetworkId() = if (this.isNotEmpty()) "network:$this" else null
+internal fun String.encodeToNetworkId() =
+	if (this.isNotEmpty() && getNetworkId(this).isNullOrEmpty()) "network:$this" else this
 
 internal val OpenChannel.networkId
 	get() = customType?.let { getNetworkId(it) }
@@ -55,7 +56,6 @@ internal fun OpenChannel.toApi() =
 		members = operators.map { it.toApi() },
 		memberCount = participantCount,
 		operators = operators.map { it.toApi() },
-		operatorCount = participantCount,
 		createdAt = createdAt,
 		coverUrl = coverUrl,
 		properties = Json.decodeFromString<ApiChannelProperties>(data),
@@ -89,7 +89,6 @@ internal fun GroupChannel.toGroupApi(): ApiGroupChannel {
 		name = name,
 		isSuper = isSuper,
 		operators = operators,
-		operatorCount = operators.size,
 		members = members.map { it.toApi() },
 		memberCount = memberCount,
 		unreadMentionCount = unreadMentionCount,

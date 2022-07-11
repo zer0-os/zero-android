@@ -22,7 +22,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.zero.android.common.R
 import com.zero.android.common.R.drawable
 import com.zero.android.models.Network
-import com.zero.android.models.fake.FakeData
+import com.zero.android.models.fake.FakeModel
 import com.zero.android.ui.extensions.Preview
 import com.zero.android.ui.theme.AppTheme
 
@@ -79,7 +79,7 @@ fun AppTopBar(
 @Composable
 fun AppTopBarPreview() = Preview {
 	AppTopBar(
-		network = FakeData.Network(),
+		network = FakeModel.Network(),
 		openDrawer = {},
 		onProfileClick = {},
 		onCreateWorldClick = {}

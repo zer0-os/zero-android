@@ -15,7 +15,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ChatMediaUtil @Inject constructor(@ApplicationContext private val context: Context) {
+class NetworkMediaUtil @Inject constructor(@ApplicationContext private val context: Context) {
+
 	fun getUploadUrl(uploadInfo: ApiUploadInfo) =
 		Uri.parse(uploadInfo.apiUrl)
 			.buildUpon()

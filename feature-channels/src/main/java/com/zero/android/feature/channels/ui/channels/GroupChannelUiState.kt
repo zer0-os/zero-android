@@ -1,8 +1,8 @@
 package com.zero.android.feature.channels.ui.channels
 
+import com.zero.android.feature.channels.model.ChannelTab
 import com.zero.android.models.Channel
 import com.zero.android.models.GroupChannel
-import com.zero.android.models.fake.ChannelTab
 
 data class GroupChannelUiState(
 	val categoriesUiState: ChannelCategoriesUiState,

@@ -27,8 +27,12 @@ import kotlin.coroutines.resumeWithException
 internal class SendBirdChatService(private val logger: Logger) :
 	SendBirdBaseService(), ChatService {
 
-	override suspend fun listen(channelId: String, listener: ChatListener) {
+	override suspend fun addListener(channelId: String, listener: ChatListener) {
 		SendBird.addChannelHandler(channelId, SendBirdChatListener(listener))
+	}
+
+	override suspend fun removeListener(channelId: String) {
+		SendBird.removeChannelHandler(channelId)
 	}
 
 	private fun messageListParams(

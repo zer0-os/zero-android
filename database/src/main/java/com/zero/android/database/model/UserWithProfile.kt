@@ -4,12 +4,12 @@ import androidx.room.Embedded
 import androidx.room.Relation
 import com.zero.android.models.User
 
-data class UserAndProfileRelation(
+data class UserWithProfile(
 	@Embedded val user: UserEntity,
 	@Relation(parentColumn = "id", entityColumn = "userId") val profile: ProfileEntity
 )
 
-fun UserAndProfileRelation.toModel() =
+fun UserWithProfile.toModel() =
 	User(
 		id = user.id,
 		profile = profile.toModel(),

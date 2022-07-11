@@ -1,7 +1,16 @@
 package com.zero.android.database.model
 
-import androidx.room.*
-import com.zero.android.models.*
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+import com.zero.android.models.City
+import com.zero.android.models.Education
+import com.zero.android.models.Experience
+import com.zero.android.models.Investment
+import com.zero.android.models.Profile
+import com.zero.android.models.Valuable
 import kotlinx.datetime.Instant
 
 @Entity(
@@ -18,7 +27,7 @@ import kotlinx.datetime.Instant
 	indices = [Index(value = ["userId"])]
 )
 data class ProfileEntity(
-	@PrimaryKey val id: String,
+	@PrimaryKey override val id: String,
 	val userId: String?,
 	val firstName: String?,
 	val lastName: String?,
@@ -76,7 +85,7 @@ data class ProfileEntity(
 	val educationRecords: List<Education>?,
 	val rawAvatarURL: String?,
 	val _wallpaperURL: String?
-)
+) : BaseEntity
 
 fun ProfileEntity.toModel() =
 	Profile(

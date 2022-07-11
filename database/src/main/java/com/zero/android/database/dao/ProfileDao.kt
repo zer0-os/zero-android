@@ -1,9 +1,10 @@
 package com.zero.android.database.dao
 
 import androidx.room.Dao
-import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import com.zero.android.database.model.ProfileEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -12,8 +13,8 @@ interface ProfileDao {
 
 	@Transaction
 	@Query("SELECT * FROM profiles WHERE userId = :userId")
-	fun getByUser(userId: String): Flow<ProfileEntity>
+	fun get(userId: String): Flow<ProfileEntity>
 
-	@Transaction @Insert
-	suspend fun insert(vararg users: ProfileEntity)
+	@Update(onConflict = OnConflictStrategy.REPLACE)
+	suspend fun update(vararg profiles: ProfileEntity)
 }

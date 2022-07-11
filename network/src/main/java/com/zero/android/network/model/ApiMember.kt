@@ -12,7 +12,7 @@ data class ApiMember(
 	@SerialName("profile_url") var profileUrl: String? = null,
 	@SerialName("friend_discovery_key") var friendDiscoveryKey: String? = null,
 	@SerialName("friend_name") var friendName: String? = null,
-	@SerialName("metadata") var metadata: Map<String?, String?>? = null,
+	@SerialName("metadata") var metadata: Map<String, String?>? = null,
 	@Serializable(ConnectionStatusSerializer::class)
 	var status: ConnectionStatus = ConnectionStatus.NON_AVAILABLE,
 	@SerialName("last_seen_at") var lastSeenAt: Long = 0,

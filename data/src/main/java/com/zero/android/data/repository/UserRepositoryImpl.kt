@@ -5,7 +5,6 @@ import com.zero.android.data.conversion.toEntity
 import com.zero.android.data.conversion.toModel
 import com.zero.android.data.manager.ConnectionManager
 import com.zero.android.data.manager.DataCleaner
-import com.zero.android.database.dao.ProfileDao
 import com.zero.android.database.dao.UserDao
 import com.zero.android.database.model.toModel
 import com.zero.android.datastore.AppPreferences
@@ -22,7 +21,6 @@ class UserRepositoryImpl
 @Inject
 constructor(
 	private val userDao: UserDao,
-	private val profileDao: ProfileDao,
 	private val preferences: AppPreferences,
 	private val chatPreferences: ChatPreferences,
 	private val userService: UserService,
@@ -64,7 +62,6 @@ constructor(
 
 		userService.getUser().let { user ->
 			userDao.insert(user.toEntity())
-			profileDao.insert(user.profile.toEntity(user.id))
 			emit(user.toModel())
 		}
 	}

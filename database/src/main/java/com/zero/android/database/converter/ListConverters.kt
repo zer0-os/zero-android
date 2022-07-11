@@ -3,7 +3,9 @@ package com.zero.android.database.converter
 import androidx.room.TypeConverter
 import com.zero.android.models.Education
 import com.zero.android.models.Experience
+import com.zero.android.models.FileThumbnail
 import com.zero.android.models.Investment
+import com.zero.android.models.MessageReaction
 import com.zero.android.models.Valuable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -49,4 +51,28 @@ class ListConverters {
 
 	@TypeConverter
 	fun stringListToString(value: List<String>?): String? = value?.let { Json.encodeToString(value) }
+
+	@TypeConverter
+	fun stringToStringMap(value: String?): Map<String, String?>? =
+		value?.let { Json.decodeFromString<Map<String, String?>>(value) }
+
+	@TypeConverter
+	fun stringMapToString(value: Map<String, String?>?): String? =
+		value?.let { Json.encodeToString(value) }
+
+	@TypeConverter
+	fun stringToMessageReactionList(value: String?): List<MessageReaction>? =
+		value?.let { Json.decodeFromString<List<MessageReaction>>(value) }
+
+	@TypeConverter
+	fun messageReactionListToString(value: List<MessageReaction>?): String? =
+		value?.let { Json.encodeToString(value) }
+
+	@TypeConverter
+	fun stringToFileThumbnailList(value: String?): List<FileThumbnail>? =
+		value?.let { Json.decodeFromString<List<FileThumbnail>>(value) }
+
+	@TypeConverter
+	fun fileThumbnailListToString(value: List<FileThumbnail>?): String? =
+		value?.let { Json.encodeToString(value) }
 }

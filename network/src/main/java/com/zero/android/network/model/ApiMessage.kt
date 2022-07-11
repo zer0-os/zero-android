@@ -12,7 +12,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ApiMessage(
 	val id: String,
-	@SerialName("channel_url") val channelUrl: String? = null,
+	@SerialName("channel_url") val channelId: String,
 	val author: ApiMember,
 	val mentions: List<ApiMember> = emptyList(),
 	@Serializable(MessageTypeSerializer::class) val type: MessageType,

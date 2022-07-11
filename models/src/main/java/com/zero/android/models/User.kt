@@ -16,7 +16,7 @@ data class Member(
 	val profileImage: String? = null,
 	var friendDiscoveryKey: String? = null,
 	var friendName: String? = null,
-	var metadata: Map<String?, String?>? = null,
+	var metadata: Map<String, String?>? = null,
 	var status: ConnectionStatus = ConnectionStatus.NON_AVAILABLE,
 	var lastSeenAt: Long = 0,
 	val isActive: Boolean = true,

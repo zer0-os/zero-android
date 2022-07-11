@@ -6,7 +6,7 @@ import com.zero.android.models.Member
 import com.zero.android.models.Network
 import com.zero.android.models.enums.ConnectionStatus
 
-object FakeData {
+object FakeModel {
 
 	fun Network(id: String = "id") =
 		Network(
@@ -36,7 +36,6 @@ object FakeData {
 			createdAt = 0,
 			memberCount = 2,
 			members = listOf(Member("one"), Member("two")),
-			operatorCount = 1,
 			operators = listOf(Member("one")),
 			unreadMessageCount = unread
 		)

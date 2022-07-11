@@ -1,4 +1,3 @@
-/* ktlint-disable filename */
 package com.zero.android.feature.auth.extensions
 
 import com.auth0.android.result.Credentials

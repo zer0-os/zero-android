@@ -3,10 +3,11 @@ package com.zero.android.models
 import com.zero.android.models.enums.MessageMentionType
 import com.zero.android.models.enums.MessageStatus
 import com.zero.android.models.enums.MessageType
+import kotlinx.serialization.Serializable
 import java.io.File
 
 internal interface BaseMessage {
-	val channelUrl: String?
+	val channelId: String
 	val author: Member
 	val type: MessageType
 	val mentionType: MessageMentionType
@@ -23,7 +24,7 @@ internal interface BaseMessage {
 
 data class Message(
 	val id: String,
-	override val channelUrl: String?,
+	override val channelId: String,
 	override val author: Member,
 	val mentions: List<Member> = emptyList(),
 	override val type: MessageType,
@@ -43,7 +44,7 @@ data class Message(
 ) : BaseMessage
 
 data class DraftMessage(
-	override val channelUrl: String?,
+	override val channelId: String,
 	override val author: Member,
 	val mentions: List<String> = emptyList(),
 	override val type: MessageType,
@@ -62,6 +63,7 @@ data class DraftMessage(
 	override val fileMimeType: String? = null
 ) : BaseMessage
 
+@Serializable
 data class FileThumbnail(
 	var maxWidth: Int = 0,
 	val maxHeight: Int = 0,

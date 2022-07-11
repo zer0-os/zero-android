@@ -17,7 +17,7 @@ import com.zero.android.common.R
 import com.zero.android.common.navigation.NavDestination
 import com.zero.android.common.ui.Result
 import com.zero.android.models.Network
-import com.zero.android.models.fake.FakeData
+import com.zero.android.models.fake.FakeModel
 import com.zero.android.ui.components.LoadingContainer
 import com.zero.android.ui.extensions.Preview
 import com.zero.android.ui.theme.AppTheme
@@ -113,8 +113,8 @@ fun NetworkDrawerContent(
 @Composable
 fun NetworkDrawerContentPreview() = Preview {
 	NetworkDrawerContent(
-		currentNetwork = FakeData.Network(),
-		networks = Result.Success(FakeData.networks()),
+		currentNetwork = FakeModel.Network(),
+		networks = Result.Success(FakeModel.networks()),
 		drawerState = rememberDrawerState(initialValue = DrawerValue.Open),
 		coroutineScope = CoroutineScope(Dispatchers.Default),
 		onNetworkSelected = {},
