@@ -8,6 +8,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -31,18 +33,22 @@ fun ChannelMessage(
     isUserMe: Boolean,
     isFirstMessageByAuthor: Boolean,
     mediaSourceViewModel: MediaSourceViewModel,
-    onAuthorClick: (Member) -> Unit,
-    onMessageLongClick: (Message) -> Unit,
+    onAuthorClick: (Member) -> Unit
 ) {
-    Row(modifier = Modifier
-        .combinedClickable(
-            onClick = { },
-            onLongClick = {
-                if (isUserMe) {
-                    onMessageLongClick(msg)
-                }
+    val currentSelectedMessage: Message? by MessageActionStateHandler.selectedMessage.collectAsState()
+    val modifier = Modifier.fillMaxWidth().combinedClickable(
+        onClick = { },
+        onLongClick = {
+            if (isUserMe) {
+                MessageActionStateHandler.setSelectedMessage(msg)
             }
-        )) {
+        }
+    )
+    Row(
+        modifier = if (currentSelectedMessage?.id == msg.id) {
+            modifier.background(Color.White.copy(0.1f))
+        } else modifier
+    ) {
         SmallCircularImage(
             imageUrl = msg.author.profileImage,
             placeHolder = R.drawable.ic_user_profile_placeholder

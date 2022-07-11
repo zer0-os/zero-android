@@ -32,8 +32,7 @@ import kotlinx.coroutines.launch
 fun MessagesContent(
     modifier: Modifier = Modifier,
     userChannelInfo: Pair<String, Boolean>,
-    uiState: MessagesUiState,
-    onMessageLongClick:(Message) -> Unit,
+    uiState: MessagesUiState
 ) {
     val scrollState = rememberLazyListState()
     val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior() }
@@ -52,8 +51,7 @@ fun MessagesContent(
                     userChannelInfo = userChannelInfo,
                     uiState = uiState,
                     scrollState = scrollState,
-                    coroutineScope = scope,
-                    onMessageLongClick = onMessageLongClick
+                    coroutineScope = scope
                 )
 
             }
@@ -68,8 +66,7 @@ fun Messages(
     uiState: MessagesUiState,
     scrollState: LazyListState,
     coroutineScope: CoroutineScope,
-    mediaSourceViewModel: MediaSourceViewModel = hiltViewModel(),
-    onMessageLongClick:(Message) -> Unit
+    mediaSourceViewModel: MediaSourceViewModel = hiltViewModel()
 ) {
     DisposableEffect(Unit) {
         onDispose { mediaSourceViewModel.dispose() }
@@ -104,8 +101,7 @@ fun Messages(
                                 isFirstMessageByAuthor = isFirstMessageByAuthor,
                                 isLastMessageByAuthor = isLastMessageByAuthor,
                                 mediaSourceViewModel = mediaSourceViewModel,
-                                onAuthorClick = {},
-                                onMessageLongClick = onMessageLongClick
+                                onAuthorClick = {}
                             )
                         } else {
                             ChannelMessage(
@@ -113,8 +109,7 @@ fun Messages(
                                 isUserMe = content.author.id == userChannelInfo.first,
                                 isFirstMessageByAuthor = isFirstMessageByAuthor,
                                 mediaSourceViewModel = mediaSourceViewModel,
-                                onAuthorClick = {},
-                                onMessageLongClick = onMessageLongClick
+                                onAuthorClick = {}
                             )
                         }
                     }

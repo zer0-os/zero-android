@@ -8,6 +8,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -32,9 +34,9 @@ fun DirectMessage(
     isFirstMessageByAuthor: Boolean,
     isLastMessageByAuthor: Boolean,
     mediaSourceViewModel: MediaSourceViewModel,
-    onAuthorClick: (Member) -> Unit,
-    onMessageLongClick: (Message) -> Unit,
+    onAuthorClick: (Member) -> Unit
 ) {
+    val currentSelectedMessage: Message? by MessageActionStateHandler.selectedMessage.collectAsState()
     val modifier = if (isLastMessageByAuthor) Modifier.padding(top = 8.dp) else Modifier
     Column(modifier = modifier
         .fillMaxWidth()
@@ -42,13 +44,15 @@ fun DirectMessage(
             onClick = { },
             onLongClick = {
                 if (isUserMe) {
-                    onMessageLongClick(msg)
+                    MessageActionStateHandler.setSelectedMessage(msg)
                 }
             }
         )
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = if (currentSelectedMessage?.id == msg.id) {
+                Modifier.fillMaxWidth().background(Color.White.copy(0.1f))
+            } else Modifier.fillMaxWidth(),
             horizontalArrangement = if (isUserMe) Arrangement.End else Arrangement.Start
         ) {
             if (!isUserMe && (isLastMessageByAuthor || !isSameDay)) {

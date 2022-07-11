@@ -18,7 +18,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -39,6 +42,7 @@ import com.zero.android.ui.components.Background
 import com.zero.android.ui.components.BottomBarDivider
 import com.zero.android.ui.extensions.Preview
 import com.zero.android.ui.theme.AppTheme
+import com.zero.android.ui.util.BackHandler
 import java.io.File
 
 @Composable
@@ -54,6 +58,13 @@ fun MessagesRoute(
 
     LaunchedEffect(Unit) {
         viewModel.loadChannel()
+    }
+    BackHandler {
+        if (MessageActionStateHandler.isActionModeStarted) {
+            MessageActionStateHandler.closeActionMode()
+        } else {
+            onBackClick()
+        }
     }
 
     val imageSelectorLauncher = rememberLauncherForActivityResult(
@@ -135,8 +146,8 @@ fun MessagesScreen(
     onDeleteMessage:(Message) -> Unit,
 ) {
     val context = LocalContext.current
-    var actionMessage: Message? by remember { mutableStateOf(null) }
-    var editableMessage : Message? by remember { mutableStateOf(null) }
+    val actionMessage by MessageActionStateHandler.selectedMessage.collectAsState()
+    val editableMessage by MessageActionStateHandler.editableMessage.collectAsState()
     if (chatChannelUiState is ChatChannelUiState.Success) {
         val topBar: @Composable () -> Unit = {
             AppBar(
@@ -145,8 +156,7 @@ fun MessagesScreen(
                 navIcon = {
                     IconButton(onClick = {
                         if (actionMessage != null) {
-                            editableMessage = null
-                            actionMessage = null
+                            MessageActionStateHandler.closeActionMode()
                         } else {
                             onBackClick()
                         }
@@ -171,16 +181,14 @@ fun MessagesScreen(
                     if (actionMessage != null) {
                         if (actionMessage!!.type == MessageType.TEXT) {
                             IconButton(onClick = {
-                                editableMessage = actionMessage
-                                actionMessage = null
+                                MessageActionStateHandler.editTextMessage()
                             }) {
                                 Icon(imageVector = Icons.Filled.Edit, contentDescription = "cd_message_action_edit", tint = Color.DarkGray)
                             }
                         }
                         IconButton(onClick = {
                             actionMessage?.let(onDeleteMessage)
-                            editableMessage = null
-                            actionMessage = null
+                            MessageActionStateHandler.closeActionMode()
                         }) {
                             Icon(imageVector = Icons.Filled.Delete, contentDescription = "cd_message_action_delete", tint = Color.DarkGray)
                         }
@@ -204,8 +212,7 @@ fun MessagesScreen(
                     MessagesContent(
                         modifier = Modifier.weight(1f),
                         userChannelInfo = userChannelInfo,
-                        uiState = messagesUiState,
-                        onMessageLongClick = { actionMessage = it }
+                        uiState = messagesUiState
                     )
                     BottomBarDivider()
                     if (isMemoRecording) {
@@ -225,7 +232,7 @@ fun MessagesScreen(
                                 onMessageSent = {
                                     if (editableMessage != null) {
                                         editableMessage?.copy(message = it)?.let(onEditMessage)
-                                        editableMessage = null
+                                        MessageActionStateHandler.closeActionMode()
                                     } else onNewMessage(it)
                                 },
                                 addAttachment = { context.getActivity()?.let { showImagePicker(false, it, onPickImage) } },
@@ -238,7 +245,7 @@ fun MessagesScreen(
                                 onMessageSent = {
                                     if (editableMessage != null) {
                                         editableMessage?.copy(message = it)?.let(onEditMessage)
-                                        editableMessage = null
+                                        MessageActionStateHandler.closeActionMode()
                                     } else onNewMessage(it)
                                 },
                                 addAttachment = { context.getActivity()?.let { showImagePicker(false, it, onPickImage) } },
