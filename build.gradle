@@ -35,6 +35,7 @@ buildscript {
 		"coil"            : '2.1.0',
 		"pager"           : "0.24.12-rc",
 		"imagePicker"     : "2.1",
+		"paging"          : "3.1.1",
 
 		// Data
 		"retrofit"        : "2.9.0",

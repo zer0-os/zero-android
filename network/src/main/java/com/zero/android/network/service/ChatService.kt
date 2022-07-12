@@ -18,7 +18,7 @@ interface ChatService {
 		timestamp: Long = Long.MAX_VALUE
 	): Flow<List<ApiMessage>>
 
-	suspend fun getMessages(channel: Channel, id: String): Flow<List<ApiMessage>>
+	suspend fun getMessages(channel: Channel, lastMessageId: String): Flow<List<ApiMessage>>
 
 	suspend fun send(channel: Channel, message: DraftMessage): Flow<ApiMessage>
 

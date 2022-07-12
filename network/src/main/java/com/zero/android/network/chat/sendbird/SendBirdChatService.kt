@@ -1,9 +1,6 @@
 package com.zero.android.network.chat.sendbird
 
 import com.sendbird.android.FileMessageParams
-import com.sendbird.android.MessageListParams
-import com.sendbird.android.MessagePayloadFilter
-import com.sendbird.android.ReplyTypeFilter
 import com.sendbird.android.SendBird
 import com.sendbird.android.UserMessageParams
 import com.zero.android.common.extensions.callbackFlowWithAwait
@@ -18,7 +15,6 @@ import com.zero.android.network.chat.conversion.toMessage
 import com.zero.android.network.chat.conversion.toParams
 import com.zero.android.network.model.ApiMessage
 import com.zero.android.network.service.ChatService
-import com.zero.android.network.util.MESSAGES_PAGE_LIMIT
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
@@ -26,6 +22,8 @@ import kotlin.coroutines.resumeWithException
 
 internal class SendBirdChatService(private val logger: Logger) :
 	SendBirdBaseService(), ChatService {
+
+	private val messageService: SendBirdMessageService = SendBirdMessageService()
 
 	override suspend fun addListener(channelId: String, listener: ChatListener) {
 		SendBird.addChannelHandler(channelId, SendBirdChatListener(listener))
@@ -35,27 +33,9 @@ internal class SendBirdChatService(private val logger: Logger) :
 		SendBird.removeChannelHandler(channelId)
 	}
 
-	private fun messageListParams(
-		reverse: Boolean = true,
-		limit: Int = MESSAGES_PAGE_LIMIT,
-		replyFilter: ReplyTypeFilter = ReplyTypeFilter.ALL
-	) =
-		MessageListParams().apply {
-			previousResultSize = limit
-			nextResultSize = limit
-			isInclusive = true
-			setReverse(reverse)
-			replyTypeFilter = replyFilter
-			messagePayloadFilter =
-				MessagePayloadFilter.Builder()
-					.setIncludeParentMessageInfo(true)
-					.setIncludeThreadInfo(true)
-					.build()
-		}
-
 	override suspend fun getMessages(channel: Channel, timestamp: Long) =
 		callbackFlowWithAwait<List<ApiMessage>> {
-			val params = messageListParams(reverse = true)
+			val params = messageService.params(reverse = true)
 			getChannel(channel).getMessagesByTimestamp(timestamp, params) { messages, e ->
 				if (e != null) {
 					logger.e(e)
@@ -66,10 +46,10 @@ internal class SendBirdChatService(private val logger: Logger) :
 			}
 		}
 
-	override suspend fun getMessages(channel: Channel, id: String) =
+	override suspend fun getMessages(channel: Channel, lastMessageId: String) =
 		callbackFlow<List<ApiMessage>> {
-			val params = messageListParams(reverse = true)
-			getChannel(channel).getMessagesByMessageId(id.toLong(), params) { messages, e ->
+			val params = messageService.params(reverse = true)
+			getChannel(channel).getMessagesByMessageId(lastMessageId.toLong(), params) { messages, e ->
 				if (e != null) {
 					logger.e(e)
 					throw e

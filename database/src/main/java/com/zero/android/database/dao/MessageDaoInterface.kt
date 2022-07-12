@@ -1,5 +1,6 @@
 package com.zero.android.database.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -18,8 +19,8 @@ abstract class MessageDaoInterface : BaseDao<MessageEntity>() {
 	abstract fun get(id: String): Flow<MessageWithRefs?>
 
 	@Transaction
-	@Query("SELECT * FROM messages WHERE channelId = :channelId")
-	abstract fun getByChannel(channelId: String): Flow<MessageWithRefs>
+	@Query("SELECT * FROM messages WHERE channelId = :channelId ORDER BY createdAt DESC")
+	abstract fun getByChannel(channelId: String): PagingSource<Int, MessageWithRefs>
 
 	@Transaction
 	internal open suspend fun upsert(memberDao: MemberDao, vararg data: MessageWithRefs) {
