@@ -33,10 +33,12 @@ import com.github.dhaval2404.imagepicker.ImagePicker
 import com.zero.android.common.R
 import com.zero.android.common.extensions.getActivity
 import com.zero.android.common.extensions.toFile
+import com.zero.android.feature.messages.helper.MessageActionStateHandler
 import com.zero.android.feature.messages.ui.voicememo.MemoRecorderViewModel
 import com.zero.android.feature.messages.ui.voicememo.RecordMemoView
 import com.zero.android.models.Message
 import com.zero.android.models.enums.MessageType
+import com.zero.android.models.isReply
 import com.zero.android.ui.components.AppBar
 import com.zero.android.ui.components.Background
 import com.zero.android.ui.components.BottomBarDivider
@@ -77,11 +79,18 @@ fun MessagesRoute(
                 val fileUri = data?.data!!
                 val file = try { fileUri.toFile() }
                 catch (e: Exception) { fileUri.toFile(context) }
-                viewModel.sendMessage(chatUiState.newFileMessage(
+                val message = chatUiState.newFileMessage(
                     file = file,
                     currentUserId = userChannelInfo.first,
                     type = MessageType.IMAGE
-                ))
+                )
+                val replyToMessage = MessageActionStateHandler.replyToMessage.value
+                if (replyToMessage != null) {
+                    viewModel.replyToMessage(replyToMessage.id, message)
+                    MessageActionStateHandler.reset()
+                } else {
+                    viewModel.sendMessage(message)
+                }
             }
         }
     )
@@ -117,15 +126,26 @@ fun MessagesRoute(
             recordMemoViewModel.stopRecording()
             val file = File(recordMemoViewModel.lastMemoPath)
             if (file.exists()) {
-                viewModel.sendMessage(chatUiState.newFileMessage(
+                val message = chatUiState.newFileMessage(
                     file = file,
                     currentUserId = userChannelInfo.first,
                     type = MessageType.AUDIO
-                ))
+                )
+                val replyToMessage = MessageActionStateHandler.replyToMessage.value
+                if (replyToMessage != null) {
+                    viewModel.replyToMessage(replyToMessage.id, message)
+                    MessageActionStateHandler.reset()
+                } else {
+                    viewModel.sendMessage(message)
+                }
             }
         },
         onEditMessage = { viewModel.updateMessage(it) },
         onDeleteMessage = { viewModel.deleteMessage(it) },
+        onReplyToMessage = { messageId, reply ->
+            val replyMessage = chatUiState.newTextMessage(reply, userChannelInfo.first)
+            viewModel.replyToMessage(messageId, replyMessage)
+        }
     )
 }
 
@@ -144,10 +164,12 @@ fun MessagesScreen(
     onSendMemo:() -> Unit,
     onEditMessage:(Message) -> Unit,
     onDeleteMessage:(Message) -> Unit,
+    onReplyToMessage:(String, String) -> Unit,
 ) {
     val context = LocalContext.current
     val actionMessage by MessageActionStateHandler.selectedMessage.collectAsState()
     val editableMessage by MessageActionStateHandler.editableMessage.collectAsState()
+    val replyMessage by MessageActionStateHandler.replyToMessage.collectAsState()
     if (chatChannelUiState is ChatChannelUiState.Success) {
         val topBar: @Composable () -> Unit = {
             AppBar(
@@ -179,6 +201,13 @@ fun MessagesScreen(
                 },
                 actions = {
                     if (actionMessage != null) {
+                        if (actionMessage?.isReply == false) {
+                            IconButton(onClick = {
+                                MessageActionStateHandler.replyToMessage()
+                            }) {
+                                Icon(painter = painterResource(R.drawable.ic_reply_24), contentDescription = "cd_message_action_reply", tint = Color.DarkGray)
+                            }
+                        }
                         if (actionMessage!!.type == MessageType.TEXT) {
                             IconButton(onClick = {
                                 MessageActionStateHandler.editTextMessage()
@@ -215,6 +244,11 @@ fun MessagesScreen(
                         uiState = messagesUiState
                     )
                     BottomBarDivider()
+                    replyMessage?.let {
+                        ReplyMessage(message = it) {
+                            MessageActionStateHandler.closeActionMode()
+                        }
+                    }
                     if (isMemoRecording) {
                         RecordMemoView(
                             onCancel = onRecordMemo,
@@ -243,8 +277,8 @@ fun MessagesScreen(
                             UserInputPanel(
                                 modifier = userInputModifier,
                                 onMessageSent = {
-                                    if (editableMessage != null) {
-                                        editableMessage?.copy(message = it)?.let(onEditMessage)
+                                    if (replyMessage != null) {
+                                        onReplyToMessage(replyMessage!!.id, it)
                                         MessageActionStateHandler.closeActionMode()
                                     } else onNewMessage(it)
                                 },

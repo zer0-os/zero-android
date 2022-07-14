@@ -1,4 +1,4 @@
-package com.zero.android.feature.messages.ui.voicememo.mediaPlayer
+package com.zero.android.feature.messages.mediaPlayer
 
 import android.content.Context
 import android.media.AudioAttributes

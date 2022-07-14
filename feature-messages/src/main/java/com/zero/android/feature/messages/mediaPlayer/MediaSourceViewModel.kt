@@ -1,12 +1,10 @@
-package com.zero.android.feature.messages.ui.voicememo.mediaPlayer
+package com.zero.android.feature.messages.mediaPlayer
 
 import com.zero.android.common.extensions.isValidUrl
 import com.zero.android.common.ui.base.BaseViewModel
 import com.zero.android.models.Message
 import com.zero.android.models.enums.MessageType
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,13 +15,6 @@ class MediaSourceViewModel @Inject constructor(
 
     private val voiceMemoMediaSources = mutableMapOf<String, MediaSourceProvider>()
     private var lastMediaId: String? = null
-
-    private val _currentSelectedMessage = MutableStateFlow<String?>(null)
-    val currentSelectedMessage: StateFlow<String?> = _currentSelectedMessage
-
-    fun setSelectedMessage(message: Message) {
-        ioScope.launch { _currentSelectedMessage.emit(message.id) }
-    }
 
     fun configure(messages: List<Message>) {
         ioScope.launch {

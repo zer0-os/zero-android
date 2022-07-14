@@ -19,7 +19,8 @@ import androidx.compose.ui.unit.dp
 import com.zero.android.common.R
 import com.zero.android.common.extensions.format
 import com.zero.android.common.extensions.toDate
-import com.zero.android.feature.messages.ui.voicememo.mediaPlayer.MediaSourceViewModel
+import com.zero.android.feature.messages.helper.MessageActionStateHandler
+import com.zero.android.feature.messages.mediaPlayer.MediaSourceViewModel
 import com.zero.android.models.Member
 import com.zero.android.models.Message
 import com.zero.android.ui.components.SmallCircularImage
@@ -51,7 +52,9 @@ fun DirectMessage(
     ) {
         Row(
             modifier = if (currentSelectedMessage?.id == msg.id) {
-                Modifier.fillMaxWidth().background(Color.White.copy(0.1f))
+                Modifier
+                    .fillMaxWidth()
+                    .background(Color.White.copy(0.1f))
             } else Modifier.fillMaxWidth(),
             horizontalArrangement = if (isUserMe) Arrangement.End else Arrangement.Start
         ) {
@@ -116,6 +119,9 @@ fun DMAuthorAndTextMessage(
                 )
             ) {
                 Column(modifier = Modifier.padding(8.dp)) {
+                    message.parentMessage?.let {
+                        ReplyMessage(modifier = Modifier.wrapContentWidth(), message = it, showCloseButton = false)
+                    }
                     if (!isUserMe && (isLastMessageByAuthor || !isSameDay)) {
                         Text(
                             text = message.author.name ?: "",

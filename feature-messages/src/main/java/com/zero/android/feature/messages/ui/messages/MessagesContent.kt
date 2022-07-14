@@ -19,8 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.zero.android.common.extensions.format
 import com.zero.android.common.extensions.isSameDay
 import com.zero.android.common.extensions.toDate
-import com.zero.android.feature.messages.ui.voicememo.mediaPlayer.MediaSourceViewModel
-import com.zero.android.models.Message
+import com.zero.android.feature.messages.mediaPlayer.MediaSourceViewModel
 import com.zero.android.ui.components.DayHeader
 import com.zero.android.ui.components.JumpToBottom
 import com.zero.android.ui.theme.AppTheme

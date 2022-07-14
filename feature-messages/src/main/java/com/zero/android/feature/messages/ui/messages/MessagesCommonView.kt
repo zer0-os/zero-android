@@ -11,7 +11,7 @@ import coil.compose.AsyncImage
 import com.zero.android.common.util.SymbolAnnotationType
 import com.zero.android.common.util.messageFormatter
 import com.zero.android.feature.messages.ui.voicememo.VoiceMessage
-import com.zero.android.feature.messages.ui.voicememo.mediaPlayer.MediaSourceViewModel
+import com.zero.android.feature.messages.mediaPlayer.MediaSourceViewModel
 import com.zero.android.models.Member
 import com.zero.android.models.Message
 import com.zero.android.models.enums.MessageType

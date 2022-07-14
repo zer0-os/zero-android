@@ -39,6 +39,7 @@ internal fun BaseMessage.toApi(): ApiMessage {
         createdAt = createdAt,
         updatedAt = updatedAt,
         message = message,
+        parentMessage = parentMessage?.toApi(),
         fileUrl = (this as? FileMessage)?.url,
         fileName = (this as? FileMessage)?.name,
     )

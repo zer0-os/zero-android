@@ -1,4 +1,4 @@
-package com.zero.android.feature.messages.ui.voicememo.mediaPlayer
+package com.zero.android.feature.messages.mediaPlayer
 
 import android.net.Uri
 import com.zero.android.common.extensions.downloadFile

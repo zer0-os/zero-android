@@ -20,7 +20,8 @@ import com.zero.android.common.R
 import com.zero.android.common.extensions.format
 import com.zero.android.common.extensions.toDate
 import com.zero.android.common.extensions.toMessageDateFormat
-import com.zero.android.feature.messages.ui.voicememo.mediaPlayer.MediaSourceViewModel
+import com.zero.android.feature.messages.helper.MessageActionStateHandler
+import com.zero.android.feature.messages.mediaPlayer.MediaSourceViewModel
 import com.zero.android.models.Member
 import com.zero.android.models.Message
 import com.zero.android.ui.components.SmallCircularImage
@@ -94,6 +95,9 @@ fun CMAuthorAndTextMessage(
                 )
             ) {
                 Column(modifier = Modifier.padding(8.dp)) {
+                    message.parentMessage?.let {
+                        ReplyMessage(modifier = Modifier.wrapContentWidth(), message = it, showCloseButton = false)
+                    }
                     AuthorNameTimestamp(isUserMe, message)
                     MessageContent(
                         message = message,

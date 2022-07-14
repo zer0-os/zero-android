@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zero.android.common.R
 import com.zero.android.common.extensions.convertDurationToString
-import com.zero.android.feature.messages.ui.voicememo.mediaPlayer.MediaSourceViewModel
+import com.zero.android.feature.messages.mediaPlayer.MediaSourceViewModel
 import com.zero.android.models.Message
 import com.zero.android.ui.components.ReverseTimer
 import com.zero.android.ui.theme.AppTheme

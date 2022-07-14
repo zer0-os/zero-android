@@ -42,6 +42,8 @@ data class Message(
 	val reactions: List<MessageReaction> = emptyList()
 ) : BaseMessage
 
+val Message.isReply get() = parentMessage != null
+
 data class DraftMessage(
 	override val channelUrl: String?,
 	override val author: Member,

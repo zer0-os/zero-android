@@ -1,7 +1,7 @@
 package com.zero.android.feature.messages.ui.voicememo
 
 import com.zero.android.common.ui.base.BaseViewModel
-import com.zero.android.feature.messages.ui.voicememo.mediaPlayer.MediaPlayerRepository
+import com.zero.android.feature.messages.mediaPlayer.MediaPlayerRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch

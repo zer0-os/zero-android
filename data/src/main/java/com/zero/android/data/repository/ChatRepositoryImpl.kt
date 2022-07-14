@@ -89,7 +89,7 @@ constructor(
 	}
 
 	override suspend fun reply(channel: Channel, id: String, message: DraftMessage): Flow<Message> {
-		return chatService.reply(channel, id, message).map { it.toModel() }
+		return send(channel, message.apply { parentMessageId = id })
 	}
 
     override suspend fun updateMessage(id: String, channelId: String, text: String) {
