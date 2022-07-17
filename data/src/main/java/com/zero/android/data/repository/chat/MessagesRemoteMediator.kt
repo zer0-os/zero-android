@@ -6,22 +6,25 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import com.zero.android.data.conversion.toEntity
 import com.zero.android.database.dao.MessageDao
+import com.zero.android.database.model.MessageWithRefs
 import com.zero.android.models.Channel
-import com.zero.android.models.Message
 import com.zero.android.network.service.ChatService
 import kotlinx.coroutines.flow.firstOrNull
 import retrofit2.HttpException
 import java.io.IOException
 
 @OptIn(ExperimentalPagingApi::class)
-class MessagesRemoteMediator(
+internal class MessagesRemoteMediator(
 	private val chatService: ChatService,
 	private val messageDao: MessageDao
-) : RemoteMediator<Int, Message>() {
+) : RemoteMediator<Int, MessageWithRefs>() {
 
 	private lateinit var channel: Channel
 
-	override suspend fun load(loadType: LoadType, state: PagingState<Int, Message>): MediatorResult {
+	override suspend fun load(
+		loadType: LoadType,
+		state: PagingState<Int, MessageWithRefs>
+	): MediatorResult {
 		return try {
 			// The network load method takes an optional after=<user.id>
 			// parameter. For every page after the first, pass the last user
@@ -44,7 +47,7 @@ class MessagesRemoteMediator(
 						// valid for initial load. If lastItem is null it means no
 						// items were loaded after the initial REFRESH and there are
 						// no more items to load.
-						lastItem.id
+						lastItem.message.id
 					}
 				}
 
@@ -60,11 +63,13 @@ class MessagesRemoteMediator(
 
 			response?.map { it.toEntity() }?.let { messageDao.upsert(*it.toTypedArray()) }
 
-			MediatorResult.Success(endOfPaginationReached = response.nextKey == null)
+			MediatorResult.Success(endOfPaginationReached = response.isNullOrEmpty())
 		} catch (e: IOException) {
 			MediatorResult.Error(e)
 		} catch (e: HttpException) {
 			MediatorResult.Error(e)
 		}
 	}
+
+	override suspend fun initialize() = InitializeAction.LAUNCH_INITIAL_REFRESH
 }

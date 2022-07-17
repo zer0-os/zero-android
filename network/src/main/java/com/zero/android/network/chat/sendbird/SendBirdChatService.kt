@@ -23,8 +23,6 @@ import kotlin.coroutines.resumeWithException
 internal class SendBirdChatService(private val logger: Logger) :
 	SendBirdBaseService(), ChatService {
 
-	private val messageService: SendBirdMessageService = SendBirdMessageService()
-
 	override suspend fun addListener(channelId: String, listener: ChatListener) {
 		SendBird.addChannelHandler(channelId, SendBirdChatListener(listener))
 	}
@@ -35,7 +33,7 @@ internal class SendBirdChatService(private val logger: Logger) :
 
 	override suspend fun getMessages(channel: Channel, timestamp: Long) =
 		callbackFlowWithAwait<List<ApiMessage>> {
-			val params = messageService.params(reverse = true)
+			val params = SendBirdMessages.params(reverse = true)
 			getChannel(channel).getMessagesByTimestamp(timestamp, params) { messages, e ->
 				if (e != null) {
 					logger.e(e)
@@ -48,7 +46,7 @@ internal class SendBirdChatService(private val logger: Logger) :
 
 	override suspend fun getMessages(channel: Channel, lastMessageId: String) =
 		callbackFlow<List<ApiMessage>> {
-			val params = messageService.params(reverse = true)
+			val params = SendBirdMessages.params(reverse = true)
 			getChannel(channel).getMessagesByMessageId(lastMessageId.toLong(), params) { messages, e ->
 				if (e != null) {
 					logger.e(e)

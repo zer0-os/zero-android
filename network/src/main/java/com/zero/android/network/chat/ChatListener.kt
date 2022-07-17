@@ -8,11 +8,11 @@ import com.zero.android.network.model.ApiMessage
 import com.zero.android.network.model.events.ApiMessageReactionEvent
 
 interface ChatListener {
-	fun onMessageReceived(var1: ApiChannel, var2: ApiMessage)
+	fun onMessageReceived(channel: ApiChannel, message: ApiMessage)
 
 	fun onMentionReceived(channel: ApiChannel, message: ApiMessage) {}
 
-	fun onMessageDeleted(channel: ApiChannel, msgId: Long) {}
+	fun onMessageDeleted(channel: ApiChannel, msgId: String) {}
 
 	fun onMessageUpdated(channel: ApiChannel, message: ApiMessage) {}
 

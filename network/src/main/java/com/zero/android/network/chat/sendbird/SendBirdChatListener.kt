@@ -1,6 +1,15 @@
 package com.zero.android.network.chat.sendbird
 
-import com.sendbird.android.*
+import com.sendbird.android.BaseChannel
+import com.sendbird.android.BaseMessage
+import com.sendbird.android.GroupChannel
+import com.sendbird.android.OpenChannel
+import com.sendbird.android.PollUpdateEvent
+import com.sendbird.android.PollVoteEvent
+import com.sendbird.android.ReactionEvent
+import com.sendbird.android.SendBird
+import com.sendbird.android.ThreadInfoUpdateEvent
+import com.sendbird.android.User
 import com.zero.android.network.chat.ChatListener
 import com.zero.android.network.chat.conversion.toApi
 import com.zero.android.network.chat.conversion.toType
@@ -12,7 +21,7 @@ class SendBirdChatListener(private val listener: ChatListener) : SendBird.Channe
 	}
 
 	override fun onMessageDeleted(channel: BaseChannel, msgId: Long) {
-		listener.onMessageDeleted(channel.toApi(), msgId)
+		listener.onMessageDeleted(channel.toApi(), msgId.toString())
 	}
 
 	override fun onMessageUpdated(channel: BaseChannel, message: BaseMessage) {
