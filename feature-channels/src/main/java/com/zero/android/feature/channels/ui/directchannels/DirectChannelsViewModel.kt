@@ -3,8 +3,9 @@ package com.zero.android.feature.channels.ui.directchannels
 import com.zero.android.common.ui.Result
 import com.zero.android.common.ui.asResult
 import com.zero.android.common.ui.base.BaseViewModel
+import com.zero.android.data.delegates.Preferences
+import com.zero.android.data.manager.ChannelTriggerSearchManager
 import com.zero.android.data.repository.ChannelRepository
-import com.zero.android.database.AppPreferences
 import com.zero.android.models.Channel
 import com.zero.android.models.Network
 import com.zero.android.models.getTitle
@@ -22,8 +23,9 @@ import javax.inject.Inject
 class DirectChannelsViewModel
 @Inject
 constructor(
-	private val preferences: AppPreferences,
-	private val channelRepository: ChannelRepository
+    private val preferences: Preferences,
+    private val channelRepository: ChannelRepository,
+    private val channelSearchManager: ChannelTriggerSearchManager,
 ) : BaseViewModel() {
 
 	private lateinit var network: Network
@@ -33,8 +35,9 @@ constructor(
 	private val _uiState = MutableStateFlow(DirectChannelScreenUiState(DirectChannelUiState.Loading))
     val uiState: StateFlow<DirectChannelScreenUiState> = _uiState
     private val mainDataSource = mutableListOf<Channel>()
+    val showSearchBar: StateFlow<Boolean> = channelSearchManager.showSearchBar
 
-	fun onNetworkUpdated(network: Network) {
+    fun onNetworkUpdated(network: Network) {
 		this.network = network
 		loadChannels()
 	}
@@ -51,6 +54,11 @@ constructor(
                 }
             }
         }
+    }
+
+    fun onSearchClosed() {
+        filterChannels("")
+        ioScope.launch { channelSearchManager.triggerChannelSearch(false) }
     }
 
 	private fun loadChannels() {

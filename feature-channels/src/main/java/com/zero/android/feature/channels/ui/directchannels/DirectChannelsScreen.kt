@@ -11,10 +11,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -37,13 +33,16 @@ fun DirectChannelsRoute(
 	onChannelSelected: (Channel) -> Unit
 ) {
 	val uiState: DirectChannelScreenUiState by viewModel.uiState.collectAsState()
+    val showSearch: Boolean by viewModel.showSearchBar.collectAsState()
 
 	LaunchedEffect(network?.id) { network?.let { viewModel.onNetworkUpdated(it) } }
 	DirectChannelsScreen(
 		loggedInUser = viewModel.loggedInUserId,
 		uiState = uiState,
+        showSearchBar = showSearch,
 		onChannelSelected = onChannelSelected,
-        onChannelSearched = { viewModel.filterChannels(it) }
+        onChannelSearched = { viewModel.filterChannels(it) },
+        onSearchClosed = viewModel::onSearchClosed
 	)
 }
 
@@ -51,27 +50,16 @@ fun DirectChannelsRoute(
 fun DirectChannelsScreen(
 	loggedInUser: String,
 	uiState: DirectChannelScreenUiState,
+    showSearchBar: Boolean = false,
 	onChannelSelected: (Channel) -> Unit,
     onChannelSearched: (String) -> Unit,
+    onSearchClosed: () -> Unit,
 ) {
 	val directChannelsUiState = uiState.directChannelsUiState
     var searchText: String by remember { mutableStateOf("") }
-    var showSearchBar by remember { mutableStateOf(false) }
 
-    val nestedScrollConnection = remember {
-        object : NestedScrollConnection {
-            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                val delta = available.y
-                val showSearch = delta > 0
-                if (showSearchBar != showSearch) {
-                    showSearchBar = showSearch
-                }
-                return Offset.Zero
-            }
-        }
-    }
 	if (directChannelsUiState is DirectChannelUiState.Success) {
-        Column(modifier = Modifier.fillMaxWidth().nestedScroll(nestedScrollConnection)) {
+        Column(modifier = Modifier.fillMaxWidth()) {
             if (showSearchBar) {
                 Row(modifier = Modifier
                     .padding(8.dp)
@@ -110,8 +98,7 @@ fun DirectChannelsScreen(
                     )
                     TextButton(onClick = {
                         searchText = ""
-                        showSearchBar = false
-                        onChannelSearched(searchText)
+                        onSearchClosed()
                     }) {
                         Text("Cancel", color = AppTheme.colors.colorTextPrimary)
                     }
