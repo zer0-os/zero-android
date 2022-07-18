@@ -34,7 +34,7 @@ fun ReplyMessage(
         Row(
             modifier = modifier
                 .background(
-                    color = AppTheme.colors.surface.copy(alpha = 0.05f),
+                    color = AppTheme.colors.surface.copy(alpha = 0.2f),
                     shape = RoundedCornerShape(12.dp)
                 )
                 .padding(horizontal = 6.dp, vertical = 6.dp),
