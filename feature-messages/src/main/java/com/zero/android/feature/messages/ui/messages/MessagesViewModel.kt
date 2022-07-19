@@ -2,6 +2,8 @@ package com.zero.android.feature.messages.ui.messages
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.filter
 import com.zero.android.common.ui.Result
 import com.zero.android.common.ui.asResult
 import com.zero.android.common.ui.base.BaseViewModel
@@ -42,7 +44,8 @@ constructor(
 		get() = runBlocking(Dispatchers.IO) { preferences.userId() }
 
 	private val _channel = MutableStateFlow<Result<Channel>>(Result.Loading)
-	private val _messages: Flow<Result<List<Message>>> = chatRepository.channelChatMessages.asResult()
+	private val _messages: Flow<Result<PagingData<Message>>> =
+		chatRepository.channelChatMessages.asResult()
 
 	val uiState: StateFlow<ChatScreenUiState> =
 		combine(_channel, _messages) { channelResult, messagesResult ->

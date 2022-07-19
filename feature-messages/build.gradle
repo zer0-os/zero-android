@@ -5,3 +5,8 @@ plugins {
 }
 
 apply from: '../feature_module.gradle'
+
+dependencies {
+	// Data
+	implementation "androidx.paging:paging-runtime:${versions.paging}"
+}
