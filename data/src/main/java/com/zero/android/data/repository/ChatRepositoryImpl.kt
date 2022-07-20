@@ -8,6 +8,7 @@ import androidx.paging.map
 import com.zero.android.common.util.MESSAGES_PAGE_LIMIT
 import com.zero.android.data.conversion.toEntity
 import com.zero.android.data.conversion.toModel
+import com.zero.android.data.repository.chat.MessageListener
 import com.zero.android.data.repository.chat.MessagesRemoteMediator
 import com.zero.android.database.dao.MessageDao
 import com.zero.android.database.model.toModel
@@ -15,19 +16,14 @@ import com.zero.android.models.Channel
 import com.zero.android.models.DraftMessage
 import com.zero.android.models.Message
 import com.zero.android.models.enums.MessageType
-import com.zero.android.network.chat.ChatListener
-import com.zero.android.network.model.ApiChannel
-import com.zero.android.network.model.ApiMessage
 import com.zero.android.network.service.ChatMediaService
 import com.zero.android.network.service.ChatService
 import com.zero.android.network.service.MessageService
 import com.zero.android.network.util.NetworkMediaUtil
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import timber.log.Timber
 import javax.inject.Inject
@@ -44,24 +40,8 @@ constructor(
 
 	override val channelChatMessages = MutableStateFlow<PagingData<Message>>(PagingData.empty())
 
-	override suspend fun addListener(id: String) {
-		chatService.addListener(
-			id,
-			object : ChatListener {
-				override fun onMessageReceived(channel: ApiChannel, message: ApiMessage) {
-					runBlocking(Dispatchers.IO) { messageDao.upsert(message.toEntity()) }
-				}
-
-				override fun onMessageUpdated(channel: ApiChannel, message: ApiMessage) {
-					runBlocking(Dispatchers.IO) { messageDao.upsert(message.toEntity()) }
-				}
-
-				override fun onMessageDeleted(channel: ApiChannel, msgId: String) {
-					runBlocking(Dispatchers.IO) { messageDao.delete(msgId) }
-				}
-			}
-		)
-	}
+	override suspend fun addListener(id: String) =
+		chatService.addListener(id, MessageListener(messageDao))
 
 	override suspend fun removeListener(id: String) = chatService.removeListener(id)
 

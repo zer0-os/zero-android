@@ -1,5 +1,6 @@
 package com.zero.android.feature.messages.ui.messages
 
+import androidx.paging.PagingData
 import com.zero.android.models.Channel
 import com.zero.android.models.Message
 
@@ -15,7 +16,7 @@ sealed interface ChatChannelUiState {
 }
 
 sealed interface MessagesUiState {
-	data class Success(val messages: List<Message>) : MessagesUiState
+	data class Success(val messages: PagingData<Message>) : MessagesUiState
 	object Error : MessagesUiState
 	object Loading : MessagesUiState
 }
