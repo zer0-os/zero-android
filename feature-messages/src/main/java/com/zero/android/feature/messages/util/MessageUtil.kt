@@ -22,11 +22,11 @@ object MessageUtil {
 			status = MessageStatus.SUCCEEDED
 		)
 
-	fun newFileMessage(file: File, authorId: String) =
+	fun newFileMessage(file: File, authorId: String, type: MessageType) =
 		DraftMessage(
 			channelId = "",
 			author = Member(authorId),
-			type = MessageType.IMAGE,
+			type = type,
 			mentionType = MessageMentionType.UNKNOWN,
 			file = file,
 			createdAt = Calendar.getInstance().timeInMillis,

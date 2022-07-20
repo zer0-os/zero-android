@@ -9,17 +9,14 @@ import com.zero.android.models.Message
 import com.zero.android.models.enums.MessageType
 import com.zero.android.network.chat.ChatListener
 import com.zero.android.network.model.ApiChannel
+import com.zero.android.network.model.ApiDeleteMessage
 import com.zero.android.network.model.ApiMessage
 import com.zero.android.network.service.ChatMediaService
 import com.zero.android.network.service.ChatService
 import com.zero.android.network.service.MessageService
 import com.zero.android.network.util.NetworkMediaUtil
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import timber.log.Timber
@@ -86,18 +83,10 @@ constructor(
 						networkMediaUtil.getUploadUrl(uploadInfo),
 						networkMediaUtil.getUploadBody(message.file!!)
 					)
-				DraftMessage(
-					channelId = channel.id,
-					author = message.author,
-					type = message.type,
-					mentionType = message.mentionType,
+				message.copy(
 					fileUrl = fileUpload.secureUrl,
 					fileName = fileUpload.originalFilename,
-					fileMimeType = fileUpload.type,
-					createdAt = message.createdAt,
-					updatedAt = message.updatedAt,
-					status = message.status,
-					data = JSONObject(fileUpload.dataMap).toString()
+					data = JSONObject(fileUpload.getDataMap(message.type)).toString()
 				)
 			} else {
 				Timber.e("Upload Info is required for file upload")
@@ -109,21 +98,31 @@ constructor(
 	}
 
 	override suspend fun reply(channel: Channel, id: String, message: DraftMessage): Flow<Message> {
-		return chatService.reply(channel, id, message).map {
-			messageDao.upsert(it.toEntity())
-			it.toModel()
-		}
+		return send(channel, message.apply { parentMessageId = id })
 	}
 
-	override suspend fun updateMessage(id: String, channelId: String, text: String) {
-		messageService.updateMessage(id, channelId, text).firstOrNull()?.let {
-			messageDao.upsert(it.toEntity())
-		}
-	}
+    override suspend fun updateMessage(id: String, channelId: String, text: String) {
+        val response = messageService.updateMessage(id, channelId, text)
+        if (response.isSuccessful) {
+            channelChatMessages.update { messages ->
+                val updatedMessage = messages.firstOrNull { it.id == id }?.copy(
+                    message = text
+                )
+                if (updatedMessage != null) {
+                    messages.toMutableList().apply { this[messages.indexOfFirst { it.id == id }] = updatedMessage }
+                } else messages
+            }
+        }
+    }
 
-	override suspend fun deleteMessage(id: String, channelId: String) {
-		return messageService.deleteMessage(id, channelId).also { messageDao.delete(id) }
-	}
+    override suspend fun deleteMessage(message: Message, channelId: String) {
+        val response = messageService.deleteMessage(message.id, ApiDeleteMessage(channelId))
+        if (response.isSuccessful) {
+            channelChatMessages.update { messages ->
+                messages.toMutableList().apply { this.remove(message) }
+            }
+        }
+    }
 
 	private suspend fun appendNewChatMessage(message: Message) {
 		val messages = channelChatMessages.firstOrNull()?.toMutableList() ?: mutableListOf()
