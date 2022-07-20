@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 
 interface ChatRepository {
 
-	val channelChatMessages: MutableStateFlow<List<Message>>
+	fun allChatMessages(channelId: String): Flow<List<Message>>
 
 	suspend fun getMessages(channel: Channel, timestamp: Long = Long.MAX_VALUE): Flow<List<Message>>
 
@@ -20,7 +20,7 @@ interface ChatRepository {
 
 	suspend fun updateMessage(id: String, channelId: String, text: String)
 
-	suspend fun deleteMessage(message: Message, channelId: String)
+	suspend fun deleteMessage(message: Message, channel: Channel)
 
 	suspend fun addListener(id: String)
 

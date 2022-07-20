@@ -19,7 +19,7 @@ abstract class MessageDaoInterface : BaseDao<MessageEntity>() {
 
 	@Transaction
 	@Query("SELECT * FROM messages WHERE channelId = :channelId")
-	abstract fun getByChannel(channelId: String): Flow<MessageWithRefs>
+	abstract fun getByChannel(channelId: String): Flow<List<MessageWithRefs>>
 
 	@Transaction
 	internal open suspend fun upsert(memberDao: MemberDao, vararg data: MessageWithRefs) {

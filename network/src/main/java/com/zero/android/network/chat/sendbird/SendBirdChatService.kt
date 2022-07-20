@@ -109,7 +109,7 @@ internal class SendBirdChatService(private val logger: Logger) :
 			withSameScope {
 				getChannel(channel).deleteMessage(message.toApi().toMessage()) {
 					if (it != null) {
-						logger.e("Failed to send text message", it)
+						logger.e("Failed to delete message", it)
 						coroutine.resumeWithException(it)
 					} else {
 						coroutine.resume(Unit)

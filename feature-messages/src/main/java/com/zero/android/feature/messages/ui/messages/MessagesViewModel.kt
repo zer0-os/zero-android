@@ -35,7 +35,7 @@ constructor(
 		get() = runBlocking(Dispatchers.IO) { preferences.userId() }
 
 	private val _channel = MutableStateFlow<Result<Channel>>(Result.Loading)
-	private val _messages: Flow<Result<List<Message>>> = chatRepository.channelChatMessages.asResult()
+	private val _messages: Flow<Result<List<Message>>> = chatRepository.allChatMessages(channelId).asResult()
 
 	val uiState: StateFlow<ChatScreenUiState> =
 		combine(_channel, _messages) { channelResult, messagesResult ->
@@ -99,7 +99,9 @@ constructor(
 
     fun deleteMessage(message: Message) {
         ioScope.launch {
-            chatRepository.deleteMessage(message, channelId)
+            (_channel.firstOrNull() as? Result.Success)?.data?.let { channel ->
+                chatRepository.deleteMessage(message, channel)
+            }
         }
     }
 
