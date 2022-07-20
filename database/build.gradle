@@ -19,8 +19,7 @@ dependencies {
 	implementation "androidx.room:room-runtime:${versions.room}"
 	kapt "androidx.room:room-compiler:${versions.room}"
 	implementation "androidx.room:room-ktx:${versions.room}"
-	implementation "androidx.room:room-paging:${versions.roomPaging}"
-	implementation "androidx.paging:paging-runtime:${versions.paging}"
+	implementation "androidx.room:room-paging:${versions.room}"
 
 	// Misc
 	implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:${versions.json}"

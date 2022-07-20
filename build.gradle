@@ -35,15 +35,13 @@ buildscript {
 		"coil"            : '2.1.0',
 		"pager"           : "0.24.12-rc",
 		"imagePicker"     : "2.1",
-		"pagingCompose"   : "1.0.0-alpha15",
 
 		// Data
 		"retrofit"        : "2.9.0",
 		"okhttp"          : "4.9.3",
 		"lock"            : "3.2.0",
 		"room"            : "2.4.2",
-		"roomPaging"      : "2.5.0-alpha02",
-		"paging"          : "3.1.1",
+		"pagingCompose"   : "1.0.0-alpha15",
 		"datastore"       : "1.0.0",
 		"jsonConvertor"   : "0.8.0",
 

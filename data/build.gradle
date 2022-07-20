@@ -20,5 +20,5 @@ dependencies {
 	kapt "com.google.dagger:hilt-compiler:${versions.hilt}"
 
 	// Data
-	implementation "androidx.paging:paging-runtime:${versions.paging}"
+	implementation "androidx.paging:paging-compose:${versions.pagingCompose}"
 }
