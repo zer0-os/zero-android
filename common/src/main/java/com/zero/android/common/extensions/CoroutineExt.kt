@@ -20,8 +20,7 @@ inline fun <T> FlowCollector<T>.emitInScope(
 @OptIn(ExperimentalTypeInference::class)
 inline fun <T> callbackFlowWithAwait(
 	@BuilderInference crossinline block: suspend ProducerScope<T>.() -> Unit
-) =
-	callbackFlow<T> {
-		block(this)
-		awaitClose()
-	}
+) = callbackFlow {
+	block(this)
+	awaitClose()
+}

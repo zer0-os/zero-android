@@ -15,7 +15,6 @@ import com.zero.android.network.chat.conversion.toMessage
 import com.zero.android.network.chat.conversion.toParams
 import com.zero.android.network.model.ApiMessage
 import com.zero.android.network.service.ChatService
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -45,7 +44,7 @@ internal class SendBirdChatService(private val logger: Logger) :
 		}
 
 	override suspend fun getMessages(channel: Channel, lastMessageId: String) =
-		callbackFlow<List<ApiMessage>> {
+		callbackFlowWithAwait<List<ApiMessage>> {
 			val params = SendBirdMessages.params(reverse = true)
 			getChannel(channel).getMessagesByMessageId(lastMessageId.toLong(), params) { messages, e ->
 				if (e != null) {

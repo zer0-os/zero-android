@@ -54,15 +54,18 @@ internal class MessagesRemoteMediator(
 			// wrapped in a withContext(Dispatcher.IO) { ... } block since
 			// Retrofit's Coroutine CallAdapter dispatches on a worker
 			// thread.
-			val response =
-				loadKey?.let {
-					chatService.getMessages(channel = channel, lastMessageId = loadKey).firstOrNull()
-				}
-					?: chatService.getMessages(channel = channel).firstOrNull()
+			try {
+				val response =
+					loadKey?.let {
+						chatService.getMessages(channel = channel, lastMessageId = loadKey).firstOrNull()
+					}
+						?: chatService.getMessages(channel = channel).firstOrNull()
 
-			response?.map { it.toEntity() }?.let { messageDao.upsert(*it.toTypedArray()) }
-
-			MediatorResult.Success(endOfPaginationReached = response.isNullOrEmpty())
+				response?.map { it.toEntity() }?.let { messageDao.upsert(*it.toTypedArray()) }
+				MediatorResult.Success(endOfPaginationReached = response.isNullOrEmpty())
+			} catch (e: Exception) {
+				MediatorResult.Error(e)
+			}
 		} catch (e: IOException) {
 			MediatorResult.Error(e)
 		} catch (e: HttpException) {
