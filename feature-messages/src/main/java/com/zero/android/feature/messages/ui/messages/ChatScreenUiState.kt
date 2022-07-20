@@ -1,22 +1,15 @@
 package com.zero.android.feature.messages.ui.messages
 
 import androidx.paging.PagingData
+import com.zero.android.common.ui.Result
 import com.zero.android.models.Channel
 import com.zero.android.models.Message
 
 data class ChatScreenUiState(
-	val channelUiState: ChatChannelUiState,
-	val messagesUiState: MessagesUiState
+	val channelUiState: ChannelUIState,
+	val messagesUiState: MessagesUIState
 )
 
-sealed interface ChatChannelUiState {
-	data class Success(val channel: Channel) : ChatChannelUiState
-	object Error : ChatChannelUiState
-	object Loading : ChatChannelUiState
-}
+typealias ChannelUIState = Result<Channel>
 
-sealed interface MessagesUiState {
-	data class Success(val messages: PagingData<Message>) : MessagesUiState
-	object Error : MessagesUiState
-	object Loading : MessagesUiState
-}
+typealias MessagesUIState = Result<PagingData<Message>>

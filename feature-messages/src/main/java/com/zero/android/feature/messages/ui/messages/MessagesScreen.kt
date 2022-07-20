@@ -22,10 +22,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.net.toFile
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.zero.android.common.R
 import com.zero.android.common.extensions.toFile
+import com.zero.android.common.ui.Result
 import com.zero.android.feature.messages.ui.voicememo.MemoRecorderViewModel
 import com.zero.android.feature.messages.util.MessageUtil
+import com.zero.android.models.Message
 import com.zero.android.ui.components.AppBar
 import com.zero.android.ui.components.Background
 import com.zero.android.ui.extensions.Preview
@@ -42,6 +46,8 @@ fun MessagesRoute(
 	val recordingState: Boolean by recordMemoViewModel.recordingState.collectAsState()
 	val userChannelInfo = viewModel.loggedInUserId to viewModel.isGroupChannel
 	val context = LocalContext.current
+
+	val pagedMessages = viewModel.messages.collectAsLazyPagingItems()
 
 	LaunchedEffect(Unit) {
 		viewModel.loadChannel()
@@ -80,6 +86,7 @@ fun MessagesRoute(
 		userChannelInfo,
 		chatUiState.channelUiState,
 		chatUiState.messagesUiState,
+		pagedMessages,
 		recordingState,
 		onNewMessage = { newMessage ->
 			viewModel.sendMessage(
@@ -111,15 +118,16 @@ fun MessagesRoute(
 fun MessagesScreen(
 	onBackClick: () -> Unit,
 	userChannelInfo: Pair<String, Boolean>,
-	chatChannelUiState: ChatChannelUiState,
-	messagesUiState: MessagesUiState,
+	chatChannelUiState: ChannelUIState,
+	messagesUiState: MessagesUIState,
+	messages: LazyPagingItems<Message>,
 	isMemoRecording: Boolean,
 	onNewMessage: (String) -> Unit,
 	onPickImage: (Intent) -> Unit,
 	onRecordMemo: () -> Unit,
 	onSendMemo: () -> Unit
 ) {
-	if (chatChannelUiState is ChatChannelUiState.Success) {
+	if (chatChannelUiState is Result.Success) {
 		val topBar: @Composable () -> Unit = {
 			AppBar(
 				scrollBehavior = null,
@@ -135,7 +143,7 @@ fun MessagesScreen(
 				title = {
 					ChatScreenAppBarTitle(
 						userChannelInfo.first,
-						chatChannelUiState.channel,
+						chatChannelUiState.data,
 						userChannelInfo.second
 					)
 				},
@@ -157,6 +165,7 @@ fun MessagesScreen(
 				MessagesContent(
 					userChannelInfo = userChannelInfo,
 					uiState = messagesUiState,
+					messages = messages,
 					onNewMessage = onNewMessage,
 					onImagePicker = onPickImage,
 					isMemoRecording = isMemoRecording,

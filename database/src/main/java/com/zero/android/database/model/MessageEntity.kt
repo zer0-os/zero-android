@@ -14,7 +14,7 @@ import com.zero.android.models.enums.MessageType
 
 @Entity(
 	tableName = "messages",
-	indices = [Index("channelId"), Index("authorId")],
+	indices = [Index("channelId"), Index("authorId"), Index("parentMessageId")],
 	foreignKeys =
 	[
 		ForeignKey(

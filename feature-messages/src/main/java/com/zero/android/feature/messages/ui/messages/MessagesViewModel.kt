@@ -3,7 +3,6 @@ package com.zero.android.feature.messages.ui.messages
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
-import androidx.paging.filter
 import com.zero.android.common.ui.Result
 import com.zero.android.common.ui.asResult
 import com.zero.android.common.ui.base.BaseViewModel
@@ -44,32 +43,22 @@ constructor(
 		get() = runBlocking(Dispatchers.IO) { preferences.userId() }
 
 	private val _channel = MutableStateFlow<Result<Channel>>(Result.Loading)
-	private val _messages: Flow<Result<PagingData<Message>>> =
-		chatRepository.channelChatMessages.asResult()
+
+	val messages: Flow<PagingData<Message>> = chatRepository.channelChatMessages
+	private val _messagesResult = messages.asResult()
 
 	val uiState: StateFlow<ChatScreenUiState> =
-		combine(_channel, _messages) { channelResult, messagesResult ->
-			val chatChannelUiState =
-				when (channelResult) {
-					is Result.Success -> ChatChannelUiState.Success(channelResult.data)
-					is Result.Loading -> ChatChannelUiState.Loading
-					else -> ChatChannelUiState.Error
-				}
-			val messagesUiState =
-				when (messagesResult) {
-					is Result.Success ->
-						MessagesUiState.Success(
-							messagesResult.data.filter { it.channelId == channelId }
-						)
-					is Result.Loading -> MessagesUiState.Loading
-					else -> MessagesUiState.Error
-				}
-			ChatScreenUiState(chatChannelUiState, messagesUiState)
+		combine(_channel, _messagesResult) { channelResult, messagesResult ->
+			ChatScreenUiState(channelUiState = channelResult, messagesUiState = messagesResult)
 		}
 			.stateIn(
 				scope = viewModelScope,
 				started = SharingStarted.WhileSubscribed(1_000),
-				initialValue = ChatScreenUiState(ChatChannelUiState.Loading, MessagesUiState.Loading)
+				initialValue =
+				ChatScreenUiState(
+					channelUiState = Result.Loading,
+					messagesUiState = Result.Loading
+				)
 			)
 
 	fun loadChannel() {

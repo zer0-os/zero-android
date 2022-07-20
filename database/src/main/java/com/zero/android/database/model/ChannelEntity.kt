@@ -2,6 +2,7 @@ package com.zero.android.database.model
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.zero.android.models.ChannelCategory
 import com.zero.android.models.DirectChannel
@@ -14,6 +15,7 @@ import com.zero.android.models.enums.ChannelType
 
 @Entity(
 	tableName = "channels",
+	indices = [Index("networkId"), Index("authorId")],
 	foreignKeys =
 	[
 		ForeignKey(

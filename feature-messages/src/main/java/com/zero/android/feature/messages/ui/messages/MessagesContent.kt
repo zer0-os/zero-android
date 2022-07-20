@@ -3,14 +3,27 @@ package com.zero.android.feature.messages.ui.messages
 import android.app.Activity
 import android.content.Intent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.add
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -18,12 +31,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.items
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.zero.android.common.extensions.format
 import com.zero.android.common.extensions.getActivity
 import com.zero.android.common.extensions.isSameDay
 import com.zero.android.common.extensions.toDate
+import com.zero.android.common.ui.Result
 import com.zero.android.feature.messages.ui.voicememo.RecordMemoView
+import com.zero.android.models.Message
 import com.zero.android.ui.components.BottomBarDivider
 import com.zero.android.ui.components.DayHeader
 import com.zero.android.ui.components.JumpToBottom
@@ -36,7 +53,8 @@ import kotlinx.coroutines.launch
 fun MessagesContent(
 	modifier: Modifier = Modifier,
 	userChannelInfo: Pair<String, Boolean>,
-	uiState: MessagesUiState,
+	uiState: MessagesUIState,
+	messages: LazyPagingItems<Message>,
 	isMemoRecording: Boolean,
 	onNewMessage: (String) -> Unit,
 	onImagePicker: (Intent) -> Unit,
@@ -59,6 +77,7 @@ fun MessagesContent(
 					modifier = Modifier.weight(1f),
 					userChannelInfo = userChannelInfo,
 					uiState = uiState,
+					messages = messages,
 					scrollState = scrollState,
 					coroutineScope = scope
 				)
@@ -99,13 +118,13 @@ private fun showImagePicker(
 fun Messages(
 	modifier: Modifier = Modifier,
 	userChannelInfo: Pair<String, Boolean>,
-	uiState: MessagesUiState,
+	uiState: MessagesUIState,
+	messages: LazyPagingItems<Message>,
 	scrollState: LazyListState,
 	coroutineScope: CoroutineScope
 ) {
 	Box(modifier = modifier.padding(14.dp)) {
-		if (uiState is MessagesUiState.Success) {
-			val messages = uiState.messages
+		if (uiState is Result.Success) {
 			LazyColumn(
 				modifier = Modifier.fillMaxSize(),
 				reverseLayout = true,
@@ -113,37 +132,38 @@ fun Messages(
 				contentPadding =
 				WindowInsets.statusBars.add(WindowInsets(top = 90.dp)).asPaddingValues()
 			) {
-				for (index in messages.indices) {
-					val prevAuthor = messages.getOrNull(index - 1)?.author
-					val nextAuthor = messages.getOrNull(index + 1)?.author
-					val content = messages[index]
+				items(messages) { content ->
+					content as Message
+					val index = messages.itemSnapshotList.items.indexOf(content)
+
+					val prevAuthor = messages[index - 1]?.author
+					val nextAuthor = messages[index + 1]?.author
 					val messageDate = content.createdAt.toDate()
-					val nextMessageDate = (messages.getOrNull(index + 1)?.createdAt ?: 0).toDate()
+					val nextMessageDate = (messages[index + 1]?.createdAt ?: 0).toDate()
 					val isSameDay = nextMessageDate.isSameDay(messageDate)
 					val isFirstMessageByAuthor = prevAuthor != content.author
 					val isLastMessageByAuthor = nextAuthor != content.author
 
-					item {
-						if (!userChannelInfo.second) {
-							DirectMessage(
-								msg = content,
-								isUserMe = content.author.id == userChannelInfo.first,
-								isSameDay = isSameDay,
-								isFirstMessageByAuthor = isFirstMessageByAuthor,
-								isLastMessageByAuthor = isLastMessageByAuthor,
-								onAuthorClick = {}
-							)
-						} else {
-							ChannelMessage(
-								msg = content,
-								isUserMe = content.author.id == userChannelInfo.first,
-								isFirstMessageByAuthor = isFirstMessageByAuthor,
-								onAuthorClick = {}
-							)
-						}
+					if (!userChannelInfo.second) {
+						DirectMessage(
+							msg = content,
+							isUserMe = content.author.id == userChannelInfo.first,
+							isSameDay = isSameDay,
+							isFirstMessageByAuthor = isFirstMessageByAuthor,
+							isLastMessageByAuthor = isLastMessageByAuthor,
+							onAuthorClick = {}
+						)
+					} else {
+						ChannelMessage(
+							msg = content,
+							isUserMe = content.author.id == userChannelInfo.first,
+							isFirstMessageByAuthor = isFirstMessageByAuthor,
+							onAuthorClick = {}
+						)
 					}
+
 					if (!isSameDay) {
-						item { DayHeader(messageDate.format("MMMM dd, yyyy")) }
+						DayHeader(messageDate.format("MMMM dd, yyyy"))
 					}
 				}
 			}

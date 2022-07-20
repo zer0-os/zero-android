@@ -53,6 +53,7 @@ constructor(
 
 	@OptIn(ExperimentalPagingApi::class)
 	override suspend fun getMessages(channel: Channel, timestamp: Long): Flow<PagingData<Message>> {
+		channelChatMessages.emit(PagingData.empty())
 		return Pager(
 			config = PagingConfig(pageSize = MESSAGES_PAGE_LIMIT),
 			remoteMediator = MessagesRemoteMediator(chatService, messageDao),
