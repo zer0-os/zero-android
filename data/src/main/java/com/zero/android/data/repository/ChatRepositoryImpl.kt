@@ -37,18 +37,6 @@ constructor(
 
 	override val channelChatMessages = MutableStateFlow<List<Message>>(emptyList())
 
-	override suspend fun getMessages(channel: Channel, timestamp: Long): Flow<List<Message>> {
-		messageDao.getByChannel(channel.id)
-
-		val messagesResult =
-			chatService
-				.getMessages(channel, timestamp)
-				.map { messages -> messages.map { it.toModel() } }
-				.apply { collect(channelChatMessages) }
-		messagesResult.collect(channelChatMessages)
-		return messagesResult
-	}
-
 	override suspend fun addListener(id: String) {
 		chatService.addListener(
 			id,
@@ -61,6 +49,18 @@ constructor(
 	}
 
 	override suspend fun removeListener(id: String) = chatService.removeListener(id)
+
+	override suspend fun getMessages(channel: Channel, timestamp: Long): Flow<List<Message>> {
+		messageDao.getByChannel(channel.id)
+
+		val messagesResult =
+			chatService
+				.getMessages(channel, timestamp)
+				.map { messages -> messages.map { it.toModel() } }
+				.apply { collect(channelChatMessages) }
+		messagesResult.collect(channelChatMessages)
+		return messagesResult
+	}
 
 	override suspend fun getMessages(channel: Channel, id: String): Flow<List<Message>> {
 		return chatService.getMessages(channel, id).map { messages -> messages.map { it.toModel() } }

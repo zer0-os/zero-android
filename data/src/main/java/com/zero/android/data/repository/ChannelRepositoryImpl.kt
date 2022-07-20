@@ -11,11 +11,13 @@ import com.zero.android.models.enums.ChannelType
 import com.zero.android.network.model.ApiDirectChannel
 import com.zero.android.network.model.ApiGroupChannel
 import com.zero.android.network.service.ChannelService
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ChannelRepositoryImpl
@@ -24,48 +26,61 @@ constructor(private val channelDao: ChannelDao, private val channelService: Chan
 	ChannelRepository {
 
 	override suspend fun getDirectChannels() = channelFlow {
-		channelDao
-			.getDirectChannels()
-			.mapNotNull { channels -> channels.map { it.toModel() } }
-			.collectLatest { trySend(it) }
-		channelService.getDirectChannels().firstOrNull()?.let { channels ->
-			channelDao.upsert(*channels.map { it.toEntity() }.toTypedArray())
-			trySend(channels.map { it.toModel() })
+		launch(Dispatchers.Unconfined) {
+			channelDao
+				.getDirectChannels()
+				.mapNotNull { channels -> channels.map { it.toModel() } }
+				.collectLatest { send(it) }
+		}
+		launch {
+			channelService.getDirectChannels().firstOrNull()?.let { channels ->
+				channelDao.upsert(*channels.map { it.toEntity() }.toTypedArray())
+			}
 		}
 	}
 
 	override suspend fun getGroupChannels(networkId: String) = channelFlow {
-		channelDao
-			.getGroupChannels(networkId)
-			.mapNotNull { channels -> channels.map { it.toModel() } }
-			.collectLatest { trySend(it) }
-		channelService.getGroupChannels(networkId, ChannelType.GROUP).firstOrNull()?.let { channels ->
-			channelDao.upsert(*channels.map { it.toEntity() }.toTypedArray())
-			trySend(channels.map { it.toModel() })
+		launch(Dispatchers.Unconfined) {
+			channelDao
+				.getGroupChannels(networkId)
+				.mapNotNull { channels -> channels.map { it.toModel() } }
+				.collectLatest { trySend(it) }
+		}
+		launch {
+			channelService.getGroupChannels(networkId, ChannelType.GROUP).firstOrNull()?.let { channels ->
+				channelDao.upsert(*channels.map { it.toEntity() }.toTypedArray())
+			}
 		}
 	}
 
 	override suspend fun getGroupChannel(id: String) = channelFlow {
-		channelDao
-			.getGroupChannel(id)
-			.mapNotNull { channel -> channel?.toModel() }
-			.collectLatest { trySend(it) }
-		channelService.getChannel(id, type = ChannelType.GROUP).map {
-			it as ApiGroupChannel
-			channelDao.upsert(it.toEntity())
-			trySend(it.toModel())
+		launch(Dispatchers.Unconfined) {
+			channelDao
+				.getGroupChannel(id)
+				.mapNotNull { channel -> channel?.toModel() }
+				.collectLatest { trySend(it) }
+		}
+		launch {
+			channelService.getChannel(id, type = ChannelType.GROUP).map {
+				it as ApiGroupChannel
+				channelDao.upsert(it.toEntity())
+			}
 		}
 	}
 
 	override suspend fun getDirectChannel(id: String) = channelFlow {
-		channelDao
-			.getDirectChannel(id)
-			.mapNotNull { channel -> channel?.toModel() }
-			.collectLatest { trySend(it) }
-		channelService.getChannel(id, type = ChannelType.GROUP).map {
-			it as ApiDirectChannel
-			channelDao.upsert(it.toEntity())
-			trySend(it.toModel())
+		launch(Dispatchers.Unconfined) {
+			channelDao
+				.getDirectChannel(id)
+				.mapNotNull { channel -> channel?.toModel() }
+				.collectLatest { trySend(it) }
+		}
+		launch {
+			channelService.getChannel(id, type = ChannelType.GROUP).map {
+				it as ApiDirectChannel
+				channelDao.upsert(it.toEntity())
+				trySend(it.toModel())
+			}
 		}
 	}
 
