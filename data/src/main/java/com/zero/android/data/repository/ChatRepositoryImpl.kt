@@ -56,7 +56,7 @@ constructor(
 		channelChatMessages.emit(PagingData.empty())
 		return Pager(
 			config = PagingConfig(pageSize = MESSAGES_PAGE_LIMIT),
-			remoteMediator = MessagesRemoteMediator(chatService, messageDao),
+			remoteMediator = MessagesRemoteMediator(chatService, messageDao, channel),
 			pagingSourceFactory = { messageDao.getByChannel(channel.id) }
 		)
 			.flow

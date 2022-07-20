@@ -136,13 +136,15 @@ fun Messages(
 					content as Message
 					val index = messages.itemSnapshotList.items.indexOf(content)
 
-					val prevAuthor = messages[index - 1]?.author
-					val nextAuthor = messages[index + 1]?.author
+					val prevAuthor = if (index != 0) messages[index - 1]?.author else null
+					val nextAuthor = if (messages.itemCount > index + 1) messages[index + 1]?.author else null
 					val messageDate = content.createdAt.toDate()
-					val nextMessageDate = (messages[index + 1]?.createdAt ?: 0).toDate()
+					val nextMessageDate =
+						if (messages.itemCount > index + 1) (messages[index + 1]?.createdAt ?: 0).toDate()
+						else 0L.toDate()
 					val isSameDay = nextMessageDate.isSameDay(messageDate)
-					val isFirstMessageByAuthor = prevAuthor != content.author
-					val isLastMessageByAuthor = nextAuthor != content.author
+					val isFirstMessageByAuthor = prevAuthor?.id != content.author.id
+					val isLastMessageByAuthor = nextAuthor?.id != content.author.id
 
 					if (!userChannelInfo.second) {
 						DirectMessage(

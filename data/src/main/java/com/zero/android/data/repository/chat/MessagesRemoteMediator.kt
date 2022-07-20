@@ -16,10 +16,9 @@ import java.io.IOException
 @OptIn(ExperimentalPagingApi::class)
 internal class MessagesRemoteMediator(
 	private val chatService: ChatService,
-	private val messageDao: MessageDao
+	private val messageDao: MessageDao,
+	private val channel: Channel
 ) : RemoteMediator<Int, MessageWithRefs>() {
-
-	private lateinit var channel: Channel
 
 	override suspend fun load(
 		loadType: LoadType,
