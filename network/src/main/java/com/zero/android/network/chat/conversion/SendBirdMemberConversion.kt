@@ -15,7 +15,7 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.json.jsonObject
 import okio.internal.commonAsUtf8ToByteArray
 
-private fun ApiMember.toSendBirdJsonString(): ByteArray {
+private fun ApiMember.toSendBirdBase64(): ByteArray {
 	val json =
 		Json.encodeToJsonElement(this).run {
 			jsonObject.apply { plus(Pair("is_online", status == ConnectionStatus.ONLINE)) }
@@ -37,7 +37,7 @@ internal fun User.toApi() =
 		isActive = isActive
 	)
 
-internal fun ApiMember.toUser() = User.buildFromSerializedData(toSendBirdJsonString())
+internal fun ApiMember.toUser() = User.buildFromSerializedData(toSendBirdBase64())
 
 internal fun Member.toApi(): ApiMember {
 	val properties =
@@ -60,7 +60,7 @@ internal fun Member.toApi(): ApiMember {
 	)
 }
 
-internal fun ApiMember.toMember() = Member.buildFromSerializedData(toSendBirdJsonString())
+internal fun ApiMember.toMember() = Member.buildFromSerializedData(toSendBirdBase64())
 
 internal fun Sender.toApi(): ApiMember {
 	val properties =
@@ -81,7 +81,7 @@ internal fun Sender.toApi(): ApiMember {
 	)
 }
 
-internal fun ApiMember.toSender() = Sender.buildFromSerializedData(toSendBirdJsonString())
+internal fun ApiMember.toSender() = Sender.buildFromSerializedData(toSendBirdBase64())
 
 internal fun User.ConnectionStatus.toType() = name.lowercase().toConnectionStatus()
 

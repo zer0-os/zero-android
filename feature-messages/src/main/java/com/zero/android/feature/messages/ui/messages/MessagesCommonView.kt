@@ -10,24 +10,32 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.zero.android.common.util.SymbolAnnotationType
 import com.zero.android.common.util.messageFormatter
+import com.zero.android.feature.messages.mediaPlayer.MediaSourceViewModel
+import com.zero.android.feature.messages.ui.voicememo.VoiceMessage
 import com.zero.android.models.Member
 import com.zero.android.models.Message
+import com.zero.android.models.enums.MessageType
 import com.zero.android.ui.theme.AppTheme
 import com.zero.android.ui.theme.White
 
 @Composable
-fun ColumnScope.MessageContent(message: Message, authorClicked: (Member) -> Unit) {
-	message.message?.let {
-		if (message.fileUrl.isNullOrEmpty()) {
-			ClickableMessage(message = message, authorClicked = authorClicked)
-		}
-	}
-	message.fileUrl?.let {
-		AsyncImage(
-			model = it,
-			contentDescription = "",
-			modifier = Modifier.wrapContentWidth().defaultMinSize(160.dp)
-		)
+fun ColumnScope.MessageContent(
+	message: Message,
+	mediaSourceViewModel: MediaSourceViewModel,
+	authorClicked: (Member) -> Unit
+) {
+	when (message.type) {
+		MessageType.IMAGE ->
+			message.fileUrl?.let {
+				AsyncImage(
+					model = it,
+					contentDescription = "",
+					modifier = Modifier.wrapContentWidth().defaultMinSize(160.dp)
+				)
+			}
+		MessageType.AUDIO -> message.fileUrl?.let { VoiceMessage(message, mediaSourceViewModel) }
+		else ->
+			message.message?.let { ClickableMessage(message = message, authorClicked = authorClicked) }
 	}
 }
 

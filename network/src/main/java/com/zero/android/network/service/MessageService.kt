@@ -1,7 +1,9 @@
 package com.zero.android.network.service
 
-import com.zero.android.network.model.ApiMessage
-import kotlinx.coroutines.flow.Flow
+import com.zero.android.network.model.request.DeleteMessageRequest
+import okhttp3.ResponseBody
+import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -15,10 +17,13 @@ interface MessageService {
 	suspend fun updateMessage(
 		@Path("id") id: String,
 		@Field("channelId") channelId: String,
-		@Field("text") text: String
-	): Flow<ApiMessage>
+		@Field("content") text: String
+	): Response<ResponseBody>
 
 	@FormUrlEncoded
 	@DELETE(value = "messages/{id}/deleteChatMessage")
-	suspend fun deleteMessage(@Path("id") id: String, @Field("channelId") channelId: String)
+	suspend fun deleteMessage(
+		@Path("id") id: String,
+		@Body body: DeleteMessageRequest
+	): Response<ResponseBody>
 }

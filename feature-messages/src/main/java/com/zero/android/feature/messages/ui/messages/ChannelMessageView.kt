@@ -1,11 +1,15 @@
 package com.zero.android.feature.messages.ui.messages
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -16,19 +20,39 @@ import com.zero.android.common.R
 import com.zero.android.common.extensions.format
 import com.zero.android.common.extensions.toDate
 import com.zero.android.common.extensions.toMessageDateFormat
+import com.zero.android.feature.messages.helper.MessageActionStateHandler
+import com.zero.android.feature.messages.mediaPlayer.MediaSourceViewModel
 import com.zero.android.models.Member
 import com.zero.android.models.Message
 import com.zero.android.ui.components.SmallCircularImage
 import com.zero.android.ui.theme.Gray
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ChannelMessage(
-	onAuthorClick: (Member) -> Unit,
 	msg: Message,
 	isUserMe: Boolean,
-	isFirstMessageByAuthor: Boolean
+	isFirstMessageByAuthor: Boolean,
+	mediaSourceViewModel: MediaSourceViewModel,
+	onAuthorClick: (Member) -> Unit
 ) {
-	Row {
+	val currentSelectedMessage: Message? by MessageActionStateHandler.selectedMessage.collectAsState()
+	val modifier =
+		Modifier.fillMaxWidth()
+			.combinedClickable(
+				onClick = {},
+				onLongClick = {
+					if (isUserMe) {
+						MessageActionStateHandler.setSelectedMessage(msg)
+					}
+				}
+			)
+	Row(
+		modifier =
+		if (currentSelectedMessage?.id == msg.id) {
+			modifier.background(Color.White.copy(0.1f))
+		} else modifier
+	) {
 		SmallCircularImage(
 			imageUrl = msg.author.profileImage,
 			placeHolder = R.drawable.ic_user_profile_placeholder
@@ -38,7 +62,8 @@ fun ChannelMessage(
 			message = msg,
 			isUserMe = isUserMe,
 			isFirstMessageByAuthor = isFirstMessageByAuthor,
-			authorClicked = onAuthorClick
+			authorClicked = onAuthorClick,
+			mediaSourceViewModel = mediaSourceViewModel
 		)
 	}
 }
@@ -50,6 +75,7 @@ fun CMAuthorAndTextMessage(
 	modifier: Modifier = Modifier,
 	message: Message,
 	isUserMe: Boolean,
+	mediaSourceViewModel: MediaSourceViewModel,
 	isFirstMessageByAuthor: Boolean,
 	authorClicked: (Member) -> Unit
 ) {
@@ -70,8 +96,19 @@ fun CMAuthorAndTextMessage(
 				)
 			) {
 				Column(modifier = Modifier.padding(8.dp)) {
+					message.parentMessage?.let {
+						ReplyMessage(
+							modifier = Modifier.wrapContentWidth(),
+							message = it,
+							showCloseButton = false
+						)
+					}
 					AuthorNameTimestamp(isUserMe, message)
-					MessageContent(message = message, authorClicked = authorClicked)
+					MessageContent(
+						message = message,
+						authorClicked = authorClicked,
+						mediaSourceViewModel = mediaSourceViewModel
+					)
 				}
 			}
 		}

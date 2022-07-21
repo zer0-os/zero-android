@@ -1,7 +1,5 @@
 package com.zero.android.feature.messages.ui.messages
 
-import android.app.Activity
-import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,17 +12,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.github.dhaval2404.imagepicker.ImagePicker
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.zero.android.common.extensions.format
-import com.zero.android.common.extensions.getActivity
 import com.zero.android.common.extensions.isSameDay
 import com.zero.android.common.extensions.toDate
-import com.zero.android.feature.messages.ui.voicememo.RecordMemoView
-import com.zero.android.ui.components.BottomBarDivider
+import com.zero.android.feature.messages.mediaPlayer.MediaSourceViewModel
 import com.zero.android.ui.components.DayHeader
 import com.zero.android.ui.components.JumpToBottom
 import com.zero.android.ui.theme.AppTheme
@@ -36,17 +31,11 @@ import kotlinx.coroutines.launch
 fun MessagesContent(
 	modifier: Modifier = Modifier,
 	userChannelInfo: Pair<String, Boolean>,
-	uiState: MessagesUiState,
-	isMemoRecording: Boolean,
-	onNewMessage: (String) -> Unit,
-	onImagePicker: (Intent) -> Unit,
-	onMemoRecorder: () -> Unit,
-	onSendMemo: () -> Unit
+	uiState: MessagesUiState
 ) {
 	val scrollState = rememberLazyListState()
 	val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior() }
 	val scope = rememberCoroutineScope()
-	val context = LocalContext.current
 
 	Surface(modifier = modifier) {
 		Box(modifier = Modifier.fillMaxSize()) {
@@ -62,36 +51,8 @@ fun MessagesContent(
 					scrollState = scrollState,
 					coroutineScope = scope
 				)
-				BottomBarDivider()
-				if (isMemoRecording) {
-					RecordMemoView(onCancel = onMemoRecorder, onSendMemo = onSendMemo)
-				} else {
-					UserInputPanel(
-						modifier = Modifier.navigationBarsPadding().weight(1f).imePadding(),
-						onMessageSent = { onNewMessage(it) },
-						resetScroll = { scope.launch { scrollState.scrollToItem(0) } },
-						addAttachment = {
-							context.getActivity()?.let { showImagePicker(false, it, onImagePicker) }
-						},
-						addImage = {
-							context.getActivity()?.let { showImagePicker(true, it, onImagePicker) }
-						},
-						recordMemo = onMemoRecorder
-					)
-				}
 			}
 		}
-	}
-}
-
-private fun showImagePicker(
-	fromCamera: Boolean = false,
-	activity: Activity,
-	onImagePicker: (Intent) -> Unit
-) {
-	ImagePicker.with(activity).apply {
-		if (fromCamera) cameraOnly() else galleryOnly()
-		createIntent { onImagePicker(it) }
 	}
 }
 
@@ -101,11 +62,14 @@ fun Messages(
 	userChannelInfo: Pair<String, Boolean>,
 	uiState: MessagesUiState,
 	scrollState: LazyListState,
-	coroutineScope: CoroutineScope
+	coroutineScope: CoroutineScope,
+	mediaSourceViewModel: MediaSourceViewModel = hiltViewModel()
 ) {
+	DisposableEffect(Unit) { onDispose { mediaSourceViewModel.dispose() } }
 	Box(modifier = modifier.padding(14.dp)) {
 		if (uiState is MessagesUiState.Success) {
 			val messages = uiState.messages
+			mediaSourceViewModel.configure(messages)
 			LazyColumn(
 				modifier = Modifier.fillMaxSize(),
 				reverseLayout = true,
@@ -131,6 +95,7 @@ fun Messages(
 								isSameDay = isSameDay,
 								isFirstMessageByAuthor = isFirstMessageByAuthor,
 								isLastMessageByAuthor = isLastMessageByAuthor,
+								mediaSourceViewModel = mediaSourceViewModel,
 								onAuthorClick = {}
 							)
 						} else {
@@ -138,6 +103,7 @@ fun Messages(
 								msg = content,
 								isUserMe = content.author.id == userChannelInfo.first,
 								isFirstMessageByAuthor = isFirstMessageByAuthor,
+								mediaSourceViewModel = mediaSourceViewModel,
 								onAuthorClick = {}
 							)
 						}

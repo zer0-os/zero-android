@@ -6,8 +6,13 @@ import android.app.Activity
 import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -17,19 +22,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.net.toFile
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.github.dhaval2404.imagepicker.ImagePicker
 import com.zero.android.common.R
+import com.zero.android.common.extensions.getActivity
 import com.zero.android.common.extensions.toFile
+import com.zero.android.feature.messages.helper.MessageActionStateHandler
 import com.zero.android.feature.messages.ui.voicememo.MemoRecorderViewModel
+import com.zero.android.feature.messages.ui.voicememo.RecordMemoView
 import com.zero.android.feature.messages.util.MessageUtil
+import com.zero.android.models.Message
+import com.zero.android.models.enums.MessageType
 import com.zero.android.ui.components.AppBar
 import com.zero.android.ui.components.Background
+import com.zero.android.ui.components.BottomBarDivider
 import com.zero.android.ui.extensions.Preview
 import com.zero.android.ui.theme.AppTheme
+import com.zero.android.ui.util.BackHandler
 import java.io.File
 
 @Composable
@@ -43,9 +58,13 @@ fun MessagesRoute(
 	val userChannelInfo = viewModel.loggedInUserId to viewModel.isGroupChannel
 	val context = LocalContext.current
 
-	LaunchedEffect(Unit) {
-		viewModel.loadChannel()
-		recordMemoViewModel.configure(context.externalCacheDir?.absolutePath)
+	LaunchedEffect(Unit) { viewModel.loadChannel() }
+	BackHandler {
+		if (MessageActionStateHandler.isActionModeStarted) {
+			MessageActionStateHandler.closeActionMode()
+		} else {
+			onBackClick()
+		}
 	}
 
 	val imageSelectorLauncher =
@@ -63,9 +82,19 @@ fun MessagesRoute(
 						} catch (e: Exception) {
 							fileUri.toFile(context)
 						}
-					viewModel.sendMessage(
-						MessageUtil.newFileMessage(file = file, authorId = userChannelInfo.first)
-					)
+					val message =
+						MessageUtil.newFileMessage(
+							file = file,
+							authorId = userChannelInfo.first,
+							type = MessageType.IMAGE
+						)
+					val replyToMessage = MessageActionStateHandler.replyToMessage.value
+					if (replyToMessage != null) {
+						viewModel.replyToMessage(replyToMessage.id, message)
+						MessageActionStateHandler.reset()
+					} else {
+						viewModel.sendMessage(message)
+					}
 				}
 			}
 		)
@@ -99,8 +128,26 @@ fun MessagesRoute(
 			recordMemoViewModel.stopRecording()
 			val file = File(recordMemoViewModel.lastMemoPath)
 			if (file.exists()) {
-				// send file to send bird
+				val message =
+					MessageUtil.newFileMessage(
+						file = file,
+						authorId = userChannelInfo.first,
+						type = MessageType.AUDIO
+					)
+				val replyToMessage = MessageActionStateHandler.replyToMessage.value
+				if (replyToMessage != null) {
+					viewModel.replyToMessage(replyToMessage.id, message)
+					MessageActionStateHandler.reset()
+				} else {
+					viewModel.sendMessage(message)
+				}
 			}
+		},
+		onEditMessage = { viewModel.updateMessage(it) },
+		onDeleteMessage = { viewModel.deleteMessage(it) },
+		onReplyToMessage = { messageId, reply ->
+			val replyMessage = MessageUtil.newTextMessage(reply, userChannelInfo.first)
+			viewModel.replyToMessage(messageId, replyMessage)
 		}
 	)
 }
@@ -117,14 +164,29 @@ fun MessagesScreen(
 	onNewMessage: (String) -> Unit,
 	onPickImage: (Intent) -> Unit,
 	onRecordMemo: () -> Unit,
-	onSendMemo: () -> Unit
+	onSendMemo: () -> Unit,
+	onEditMessage: (Message) -> Unit,
+	onDeleteMessage: (Message) -> Unit,
+	onReplyToMessage: (String, String) -> Unit
 ) {
+	val context = LocalContext.current
+	val actionMessage by MessageActionStateHandler.selectedMessage.collectAsState()
+	val editableMessage by MessageActionStateHandler.editableMessage.collectAsState()
+	val replyMessage by MessageActionStateHandler.replyToMessage.collectAsState()
 	if (chatChannelUiState is ChatChannelUiState.Success) {
 		val topBar: @Composable () -> Unit = {
 			AppBar(
-				scrollBehavior = null,
+				color = if (actionMessage != null) AppTheme.colors.surface else null,
 				navIcon = {
-					IconButton(onClick = onBackClick) {
+					IconButton(
+						onClick = {
+							if (actionMessage != null) {
+								MessageActionStateHandler.closeActionMode()
+							} else {
+								onBackClick()
+							}
+						}
+					) {
 						Icon(
 							imageVector = Icons.Filled.ArrowBack,
 							contentDescription = "cd_back",
@@ -133,38 +195,127 @@ fun MessagesScreen(
 					}
 				},
 				title = {
-					ChatScreenAppBarTitle(
-						userChannelInfo.first,
-						chatChannelUiState.channel,
-						userChannelInfo.second
-					)
-				},
-				actions = {
-					IconButton(onClick = {}) {
-						Icon(
-							painter = painterResource(R.drawable.ic_search),
-							contentDescription = "cd_search_message"
+					if (actionMessage == null) {
+						ChatScreenAppBarTitle(
+							userChannelInfo.first,
+							chatChannelUiState.channel,
+							userChannelInfo.second
 						)
 					}
-					IconButton(onClick = {}) {
-						Icon(imageVector = Icons.Filled.MoreVert, contentDescription = "cd_more_options")
+				},
+				actions = {
+					if (actionMessage != null) {
+						if (actionMessage?.isReply == false) {
+							IconButton(onClick = { MessageActionStateHandler.replyToMessage() }) {
+								Icon(
+									painter = painterResource(R.drawable.ic_reply_24),
+									contentDescription = "cd_message_action_reply",
+									tint = Color.DarkGray
+								)
+							}
+						}
+						if (actionMessage!!.type == MessageType.TEXT) {
+							IconButton(onClick = { MessageActionStateHandler.editTextMessage() }) {
+								Icon(
+									imageVector = Icons.Filled.Edit,
+									contentDescription = "cd_message_action_edit",
+									tint = Color.DarkGray
+								)
+							}
+						}
+						IconButton(
+							onClick = {
+								actionMessage?.let(onDeleteMessage)
+								MessageActionStateHandler.closeActionMode()
+							}
+						) {
+							Icon(
+								imageVector = Icons.Filled.Delete,
+								contentDescription = "cd_message_action_delete",
+								tint = Color.DarkGray
+							)
+						}
+					} else {
+						IconButton(onClick = {}) {
+							Icon(
+								painter = painterResource(R.drawable.ic_search),
+								contentDescription = "cd_search_message"
+							)
+						}
+						IconButton(onClick = {}) {
+							Icon(imageVector = Icons.Filled.MoreVert, contentDescription = "cd_more_options")
+						}
 					}
 				}
 			)
 		}
 		Scaffold(topBar = { topBar() }) {
 			Background {
-				MessagesContent(
-					userChannelInfo = userChannelInfo,
-					uiState = messagesUiState,
-					onNewMessage = onNewMessage,
-					onImagePicker = onPickImage,
-					isMemoRecording = isMemoRecording,
-					onMemoRecorder = onRecordMemo,
-					onSendMemo = onSendMemo
-				)
+				Column {
+					MessagesContent(
+						modifier = Modifier.weight(1f),
+						userChannelInfo = userChannelInfo,
+						uiState = messagesUiState
+					)
+					BottomBarDivider()
+					replyMessage?.let {
+						ReplyMessage(message = it) { MessageActionStateHandler.closeActionMode() }
+					}
+					if (isMemoRecording) {
+						RecordMemoView(onCancel = onRecordMemo, onSendMemo = onSendMemo)
+					} else {
+						val userInputModifier = Modifier.navigationBarsPadding().weight(1f).imePadding()
+						if (editableMessage != null) {
+							UserInputPanel(
+								modifier = userInputModifier,
+								initialText = editableMessage?.message ?: "",
+								onMessageSent = {
+									if (editableMessage != null) {
+										editableMessage?.copy(message = it)?.let(onEditMessage)
+										MessageActionStateHandler.closeActionMode()
+									} else onNewMessage(it)
+								},
+								addAttachment = {
+									context.getActivity()?.let { showImagePicker(false, it, onPickImage) }
+								},
+								addImage = {
+									context.getActivity()?.let { showImagePicker(true, it, onPickImage) }
+								},
+								recordMemo = onRecordMemo
+							)
+						} else {
+							UserInputPanel(
+								modifier = userInputModifier,
+								onMessageSent = {
+									if (replyMessage != null) {
+										onReplyToMessage(replyMessage!!.id, it)
+										MessageActionStateHandler.closeActionMode()
+									} else onNewMessage(it)
+								},
+								addAttachment = {
+									context.getActivity()?.let { showImagePicker(false, it, onPickImage) }
+								},
+								addImage = {
+									context.getActivity()?.let { showImagePicker(true, it, onPickImage) }
+								},
+								recordMemo = onRecordMemo
+							)
+						}
+					}
+				}
 			}
 		}
+	}
+}
+
+private fun showImagePicker(
+	fromCamera: Boolean = false,
+	activity: Activity,
+	onImagePicker: (Intent) -> Unit
+) {
+	ImagePicker.with(activity).apply {
+		if (fromCamera) cameraOnly() else galleryOnly()
+		createIntent { onImagePicker(it) }
 	}
 }
 

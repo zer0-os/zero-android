@@ -18,8 +18,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import timber.log.Timber
@@ -29,10 +31,10 @@ class ChatRepositoryImpl
 @Inject
 constructor(
 	private val chatService: ChatService,
+	private val messageService: MessageService,
 	private val chatMediaService: ChatMediaService,
 	private val networkMediaUtil: NetworkMediaUtil,
-	private val messageDao: MessageDao,
-	private val messageService: MessageService
+	private val messageDao: MessageDao
 ) : ChatRepository {
 
 	override val channelChatMessages = MutableStateFlow<List<Message>>(emptyList())
@@ -42,7 +44,7 @@ constructor(
 			id,
 			object : ChatListener {
 				override fun onMessageReceived(var1: ApiChannel, var2: ApiMessage) {
-					runBlocking(Dispatchers.IO) { appendNewChatMessage(var2.toModel()) }
+					runBlocking(Dispatchers.IO) { messageDao.upsert(var2.toEntity()) }
 				}
 			}
 		)
@@ -51,15 +53,10 @@ constructor(
 	override suspend fun removeListener(id: String) = chatService.removeListener(id)
 
 	override suspend fun getMessages(channel: Channel, timestamp: Long): Flow<List<Message>> {
-		messageDao.getByChannel(channel.id)
-
-		val messagesResult =
-			chatService
-				.getMessages(channel, timestamp)
-				.map { messages -> messages.map { it.toModel() } }
-				.apply { collect(channelChatMessages) }
-		messagesResult.collect(channelChatMessages)
-		return messagesResult
+		return chatService
+			.getMessages(channel, timestamp)
+			.map { messages -> messages.map { it.toModel() } }
+			.apply { collect(channelChatMessages) }
 	}
 
 	override suspend fun getMessages(channel: Channel, id: String): Flow<List<Message>> {
@@ -86,43 +83,58 @@ constructor(
 						networkMediaUtil.getUploadUrl(uploadInfo),
 						networkMediaUtil.getUploadBody(message.file!!)
 					)
-				DraftMessage(
-					channelId = channel.id,
-					author = message.author,
-					type = message.type,
-					mentionType = message.mentionType,
+				message.copy(
 					fileUrl = fileUpload.secureUrl,
 					fileName = fileUpload.originalFilename,
-					fileMimeType = fileUpload.type,
-					createdAt = message.createdAt,
-					updatedAt = message.updatedAt,
-					status = message.status,
-					data = JSONObject(fileUpload.dataMap).toString()
+					data = JSONObject(fileUpload.getDataMap(message.type)).toString()
 				)
 			} else {
 				Timber.e("Upload Info is required for file upload")
 				message
 			}
-		val newMessage = chatService.send(channel, fileMessage).map { it.toModel() }
-		newMessage.collectLatest { appendNewChatMessage(it) }
+		val newMessage =
+			chatService.send(channel, fileMessage).map {
+				messageDao.upsert(it.toEntity())
+				it.toModel().also { appendNewChatMessage(it) }
+			}
 		return newMessage
 	}
 
 	override suspend fun reply(channel: Channel, id: String, message: DraftMessage): Flow<Message> {
-		return chatService.reply(channel, id, message).map {
-			messageDao.upsert(it.toEntity())
-			it.toModel()
+		return send(channel, message.apply { parentMessageId = id }).also {
+			appendNewChatMessage(message = it.first())
 		}
 	}
 
 	override suspend fun updateMessage(id: String, channelId: String, text: String) {
-		messageService.updateMessage(id, channelId, text).firstOrNull()?.let {
-			messageDao.upsert(it.toEntity())
+		val response = messageService.updateMessage(id, channelId, text)
+		if (response.isSuccessful) {
+			messageDao.get(id).collectLatest { existingMessage ->
+				existingMessage?.let {
+					val updatedMessageEntity = it.message.copy(message = text)
+					messageDao.upsert(it.copy(message = updatedMessageEntity))
+				}
+			}
+
+			channelChatMessages.update { messages ->
+				val updatedMessage = messages.firstOrNull { it.id == id }?.copy(message = text)
+				if (updatedMessage != null) {
+					messages.toMutableList().apply {
+						this[messages.indexOfFirst { it.id == id }] = updatedMessage
+					}
+				} else messages
+			}
 		}
 	}
 
-	override suspend fun deleteMessage(id: String, channelId: String) {
-		return messageService.deleteMessage(id, channelId).also { messageDao.delete(id) }
+	override suspend fun deleteMessage(message: Message, channel: Channel) {
+		chatService.deleteMessage(channel, message).also {
+			messageDao.delete(message.id)
+
+			val messages = channelChatMessages.firstOrNull()?.toMutableList() ?: mutableListOf()
+			messages.remove(message)
+			channelChatMessages.tryEmit(messages)
+		}
 	}
 
 	private suspend fun appendNewChatMessage(message: Message) {

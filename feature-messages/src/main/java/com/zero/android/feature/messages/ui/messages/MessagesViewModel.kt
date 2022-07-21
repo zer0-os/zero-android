@@ -103,4 +103,24 @@ constructor(
 		runBlocking { chatRepository.removeListener(channelId) }
 		super.onCleared()
 	}
+
+	fun deleteMessage(message: Message) {
+		ioScope.launch {
+			(_channel.firstOrNull() as? Result.Success)?.data?.let { channel ->
+				chatRepository.deleteMessage(message, channel)
+			}
+		}
+	}
+
+	fun updateMessage(message: Message) {
+		ioScope.launch { chatRepository.updateMessage(message.id, channelId, message.message ?: "") }
+	}
+
+	fun replyToMessage(messageId: String, replyMessage: DraftMessage) {
+		ioScope.launch {
+			(_channel.firstOrNull() as? Result.Success)?.data?.let { channel ->
+				chatRepository.reply(channel, messageId, replyMessage)
+			}
+		}
+	}
 }

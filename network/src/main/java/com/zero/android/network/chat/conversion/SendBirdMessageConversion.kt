@@ -1,55 +1,39 @@
 package com.zero.android.network.chat.conversion
 
-import android.util.Base64
-import com.sendbird.android.BaseMessage
-import com.sendbird.android.BaseMessageParams
-import com.sendbird.android.FileMessage
-import com.sendbird.android.FileMessageParams
-import com.sendbird.android.ReactionEvent
+import com.sendbird.android.*
+import com.sendbird.android.BaseChannel.ChannelType.GROUP
 import com.sendbird.android.ReactionEvent.ReactionEventAction
-import com.sendbird.android.UserMessage
-import com.sendbird.android.UserMessageParams
 import com.sendbird.android.constant.StringSet.value
 import com.zero.android.models.DraftMessage
 import com.zero.android.models.FileThumbnail
-import com.zero.android.models.enums.MessageMentionType
-import com.zero.android.models.enums.MessageStatus
-import com.zero.android.models.enums.MessageType
-import com.zero.android.models.enums.toMessageMentionType
-import com.zero.android.models.enums.toMessageReactionAction
-import com.zero.android.models.enums.toMessageStatus
-import com.zero.android.models.enums.toMessageType
+import com.zero.android.models.enums.*
+import com.zero.android.network.model.ApiFileData
 import com.zero.android.network.model.ApiFileThumbnail
 import com.zero.android.network.model.ApiMessage
 import com.zero.android.network.model.ApiMessageReaction
-import kotlinx.serialization.encodeToString
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.encodeToJsonElement
-import kotlinx.serialization.json.jsonObject
-import okio.internal.commonAsUtf8ToByteArray
 
-private fun ApiMessage.toSendBirdJsonString(): ByteArray {
-	val json =
-		Json.encodeToJsonElement(this).run {
-			jsonObject.apply { plus(Pair("message_id", id.toLong())) }
-			Json.encodeToString(this)
-		}
-	return Base64.decode(json.commonAsUtf8ToByteArray(), 0)
-}
-
-internal fun BaseMessage.toApi() =
-	ApiMessage(
+internal fun BaseMessage.toApi(): ApiMessage {
+	val data =
+		if (this is FileMessage && data.isNotEmpty()) {
+			Json { ignoreUnknownKeys = true }.decodeFromString<ApiFileData?>(data)
+		} else null
+	return ApiMessage(
 		id = messageId.toString(),
+		type = if (this is FileMessage) data?.type.toMessageType() else customType.toMessageType(),
+		mentionType = mentionType.toType(),
 		channelId = channelUrl ?: "",
 		author = sender.toApi(),
-		mentionType = mentionType.toType(),
-		type = customType.toMessageType(),
 		status = sendingStatus.toType(),
 		createdAt = createdAt,
 		updatedAt = updatedAt,
 		message = message,
-		fileUrl = (this as? FileMessage)?.url
+		parentMessage = parentMessage?.toApi(),
+		fileUrl = (this as? FileMessage)?.url,
+		fileName = (this as? FileMessage)?.name
 	)
+}
 
 internal fun UserMessage.toApi() =
 	ApiMessage(
@@ -97,13 +81,7 @@ internal fun FileMessage.Thumbnail.toApi() =
 		url = url
 	)
 
-internal fun ApiMessage.toMessage(): BaseMessage {
-	return if (type == MessageType.TEXT) {
-		UserMessage.buildFromSerializedData(toSendBirdJsonString())
-	} else {
-		FileMessage.buildFromSerializedData(toSendBirdJsonString())
-	}
-}
+internal fun ApiMessage.toParams() = MessageRetrievalParams(channelId, GROUP, id.toLong())
 
 internal fun DraftMessage.toParams(): BaseMessageParams {
 	return if (type == MessageType.TEXT) {

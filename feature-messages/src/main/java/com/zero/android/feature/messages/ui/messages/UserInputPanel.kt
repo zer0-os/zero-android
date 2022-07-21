@@ -52,6 +52,7 @@ fun UserInputPreview() {
 @Composable
 fun UserInputPanel(
 	modifier: Modifier = Modifier,
+	initialText: String = "",
 	onMessageSent: (String) -> Unit,
 	resetScroll: () -> Unit = {},
 	addAttachment: () -> Unit = {},
@@ -67,7 +68,7 @@ fun UserInputPanel(
 		BackHandler(onBack = dismissKeyboard)
 	}
 
-	var textState by remember { mutableStateOf(TextFieldValue()) }
+	var textState by remember { mutableStateOf(TextFieldValue(initialText)) }
 
 	// Used to decide if the keyboard should be shown
 	var textFieldFocusState by remember { mutableStateOf(false) }

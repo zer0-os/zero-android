@@ -1,5 +1,6 @@
 package com.zero.android.network.model
 
+import com.zero.android.models.enums.MessageType
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -24,12 +25,11 @@ data class ApiUploadedMediaInfo(
 	@SerialName("version_id") val versionId: String,
 	val width: Int
 ) {
-	val dataMap: Map<*, *> by lazy {
+	fun getDataMap(type: MessageType): Map<*, *> =
 		mutableMapOf<String, Any>(
 			"url" to secureUrl,
 			"width" to width,
 			"height" to height,
-			"type" to type
+			"type" to type.serializedName
 		)
-	}
 }

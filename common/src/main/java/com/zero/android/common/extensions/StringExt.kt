@@ -1,5 +1,8 @@
 package com.zero.android.common.extensions
 
+import android.util.Patterns
+import java.net.URL
+
 val String.initials
 	get() = this.split(' ').mapNotNull { it.firstOrNull()?.toString() }.reduce { acc, s -> acc + s }
 
@@ -16,3 +19,9 @@ fun String?.initials(): String {
 		}
 	}
 }
+
+val String.isValidUrl
+	get() = Patterns.WEB_URL.matcher(this).matches()
+
+val String.toUrl
+	get() = URL(this)

@@ -72,7 +72,7 @@ data class GroupChannel(
 		get() = telegramChatId != null
 }
 
-fun Channel.getTitle(loggedInUserId: String?): String {
+fun Channel.getTitle(loggedInUserId: String? = null): String {
 	return if (this is GroupChannel) this.name
 	else {
 		(this as DirectChannel)

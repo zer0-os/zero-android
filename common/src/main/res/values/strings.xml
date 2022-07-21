@@ -12,4 +12,5 @@
 
     <string name="write_your_message">Write your Message</string>
     <string name="latest_messages">Latest Messages</string>
+    <string name="search_channels">Search Channels…</string>
 </resources>

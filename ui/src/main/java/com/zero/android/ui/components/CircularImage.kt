@@ -11,6 +11,22 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 
 @Composable
+fun ExtraSmallCircularImage(
+	modifier: Modifier = Modifier,
+	imageUrl: String? = null,
+	@DrawableRes placeHolder: Int,
+	contentDescription: String = ""
+) {
+	AsyncImage(
+		model = imageUrl,
+		placeholder = painterResource(placeHolder),
+		error = painterResource(placeHolder),
+		contentDescription = contentDescription,
+		modifier = modifier.size(24.dp).clip(CircleShape)
+	)
+}
+
+@Composable
 fun SmallCircularImage(
 	modifier: Modifier = Modifier,
 	imageUrl: String? = null,

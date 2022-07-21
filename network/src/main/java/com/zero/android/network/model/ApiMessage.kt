@@ -41,6 +41,14 @@ data class ApiFileThumbnail(
 )
 
 @Serializable
+data class ApiFileData(
+	@SerialName("height") val height: Int,
+	@SerialName("type") val type: String,
+	@SerialName("url") val url: String,
+	@SerialName("width") val width: Int
+)
+
+@Serializable
 data class ApiMessageReaction(
 	var messageId: Long,
 	val key: String,
