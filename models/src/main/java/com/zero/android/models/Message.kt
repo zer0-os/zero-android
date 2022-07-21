@@ -41,10 +41,11 @@ data class Message(
 	override val fileThumbnails: List<FileThumbnail>? = null,
 	override val fileMimeType: String? = null,
 	val reactions: List<MessageReaction> = emptyList()
-) : BaseMessage
+) : BaseMessage {
 
-val Message.isReply
-	get() = parentMessage != null
+	val isReply
+		get() = parentMessage != null
+}
 
 data class DraftMessage(
 	override val channelId: String,

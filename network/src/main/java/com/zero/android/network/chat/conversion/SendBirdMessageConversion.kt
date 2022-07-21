@@ -1,41 +1,18 @@
 package com.zero.android.network.chat.conversion
 
-import android.util.Base64
-import com.sendbird.android.BaseMessage
-import com.sendbird.android.BaseMessageParams
-import com.sendbird.android.FileMessage
-import com.sendbird.android.FileMessageParams
-import com.sendbird.android.ReactionEvent
+import com.sendbird.android.*
+import com.sendbird.android.BaseChannel.ChannelType.GROUP
 import com.sendbird.android.ReactionEvent.ReactionEventAction
-import com.sendbird.android.UserMessage
-import com.sendbird.android.UserMessageParams
 import com.sendbird.android.constant.StringSet.value
 import com.zero.android.models.DraftMessage
 import com.zero.android.models.FileThumbnail
-import com.zero.android.models.enums.MessageMentionType
-import com.zero.android.models.enums.MessageStatus
-import com.zero.android.models.enums.MessageType
-import com.zero.android.models.enums.toMessageMentionType
-import com.zero.android.models.enums.toMessageReactionAction
-import com.zero.android.models.enums.toMessageStatus
-import com.zero.android.models.enums.toMessageType
+import com.zero.android.models.enums.*
 import com.zero.android.network.model.ApiFileData
 import com.zero.android.network.model.ApiFileThumbnail
 import com.zero.android.network.model.ApiMessage
 import com.zero.android.network.model.ApiMessageReaction
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.encodeToJsonElement
-import kotlinx.serialization.json.jsonObject
-
-private fun ApiMessage.toSendBirdBase64(): ByteArray {
-	val json =
-		Json.encodeToJsonElement(this).run {
-			jsonObject.plus(Pair("message_id", id.toLong()))
-			jsonObject.toString()
-		}
-	return Base64.encode(json.toByteArray(), 0)
-}
 
 internal fun BaseMessage.toApi(): ApiMessage {
 	val data =
@@ -104,13 +81,7 @@ internal fun FileMessage.Thumbnail.toApi() =
 		url = url
 	)
 
-internal fun ApiMessage.toMessage(): BaseMessage {
-	return if (type == MessageType.TEXT) {
-		UserMessage.buildFromSerializedData(toSendBirdBase64())
-	} else {
-		FileMessage.buildFromSerializedData(toSendBirdBase64())
-	}
-}
+internal fun ApiMessage.toParams() = MessageRetrievalParams(channelId, GROUP, id.toLong())
 
 internal fun DraftMessage.toParams(): BaseMessageParams {
 	return if (type == MessageType.TEXT) {

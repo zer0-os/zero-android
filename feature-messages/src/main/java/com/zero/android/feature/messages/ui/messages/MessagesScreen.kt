@@ -39,7 +39,6 @@ import com.zero.android.feature.messages.ui.voicememo.RecordMemoView
 import com.zero.android.feature.messages.util.MessageUtil
 import com.zero.android.models.Message
 import com.zero.android.models.enums.MessageType
-import com.zero.android.models.isReply
 import com.zero.android.ui.components.AppBar
 import com.zero.android.ui.components.Background
 import com.zero.android.ui.components.BottomBarDivider
