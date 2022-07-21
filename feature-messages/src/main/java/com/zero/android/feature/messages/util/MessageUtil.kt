@@ -29,7 +29,7 @@ object MessageUtil {
 			type = type,
 			mentionType = MessageMentionType.USER,
 			file = file,
-            fileMimeType = type.serializedName,
+			fileMimeType = type.serializedName,
 			createdAt = Calendar.getInstance().timeInMillis,
 			updatedAt = Calendar.getInstance().timeInMillis,
 			status = MessageStatus.SUCCEEDED

@@ -24,17 +24,16 @@ import com.zero.android.ui.components.NameInitialsView
 import com.zero.android.ui.theme.AppTheme
 
 @Composable
-fun ChannelSearchResult(
-    channels: List<Channel>,
-    onClick: (Channel) -> Unit,
-) {
+fun ChannelSearchResult(channels: List<Channel>, onClick: (Channel) -> Unit) {
 	val categorisedChannels =
 		(channels as List<GroupChannel>).groupBy {
 			if (it.category.isNullOrEmpty()) "Other" else it.category
 		}
 	Column(modifier = Modifier.fillMaxSize()) {
 		Column(modifier = Modifier.fillMaxWidth().weight(1f)) {
-			categorisedChannels.forEach { entry -> entry.key?.let { ChannelSearchItem(it, entry.value, onClick) } }
+			categorisedChannels.forEach { entry ->
+				entry.key?.let { ChannelSearchItem(it, entry.value, onClick) }
+			}
 		}
 		Text(
 			text = "${channels.size} results found",
@@ -48,11 +47,7 @@ fun ChannelSearchResult(
 }
 
 @Composable
-fun ChannelSearchItem(
-    header: String,
-    channels: List<GroupChannel>,
-    onClick: (Channel) -> Unit,
-) {
+fun ChannelSearchItem(header: String, channels: List<GroupChannel>, onClick: (Channel) -> Unit) {
 	Column(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
 		Row(
 			modifier = Modifier.fillMaxWidth(),
@@ -75,7 +70,10 @@ fun ChannelSearchItem(
 			items(
 				channels,
 				itemContent = { channel ->
-					Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { onClick(channel) }) {
+					Row(
+						verticalAlignment = Alignment.CenterVertically,
+						modifier = Modifier.clickable { onClick(channel) }
+					) {
 						NameInitialsView(modifier = Modifier.size(32.dp), userName = channel.getTitle())
 						Spacer(modifier = Modifier.size(8.dp))
 						Text(
