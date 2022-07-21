@@ -14,7 +14,14 @@ import com.zero.android.models.DraftMessage
 import com.zero.android.models.Message
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
@@ -35,7 +42,7 @@ constructor(
 		get() = runBlocking(Dispatchers.IO) { preferences.userId() }
 
 	private val _channel = MutableStateFlow<Result<Channel>>(Result.Loading)
-	private val _messages: Flow<Result<List<Message>>> = chatRepository.allChatMessages(channelId).asResult()
+	private val _messages: Flow<Result<List<Message>>> = chatRepository.channelChatMessages.asResult()
 
 	val uiState: StateFlow<ChatScreenUiState> =
 		combine(_channel, _messages) { channelResult, messagesResult ->
@@ -97,25 +104,23 @@ constructor(
 		super.onCleared()
 	}
 
-    fun deleteMessage(message: Message) {
-        ioScope.launch {
-            (_channel.firstOrNull() as? Result.Success)?.data?.let { channel ->
-                chatRepository.deleteMessage(message, channel)
-            }
-        }
-    }
+	fun deleteMessage(message: Message) {
+		ioScope.launch {
+			(_channel.firstOrNull() as? Result.Success)?.data?.let { channel ->
+				chatRepository.deleteMessage(message, channel)
+			}
+		}
+	}
 
-    fun updateMessage(message: Message) {
-        ioScope.launch {
-            chatRepository.updateMessage(message.id, channelId, message.message ?: "")
-        }
-    }
+	fun updateMessage(message: Message) {
+		ioScope.launch { chatRepository.updateMessage(message.id, channelId, message.message ?: "") }
+	}
 
-    fun replyToMessage(messageId: String, replyMessage: DraftMessage) {
-        ioScope.launch {
-            (_channel.firstOrNull() as? Result.Success)?.data?.let { channel ->
-                chatRepository.reply(channel, messageId, replyMessage)
-            }
-        }
-    }
+	fun replyToMessage(messageId: String, replyMessage: DraftMessage) {
+		ioScope.launch {
+			(_channel.firstOrNull() as? Result.Success)?.data?.let { channel ->
+				chatRepository.reply(channel, messageId, replyMessage)
+			}
+		}
+	}
 }

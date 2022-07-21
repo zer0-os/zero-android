@@ -1,9 +1,14 @@
 package com.zero.android.network.service
 
-import com.zero.android.network.model.ApiDeleteMessage
+import com.zero.android.network.model.request.DeleteMessageRequest
 import okhttp3.ResponseBody
 import retrofit2.Response
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.DELETE
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
+import retrofit2.http.PUT
+import retrofit2.http.Path
 
 interface MessageService {
 
@@ -15,8 +20,10 @@ interface MessageService {
 		@Field("content") text: String
 	): Response<ResponseBody>
 
-    @HTTP(method = "DELETE", path = "messages/{id}/deleteChatMessage", hasBody = true)
-    suspend fun deleteMessage(@Path("id") id: String, @Body body: ApiDeleteMessage): Response<ResponseBody>
-    //@DELETE(value = "messages/{id}/deleteChatMessage")
-    //suspend fun deleteMessage(@Path("id") id: String, @Field("channelId") channelId: String)
+	@FormUrlEncoded
+	@DELETE(value = "messages/{id}/deleteChatMessage")
+	suspend fun deleteMessage(
+		@Path("id") id: String,
+		@Body body: DeleteMessageRequest
+	): Response<ResponseBody>
 }

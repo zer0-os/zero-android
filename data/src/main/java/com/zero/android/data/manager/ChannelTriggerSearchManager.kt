@@ -8,10 +8,10 @@ import javax.inject.Singleton
 @Singleton
 class ChannelTriggerSearchManager @Inject constructor() {
 
-    private val _showSearchBar = MutableStateFlow(false)
-    val showSearchBar: StateFlow<Boolean> = _showSearchBar
+	private val _showSearchBar = MutableStateFlow(false)
+	val showSearchBar: StateFlow<Boolean> = _showSearchBar
 
-    suspend fun triggerChannelSearch(show: Boolean) {
-        _showSearchBar.emit(show)
-    }
+	suspend fun triggerChannelSearch(show: Boolean) {
+		_showSearchBar.emit(show)
+	}
 }

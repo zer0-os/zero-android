@@ -33,16 +33,16 @@ fun DirectChannelsRoute(
 	onChannelSelected: (Channel) -> Unit
 ) {
 	val uiState: DirectChannelScreenUiState by viewModel.uiState.collectAsState()
-    val showSearch: Boolean by viewModel.showSearchBar.collectAsState()
+	val showSearch: Boolean by viewModel.showSearchBar.collectAsState()
 
 	LaunchedEffect(network?.id) { network?.let { viewModel.onNetworkUpdated(it) } }
 	DirectChannelsScreen(
 		loggedInUser = viewModel.loggedInUserId,
 		uiState = uiState,
-        showSearchBar = showSearch,
+		showSearchBar = showSearch,
 		onChannelSelected = onChannelSelected,
-        onChannelSearched = { viewModel.filterChannels(it) },
-        onSearchClosed = viewModel::onSearchClosed
+		onChannelSearched = { viewModel.filterChannels(it) },
+		onSearchClosed = viewModel::onSearchClosed
 	)
 }
 
@@ -50,76 +50,74 @@ fun DirectChannelsRoute(
 fun DirectChannelsScreen(
 	loggedInUser: String,
 	uiState: DirectChannelScreenUiState,
-    showSearchBar: Boolean = false,
+	showSearchBar: Boolean = false,
 	onChannelSelected: (Channel) -> Unit,
-    onChannelSearched: (String) -> Unit,
-    onSearchClosed: () -> Unit,
+	onChannelSearched: (String) -> Unit,
+	onSearchClosed: () -> Unit
 ) {
 	val directChannelsUiState = uiState.directChannelsUiState
-    var searchText: String by remember { mutableStateOf("") }
+	var searchText: String by remember { mutableStateOf("") }
 
 	if (directChannelsUiState is DirectChannelUiState.Success) {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            if (showSearchBar) {
-                Row(modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth()
-                ) {
-                    CustomTextField(
-                        value = searchText,
-                        onValueChange = {
-                            searchText = it
-                            onChannelSearched(searchText) },
-                        placeholderText = stringResource(R.string.search_channels),
-                        textStyle = Typography.bodyMedium.copy(
-                            color = AppTheme.colors.colorTextPrimary
-                        ),
-                        shape = RoundedCornerShape(24.dp),
-                        modifier = Modifier.weight(1f),
-                        leadingIcon = {
-                            Icon(
-                                painterResource(R.drawable.ic_search),
-                                contentDescription = "",
-                                tint = AppTheme.colors.surfaceVariant
-                            )
-                        },
-                        trailingIcon = {
-                            IconButton(onClick = {
-                                searchText = ""
-                                onChannelSearched(searchText)
-                            }) {
-                                Icon(
-                                    painter = painterResource(R.drawable.ic_cancel_24),
-                                    contentDescription = "",
-                                    tint = AppTheme.colors.surfaceVariant
-                                )
-                            }
-                        }
-                    )
-                    TextButton(onClick = {
-                        searchText = ""
-                        onSearchClosed()
-                    }) {
-                        Text("Cancel", color = AppTheme.colors.colorTextPrimary)
-                    }
-                }
-            }
-            LazyColumn(modifier = Modifier.weight(1f)) {
-                items(directChannelsUiState.channels) { channel ->
-                    ChannelsItemsList(loggedInUser, channel) { onChannelSelected(it) }
-                }
-            }
-            if (directChannelsUiState.isSearchResult) {
-                Text(
-                    text = "${directChannelsUiState.channels.size} results found",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 10.dp)
-                        .background(MaterialTheme.colorScheme.primary),
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
+		Column(modifier = Modifier.fillMaxWidth()) {
+			if (showSearchBar) {
+				Row(modifier = Modifier.padding(8.dp).fillMaxWidth()) {
+					CustomTextField(
+						value = searchText,
+						onValueChange = {
+							searchText = it
+							onChannelSearched(searchText)
+						},
+						placeholderText = stringResource(R.string.search_channels),
+						textStyle = Typography.bodyMedium.copy(color = AppTheme.colors.colorTextPrimary),
+						shape = RoundedCornerShape(24.dp),
+						modifier = Modifier.weight(1f),
+						leadingIcon = {
+							Icon(
+								painterResource(R.drawable.ic_search),
+								contentDescription = "",
+								tint = AppTheme.colors.surfaceVariant
+							)
+						},
+						trailingIcon = {
+							IconButton(
+								onClick = {
+									searchText = ""
+									onChannelSearched(searchText)
+								}
+							) {
+								Icon(
+									painter = painterResource(R.drawable.ic_cancel_24),
+									contentDescription = "",
+									tint = AppTheme.colors.surfaceVariant
+								)
+							}
+						}
+					)
+					TextButton(
+						onClick = {
+							searchText = ""
+							onSearchClosed()
+						}
+					) { Text("Cancel", color = AppTheme.colors.colorTextPrimary) }
+				}
+			}
+			LazyColumn(modifier = Modifier.weight(1f)) {
+				items(directChannelsUiState.channels) { channel ->
+					ChannelsItemsList(loggedInUser, channel) { onChannelSelected(it) }
+				}
+			}
+			if (directChannelsUiState.isSearchResult) {
+				Text(
+					text = "${directChannelsUiState.channels.size} results found",
+					modifier =
+					Modifier.fillMaxWidth()
+						.padding(vertical = 10.dp)
+						.background(MaterialTheme.colorScheme.primary),
+					textAlign = TextAlign.Center
+				)
+			}
+		}
 	}
 }
 

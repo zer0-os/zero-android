@@ -21,19 +21,23 @@ import javax.inject.Inject
 class ChannelsViewModel
 @Inject
 constructor(
-    private val networkRepository: NetworkRepository,
-    private val channelRepository: ChannelRepository,
-    private val channelSearchManager: ChannelTriggerSearchManager,
+	private val networkRepository: NetworkRepository,
+	private val channelRepository: ChannelRepository,
+	private val channelSearchManager: ChannelTriggerSearchManager
 ) : BaseViewModel() {
 
 	private lateinit var network: Network
 	private val _categories = MutableStateFlow<Result<List<ChannelCategory>>>(Result.Loading)
 	private val _channels = MutableStateFlow<Result<List<GroupChannel>>>(Result.Loading)
-	private val _filteredChannels = MutableStateFlow<Result<List<GroupChannel>?>>(Result.Success(null))
+	private val _filteredChannels =
+		MutableStateFlow<Result<List<GroupChannel>?>>(Result.Success(null))
 
-    val showSearchBar: StateFlow<Boolean> = channelSearchManager.showSearchBar
-    val uiState: StateFlow<GroupChannelUiState> =
-		combine(_categories, _channels, _filteredChannels) { categoriesResult, channelsResult, filteredChannelResult ->
+	val showSearchBar: StateFlow<Boolean> = channelSearchManager.showSearchBar
+	val uiState: StateFlow<GroupChannelUiState> =
+		combine(_categories, _channels, _filteredChannels) {
+				categoriesResult,
+				channelsResult,
+				filteredChannelResult ->
 			if (categoriesResult is Result.Success && channelsResult is Result.Success) {
 				val categories =
 					mutableListOf<String>().apply {
@@ -57,11 +61,13 @@ constructor(
 					}
 				GroupChannelUiState(
 					ChannelCategoriesUiState.Success(channelTabs),
-					if (filteredChannelResult is Result.Success && filteredChannelResult.data != null) {
-                        CategoryChannelsUiState.Success(filteredChannelResult.data!!, true)
-                    } else {
-                        CategoryChannelsUiState.Success(channels)
-                    }
+					if (filteredChannelResult is Result.Success &&
+						filteredChannelResult.data != null
+					) {
+						CategoryChannelsUiState.Success(filteredChannelResult.data!!, true)
+					} else {
+						CategoryChannelsUiState.Success(channels)
+					}
 				)
 			} else if (categoriesResult is Result.Loading) {
 				GroupChannelUiState(ChannelCategoriesUiState.Loading, CategoryChannelsUiState.Loading)
@@ -85,26 +91,26 @@ constructor(
 		loadChannels()
 	}
 
-    fun filterChannels(query: String){
-        ioScope.launch {
-            val mainUiState = _channels.firstOrNull()
-            if (mainUiState is Result.Success) {
-                if (query.isEmpty()) {
-                    _filteredChannels.emit(Result.Success(null))
-                } else {
-                    val filteredList = mainUiState.data.filter { it.getTitle().contains(query, true) }
-                    _filteredChannels.emit(Result.Success(filteredList))
-                }
-            }
-        }
-    }
+	fun filterChannels(query: String) {
+		ioScope.launch {
+			val mainUiState = _channels.firstOrNull()
+			if (mainUiState is Result.Success) {
+				if (query.isEmpty()) {
+					_filteredChannels.emit(Result.Success(null))
+				} else {
+					val filteredList = mainUiState.data.filter { it.getTitle().contains(query, true) }
+					_filteredChannels.emit(Result.Success(filteredList))
+				}
+			}
+		}
+	}
 
-    fun onSearchClosed() {
-        ioScope.launch {
-            _filteredChannels.emit(Result.Success(null))
-            channelSearchManager.triggerChannelSearch(false)
-        }
-    }
+	fun onSearchClosed() {
+		ioScope.launch {
+			_filteredChannels.emit(Result.Success(null))
+			channelSearchManager.triggerChannelSearch(false)
+		}
+	}
 
 	private fun loadCategories() {
 		ioScope.launch {

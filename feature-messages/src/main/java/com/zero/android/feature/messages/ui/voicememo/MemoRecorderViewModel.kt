@@ -10,32 +10,28 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MemoRecorderViewModel
-@Inject constructor(
-    private val mediaPlayerRepository: MediaPlayerRepository,
-) : BaseViewModel() {
+@Inject
+constructor(private val mediaPlayerRepository: MediaPlayerRepository) : BaseViewModel() {
 
-    private val _lastMemoPath = MutableStateFlow("")
-    val lastMemoPath get() = _lastMemoPath.value
-    val recordingState = MutableStateFlow(false)
+	private val _lastMemoPath = MutableStateFlow("")
+	val lastMemoPath
+		get() = _lastMemoPath.value
+	val recordingState = MutableStateFlow(false)
 
-    fun startRecording() {
-        try {
-            mediaPlayerRepository.startRecording()
-            ioScope.launch {
-                _lastMemoPath.emit(mediaPlayerRepository.recorderFilePath ?: "")
-                recordingState.emit(true)
-            }
-        } catch (e: IOException) {
-            ioScope.launch {
-                recordingState.emit(false)
-            }
-        }
-    }
+	fun startRecording() {
+		try {
+			mediaPlayerRepository.startRecording()
+			ioScope.launch {
+				_lastMemoPath.emit(mediaPlayerRepository.recorderFilePath ?: "")
+				recordingState.emit(true)
+			}
+		} catch (e: IOException) {
+			ioScope.launch { recordingState.emit(false) }
+		}
+	}
 
-    fun stopRecording() {
-        mediaPlayerRepository.stopRecording()
-        ioScope.launch {
-            recordingState.emit(false)
-        }
-    }
+	fun stopRecording() {
+		mediaPlayerRepository.stopRecording()
+		ioScope.launch { recordingState.emit(false) }
+	}
 }

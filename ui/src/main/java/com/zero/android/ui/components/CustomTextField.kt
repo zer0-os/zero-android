@@ -21,60 +21,53 @@ import com.zero.android.ui.theme.AppTheme
 
 @Composable
 fun CustomTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    readOnly: Boolean = false,
-    textStyle: TextStyle = LocalTextStyle.current,
-    leadingIcon: @Composable (() -> Unit)? = null,
-    trailingIcon: @Composable (() -> Unit)? = null,
-    visualTransformation: VisualTransformation = VisualTransformation.None,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    keyboardActions: KeyboardActions = KeyboardActions(),
-    singleLine: Boolean = false,
-    maxLines: Int = Int.MAX_VALUE,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    placeholderText: String = "",
-    onTextLayout: (TextLayoutResult) -> Unit = {},
-    cursorBrush: Brush = SolidColor(AppTheme.colors.colorTextPrimary),
-    shape: Shape = RectangleShape
+	value: String,
+	onValueChange: (String) -> Unit,
+	modifier: Modifier = Modifier,
+	enabled: Boolean = true,
+	readOnly: Boolean = false,
+	textStyle: TextStyle = LocalTextStyle.current,
+	leadingIcon: @Composable (() -> Unit)? = null,
+	trailingIcon: @Composable (() -> Unit)? = null,
+	visualTransformation: VisualTransformation = VisualTransformation.None,
+	keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+	keyboardActions: KeyboardActions = KeyboardActions(),
+	singleLine: Boolean = false,
+	maxLines: Int = Int.MAX_VALUE,
+	interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+	placeholderText: String = "",
+	onTextLayout: (TextLayoutResult) -> Unit = {},
+	cursorBrush: Brush = SolidColor(AppTheme.colors.colorTextPrimary),
+	shape: Shape = RectangleShape
 ) {
-    BasicTextField(modifier = modifier
-        .fillMaxWidth()
-        .background(Color(0xFF191919), shape),
-        value = value,
-        onValueChange = onValueChange,
-        singleLine = singleLine,
-        maxLines = maxLines,
-        enabled = enabled,
-        readOnly = readOnly,
-        interactionSource = interactionSource,
-        textStyle = textStyle,
-        visualTransformation = visualTransformation,
-        keyboardOptions = keyboardOptions,
-        keyboardActions = keyboardActions,
-        onTextLayout = onTextLayout,
-        cursorBrush = cursorBrush,
-        decorationBox = { innerTextField ->
-            Row(
-                modifier,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                if (leadingIcon != null) {
-                    Spacer(modifier = Modifier.size(12.dp))
-                    leadingIcon()
-                    Spacer(modifier = Modifier.size(12.dp))
-                }
-                Box(Modifier.weight(1f)) {
-                    if (value.isEmpty()) Text(
-                        placeholderText,
-                        style = textStyle
-                    )
-                    innerTextField()
-                }
-                if (trailingIcon != null) trailingIcon()
-            }
-        }
-    )
+	BasicTextField(
+		modifier = modifier.fillMaxWidth().background(Color(0xFF191919), shape),
+		value = value,
+		onValueChange = onValueChange,
+		singleLine = singleLine,
+		maxLines = maxLines,
+		enabled = enabled,
+		readOnly = readOnly,
+		interactionSource = interactionSource,
+		textStyle = textStyle,
+		visualTransformation = visualTransformation,
+		keyboardOptions = keyboardOptions,
+		keyboardActions = keyboardActions,
+		onTextLayout = onTextLayout,
+		cursorBrush = cursorBrush,
+		decorationBox = { innerTextField ->
+			Row(modifier, verticalAlignment = Alignment.CenterVertically) {
+				if (leadingIcon != null) {
+					Spacer(modifier = Modifier.size(12.dp))
+					leadingIcon()
+					Spacer(modifier = Modifier.size(12.dp))
+				}
+				Box(Modifier.weight(1f)) {
+					if (value.isEmpty()) Text(placeholderText, style = textStyle)
+					innerTextField()
+				}
+				if (trailingIcon != null) trailingIcon()
+			}
+		}
+	)
 }

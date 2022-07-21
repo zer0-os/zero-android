@@ -13,77 +13,76 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class MediaPlayerRepository @Inject constructor(
-    @ApplicationContext private val context: Context
-) {
-    val baseFilePath by lazy { "${context.externalCacheDir?.absolutePath ?: ""}/Memos" }
+class MediaPlayerRepository @Inject constructor(@ApplicationContext private val context: Context) {
+	val baseFilePath by lazy { "${context.externalCacheDir?.absolutePath ?: ""}/Memos" }
 
-    init {
-        File(baseFilePath).apply {
-            if (!this.exists()) {
-                this.mkdirs()
-            }
-        }
-    }
+	init {
+		File(baseFilePath).apply {
+			if (!this.exists()) {
+				this.mkdirs()
+			}
+		}
+	}
 
-    private var _recorder: MediaRecorder? = null
-    var recorderFilePath: String? = null
+	private var _recorder: MediaRecorder? = null
+	var recorderFilePath: String? = null
 
-    val mediaPlayer = MediaPlayer().apply {
-        setAudioAttributes(
-            AudioAttributes.Builder()
-                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                .setUsage(AudioAttributes.USAGE_MEDIA)
-                .build()
-        )
-    }
+	val mediaPlayer =
+		MediaPlayer().apply {
+			setAudioAttributes(
+				AudioAttributes.Builder()
+					.setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+					.setUsage(AudioAttributes.USAGE_MEDIA)
+					.build()
+			)
+		}
 
-    @Throws(IOException::class)
-    fun startRecording() {
-        recorderFilePath = "$baseFilePath/Memo-${System.currentTimeMillis().div(1000)}"
-        recorderFilePath?.let {
-            _recorder = MediaRecorder().apply {
-                setAudioSource(MediaRecorder.AudioSource.MIC)
-                setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-                setOutputFile(it)
-                setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-                setAudioEncodingBitRate(16 * 44100)
-                setAudioSamplingRate(44100)
+	@Throws(IOException::class)
+	fun startRecording() {
+		recorderFilePath = "$baseFilePath/Memo-${System.currentTimeMillis().div(1000)}"
+		recorderFilePath?.let {
+			_recorder =
+				MediaRecorder().apply {
+					setAudioSource(MediaRecorder.AudioSource.MIC)
+					setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+					setOutputFile(it)
+					setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+					setAudioEncodingBitRate(16 * 44100)
+					setAudioSamplingRate(44100)
 
-                prepare()
-                start()
-            }
-        }
-    }
+					prepare()
+					start()
+				}
+		}
+	}
 
-    @Throws(IOException::class)
-    fun stopRecording() {
-        _recorder?.apply {
-            stop()
-            reset()
-            release()
-        }
-        _recorder = null
-    }
+	@Throws(IOException::class)
+	fun stopRecording() {
+		_recorder?.apply {
+			stop()
+			reset()
+			release()
+		}
+		_recorder = null
+	}
 
-    fun prepareMediaPlayer(uri: Uri, onPlayBackComplete: () -> Unit) {
-        mediaPlayer.apply {
-            try {
-                stop()
-                reset()
-                setDataSource(context, uri)
-                setOnCompletionListener { onPlayBackComplete.invoke() }
-                prepare()
-            } catch (e: IOException) {
-            }
-        }
-    }
+	fun prepareMediaPlayer(uri: Uri, onPlayBackComplete: () -> Unit) {
+		mediaPlayer.apply {
+			try {
+				stop()
+				reset()
+				setDataSource(context, uri)
+				setOnCompletionListener { onPlayBackComplete.invoke() }
+				prepare()
+			} catch (e: IOException) {}
+		}
+	}
 
-    fun getFileDuration(file: File): String? {
-        val retriever = MediaMetadataRetriever()
-        retriever.setDataSource(context, Uri.fromFile(file))
-        val time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-        retriever.release()
-        return time
-    }
+	fun getFileDuration(file: File): String? {
+		val retriever = MediaMetadataRetriever()
+		retriever.setDataSource(context, Uri.fromFile(file))
+		val time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+		retriever.release()
+		return time
+	}
 }

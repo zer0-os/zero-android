@@ -20,6 +20,8 @@ fun String?.initials(): String {
 	}
 }
 
-val String.isValidUrl get() = Patterns.WEB_URL.matcher(this).matches()
+val String.isValidUrl
+	get() = Patterns.WEB_URL.matcher(this).matches()
 
-val String.toUrl get() = URL(this)
+val String.toUrl
+	get() = URL(this)

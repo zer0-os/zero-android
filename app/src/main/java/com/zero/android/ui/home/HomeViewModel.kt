@@ -17,11 +17,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
-    private val networkRepository: NetworkRepository,
-    private val channelSearchManager: ChannelTriggerSearchManager,
-) :
-	BaseViewModel() {
+class HomeViewModel
+@Inject
+constructor(
+	private val networkRepository: NetworkRepository,
+	private val channelSearchManager: ChannelTriggerSearchManager
+) : BaseViewModel() {
 
 	val currentScreen = MutableStateFlow<NavDestination>(FeedDestination)
 
@@ -65,7 +66,7 @@ class HomeViewModel @Inject constructor(
 		}
 	}
 
-    fun triggerChannelSearch(show: Boolean) {
-        ioScope.launch { channelSearchManager.triggerChannelSearch(show) }
-    }
+	fun triggerChannelSearch(show: Boolean) {
+		ioScope.launch { channelSearchManager.triggerChannelSearch(show) }
+	}
 }

@@ -25,58 +25,61 @@ class DirectChannelsViewModel
 constructor(
 	private val preferences: Preferences,
 	private val channelRepository: ChannelRepository,
-    private val channelSearchManager: ChannelTriggerSearchManager,
+	private val channelSearchManager: ChannelTriggerSearchManager
 ) : BaseViewModel() {
 
-    private lateinit var network: Network
-    val loggedInUserId
-        get() = runBlocking(Dispatchers.IO) { preferences.userId() }
+	private lateinit var network: Network
+	val loggedInUserId
+		get() = runBlocking(Dispatchers.IO) { preferences.userId() }
 
-    private val _uiState = MutableStateFlow(DirectChannelScreenUiState(DirectChannelUiState.Loading))
-    val uiState: StateFlow<DirectChannelScreenUiState> = _uiState
-    private val mainDataSource = mutableListOf<Channel>()
-    val showSearchBar: StateFlow<Boolean> = channelSearchManager.showSearchBar
+	private val _uiState = MutableStateFlow(DirectChannelScreenUiState(DirectChannelUiState.Loading))
+	val uiState: StateFlow<DirectChannelScreenUiState> = _uiState
+	private val mainDataSource = mutableListOf<Channel>()
+	val showSearchBar: StateFlow<Boolean> = channelSearchManager.showSearchBar
 
-    fun onNetworkUpdated(network: Network) {
-        this.network = network
-        loadChannels()
-    }
+	fun onNetworkUpdated(network: Network) {
+		this.network = network
+		loadChannels()
+	}
 
-    fun filterChannels(query: String){
-        ioScope.launch {
-            val mainUiState = _uiState.firstOrNull()?.directChannelsUiState
-            if (mainUiState is DirectChannelUiState.Success) {
-                if (query.isEmpty()) {
-                    _uiState.emit(DirectChannelScreenUiState(DirectChannelUiState.Success(mainDataSource)))
-                } else {
-                    val filteredList = mainDataSource.filter { it.getTitle(loggedInUserId).contains(query, true) }
-                    _uiState.emit(DirectChannelScreenUiState(DirectChannelUiState.Success(filteredList, true)))
-                }
-            }
-        }
-    }
+	fun filterChannels(query: String) {
+		ioScope.launch {
+			val mainUiState = _uiState.firstOrNull()?.directChannelsUiState
+			if (mainUiState is DirectChannelUiState.Success) {
+				if (query.isEmpty()) {
+					_uiState.emit(DirectChannelScreenUiState(DirectChannelUiState.Success(mainDataSource)))
+				} else {
+					val filteredList =
+						mainDataSource.filter { it.getTitle(loggedInUserId).contains(query, true) }
+					_uiState.emit(
+						DirectChannelScreenUiState(DirectChannelUiState.Success(filteredList, true))
+					)
+				}
+			}
+		}
+	}
 
-    fun onSearchClosed() {
-        filterChannels("")
-        ioScope.launch { channelSearchManager.triggerChannelSearch(false) }
-    }
+	fun onSearchClosed() {
+		filterChannels("")
+		ioScope.launch { channelSearchManager.triggerChannelSearch(false) }
+	}
 
-    private fun loadChannels() {
-        ioScope.launch {
-            channelRepository.getDirectChannels().asResult().collectLatest {
-                when (it) {
-                    is Result.Success -> {
-                        _uiState.emit(DirectChannelScreenUiState(DirectChannelUiState.Success(it.data)))
-                        mainDataSource.apply {
-                            clear()
-                            addAll(it.data)
-                        }
-                    }
-                    is Result.Loading ->
-                        _uiState.emit(DirectChannelScreenUiState(DirectChannelUiState.Loading))
-                    else -> _uiState.emit(DirectChannelScreenUiState(DirectChannelUiState.Error))
-                }
-            }
-        }
-    }
+	private fun loadChannels() {
+		ioScope.launch {
+			channelRepository.getDirectChannels().asResult().collectLatest {
+				when (it) {
+					is Result.Success -> {
+						_uiState.emit(DirectChannelScreenUiState(DirectChannelUiState.Success(it.data)))
+						mainDataSource.apply {
+							clear()
+							addAll(it.data)
+						}
+					}
+					is Result.Loading ->
+						_uiState.emit(DirectChannelScreenUiState(DirectChannelUiState.Loading))
+					else -> _uiState.emit(DirectChannelScreenUiState(DirectChannelUiState.Error))
+				}
+			}
+		}
+	}
 }

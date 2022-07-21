@@ -52,7 +52,7 @@ fun UserInputPreview() {
 @Composable
 fun UserInputPanel(
 	modifier: Modifier = Modifier,
-    initialText: String = "",
+	initialText: String = "",
 	onMessageSent: (String) -> Unit,
 	resetScroll: () -> Unit = {},
 	addAttachment: () -> Unit = {},

@@ -43,7 +43,8 @@ data class Message(
 	val reactions: List<MessageReaction> = emptyList()
 ) : BaseMessage
 
-val Message.isReply get() = parentMessage != null
+val Message.isReply
+	get() = parentMessage != null
 
 data class DraftMessage(
 	override val channelId: String,

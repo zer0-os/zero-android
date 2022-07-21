@@ -3,8 +3,6 @@ package com.zero.android.data.repository
 import com.zero.android.data.conversion.toEntity
 import com.zero.android.data.conversion.toModel
 import com.zero.android.database.dao.MessageDao
-import com.zero.android.database.model.MessageWithRefs
-import com.zero.android.database.model.toModel
 import com.zero.android.models.Channel
 import com.zero.android.models.DraftMessage
 import com.zero.android.models.Message
@@ -18,9 +16,12 @@ import com.zero.android.network.service.MessageService
 import com.zero.android.network.util.NetworkMediaUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.transform
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.runBlocking
 import org.json.JSONObject
 import timber.log.Timber
@@ -30,15 +31,13 @@ class ChatRepositoryImpl
 @Inject
 constructor(
 	private val chatService: ChatService,
-    private val messageService: MessageService,
-    private val chatMediaService: ChatMediaService,
-    private val networkMediaUtil: NetworkMediaUtil,
-    private val messageDao: MessageDao
+	private val messageService: MessageService,
+	private val chatMediaService: ChatMediaService,
+	private val networkMediaUtil: NetworkMediaUtil,
+	private val messageDao: MessageDao
 ) : ChatRepository {
 
-	override fun allChatMessages(channelId: String) = messageDao.getByChannel(channelId)
-        .map { messageEntities -> messageEntities.map { it.toModel() }
-    }
+	override val channelChatMessages = MutableStateFlow<List<Message>>(emptyList())
 
 	override suspend fun addListener(id: String) {
 		chatService.addListener(
@@ -54,13 +53,10 @@ constructor(
 	override suspend fun removeListener(id: String) = chatService.removeListener(id)
 
 	override suspend fun getMessages(channel: Channel, timestamp: Long): Flow<List<Message>> {
-		val messagesResult = chatService.getMessages(channel, timestamp)
-        val messages = messagesResult.map { messages ->
-            val entities = messages.map { it.toEntity() }
-            messageDao.upsert(*entities.toTypedArray())
-            messages.map { it.toModel() }
-        }
-		return messages
+		return chatService
+			.getMessages(channel, timestamp)
+			.map { messages -> messages.map { it.toModel() } }
+			.apply { collect(channelChatMessages) }
 	}
 
 	override suspend fun getMessages(channel: Channel, id: String): Flow<List<Message>> {
@@ -71,7 +67,7 @@ constructor(
 		return if (message.type == MessageType.TEXT) {
 			chatService.send(channel, message).map {
 				messageDao.upsert(it.toEntity())
-                it.toModel()
+				it.toModel().also { appendNewChatMessage(it) }
 			}
 		} else {
 			sendFileMessage(channel, message)
@@ -96,30 +92,54 @@ constructor(
 				Timber.e("Upload Info is required for file upload")
 				message
 			}
-		val newMessage = chatService.send(channel, fileMessage).map {
-            messageDao.upsert(it.toEntity())
-            it.toModel()
-        }
+		val newMessage =
+			chatService.send(channel, fileMessage).map {
+				messageDao.upsert(it.toEntity())
+				it.toModel().also { appendNewChatMessage(it) }
+			}
 		return newMessage
 	}
 
 	override suspend fun reply(channel: Channel, id: String, message: DraftMessage): Flow<Message> {
-		return send(channel, message.apply { parentMessageId = id })
+		return send(channel, message.apply { parentMessageId = id }).also {
+			appendNewChatMessage(message = it.first())
+		}
 	}
 
-    override suspend fun updateMessage(id: String, channelId: String, text: String) {
-        val response = messageService.updateMessage(id, channelId, text)
-        if (response.isSuccessful) {
-            messageDao.get(id).collectLatest { existingMessage ->
-                existingMessage?.let {
-                    val updatedMessageEntity = it.message.copy(message = text)
-                    messageDao.upsert(it.copy(message = updatedMessageEntity))
-                }
-            }
-        }
-    }
+	override suspend fun updateMessage(id: String, channelId: String, text: String) {
+		val response = messageService.updateMessage(id, channelId, text)
+		if (response.isSuccessful) {
+			messageDao.get(id).collectLatest { existingMessage ->
+				existingMessage?.let {
+					val updatedMessageEntity = it.message.copy(message = text)
+					messageDao.upsert(it.copy(message = updatedMessageEntity))
+				}
+			}
 
-    override suspend fun deleteMessage(message: Message, channel: Channel) {
-        chatService.deleteMessage(channel, message).also { messageDao.delete(message.id) }
-    }
+			channelChatMessages.update { messages ->
+				val updatedMessage = messages.firstOrNull { it.id == id }?.copy(message = text)
+				if (updatedMessage != null) {
+					messages.toMutableList().apply {
+						this[messages.indexOfFirst { it.id == id }] = updatedMessage
+					}
+				} else messages
+			}
+		}
+	}
+
+	override suspend fun deleteMessage(message: Message, channel: Channel) {
+		chatService.deleteMessage(channel, message).also {
+			messageDao.delete(message.id)
+
+			val messages = channelChatMessages.firstOrNull()?.toMutableList() ?: mutableListOf()
+			messages.remove(message)
+			channelChatMessages.tryEmit(messages)
+		}
+	}
+
+	private suspend fun appendNewChatMessage(message: Message) {
+		val messages = channelChatMessages.firstOrNull()?.toMutableList() ?: mutableListOf()
+		messages.add(0, message)
+		channelChatMessages.tryEmit(messages)
+	}
 }

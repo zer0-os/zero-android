@@ -11,24 +11,24 @@ import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun Timer(modifier: Modifier = Modifier, fontSize: TextUnit = 14.sp) {
-    var ticks by remember { mutableStateOf(0) }
-    LaunchedEffect(true) {
-        while (true) {
-            delay(1.seconds)
-            ticks++
-        }
-    }
-    Text(text = ticks.times(1000).convertDurationToString(), modifier = modifier, fontSize = fontSize)
+	var ticks by remember { mutableStateOf(0) }
+	LaunchedEffect(true) {
+		while (true) {
+			delay(1.seconds)
+			ticks++
+		}
+	}
+	Text(text = ticks.times(1000).convertDurationToString(), modifier = modifier, fontSize = fontSize)
 }
 
 @Composable
 fun ReverseTimer(modifier: Modifier = Modifier, startTime: Int, fontSize: TextUnit = 14.sp) {
-    var ticks by remember { mutableStateOf(startTime.div(1000)) }
-    LaunchedEffect(true) {
-        while (ticks > 0) {
-            delay(1.seconds)
-            ticks--
-        }
-    }
-    Text(text = ticks.times(1000).convertDurationToString(), modifier = modifier, fontSize = fontSize)
+	var ticks by remember { mutableStateOf(startTime.div(1000)) }
+	LaunchedEffect(true) {
+		while (ticks > 0) {
+			delay(1.seconds)
+			ticks--
+		}
+	}
+	Text(text = ticks.times(1000).convertDurationToString(), modifier = modifier, fontSize = fontSize)
 }

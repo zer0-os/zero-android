@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 
 interface ChatRepository {
 
-	fun allChatMessages(channelId: String): Flow<List<Message>>
+	val channelChatMessages: MutableStateFlow<List<Message>>
 
 	suspend fun getMessages(channel: Channel, timestamp: Long = Long.MAX_VALUE): Flow<List<Message>>
 

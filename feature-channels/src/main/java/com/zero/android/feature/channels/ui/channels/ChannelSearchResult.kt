@@ -23,85 +23,81 @@ import com.zero.android.ui.components.NameInitialsView
 import com.zero.android.ui.theme.AppTheme
 
 @Composable
-fun ChannelSearchResult(
-    channels: List<Channel>
-) {
-    val categorisedChannels =
-        (channels as List<GroupChannel>).groupBy { if (it.category.isNullOrEmpty()) "Other" else it.category }
-    Column(modifier = Modifier.fillMaxSize()) {
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .weight(1f)) {
-            categorisedChannels.forEach { entry ->
-                entry.key?.let {
-                    ChannelSearchItem(it, entry.value)
-                }
-            }
-        }
-        Text(
-            text = "${channels.size} results found",
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 10.dp)
-                .background(MaterialTheme.colorScheme.primary),
-            textAlign = TextAlign.Center
-        )
-    }
+fun ChannelSearchResult(channels: List<Channel>) {
+	val categorisedChannels =
+		(channels as List<GroupChannel>).groupBy {
+			if (it.category.isNullOrEmpty()) "Other" else it.category
+		}
+	Column(modifier = Modifier.fillMaxSize()) {
+		Column(modifier = Modifier.fillMaxWidth().weight(1f)) {
+			categorisedChannels.forEach { entry -> entry.key?.let { ChannelSearchItem(it, entry.value) } }
+		}
+		Text(
+			text = "${channels.size} results found",
+			modifier =
+			Modifier.fillMaxWidth()
+				.padding(vertical = 10.dp)
+				.background(MaterialTheme.colorScheme.primary),
+			textAlign = TextAlign.Center
+		)
+	}
 }
 
 @Composable
 fun ChannelSearchItem(header: String, channels: List<GroupChannel>) {
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(12.dp)) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(header, color = AppTheme.colors.colorTextPrimary, style = MaterialTheme.typography.bodyMedium)
-            Text("${channels.size} found", color = AppTheme.colors.colorTextSecondary, style = MaterialTheme.typography.labelLarge)
-        }
-        Spacer(modifier = Modifier.size(8.dp))
-        LazyRow(modifier = Modifier.fillMaxWidth()) {
-            items(channels, itemContent = { channel ->
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    NameInitialsView(
-                        modifier = Modifier.size(32.dp),
-                        userName = channel.getTitle()
-                    )
-                    Spacer(modifier = Modifier.size(8.dp))
-                    Text(
-                        text = channel.getTitle(),
-                        color = AppTheme.colors.colorTextPrimary,
-                        style = MaterialTheme.typography.bodyMedium,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    if (channel.hasTelegramChannel) {
-                        Spacer(modifier = Modifier.padding(8.dp))
-                        Image(
-                            painter = painterResource(R.drawable.ic_vector),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .wrapContentSize()
-                                .align(Alignment.CenterVertically),
-                            contentScale = ContentScale.Fit
-                        )
-                    }
-                    if (channel.hasDiscordChannel) {
-                        Spacer(modifier = Modifier.padding(8.dp))
-                        Image(
-                            painter = painterResource(R.drawable.ic_discord),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .wrapContentSize()
-                                .align(Alignment.CenterVertically),
-                            contentScale = ContentScale.Fit
-                        )
-                    }
-                }
-            })
-        }
-    }
+	Column(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
+		Row(
+			modifier = Modifier.fillMaxWidth(),
+			horizontalArrangement = Arrangement.SpaceBetween,
+			verticalAlignment = Alignment.CenterVertically
+		) {
+			Text(
+				header,
+				color = AppTheme.colors.colorTextPrimary,
+				style = MaterialTheme.typography.bodyMedium
+			)
+			Text(
+				"${channels.size} found",
+				color = AppTheme.colors.colorTextSecondary,
+				style = MaterialTheme.typography.labelLarge
+			)
+		}
+		Spacer(modifier = Modifier.size(8.dp))
+		LazyRow(modifier = Modifier.fillMaxWidth()) {
+			items(
+				channels,
+				itemContent = { channel ->
+					Row(verticalAlignment = Alignment.CenterVertically) {
+						NameInitialsView(modifier = Modifier.size(32.dp), userName = channel.getTitle())
+						Spacer(modifier = Modifier.size(8.dp))
+						Text(
+							text = channel.getTitle(),
+							color = AppTheme.colors.colorTextPrimary,
+							style = MaterialTheme.typography.bodyMedium,
+							maxLines = 1,
+							overflow = TextOverflow.Ellipsis
+						)
+						if (channel.hasTelegramChannel) {
+							Spacer(modifier = Modifier.padding(8.dp))
+							Image(
+								painter = painterResource(R.drawable.ic_vector),
+								contentDescription = "",
+								modifier = Modifier.wrapContentSize().align(Alignment.CenterVertically),
+								contentScale = ContentScale.Fit
+							)
+						}
+						if (channel.hasDiscordChannel) {
+							Spacer(modifier = Modifier.padding(8.dp))
+							Image(
+								painter = painterResource(R.drawable.ic_discord),
+								contentDescription = "",
+								modifier = Modifier.wrapContentSize().align(Alignment.CenterVertically),
+								contentScale = ContentScale.Fit
+							)
+						}
+					}
+				}
+			)
+		}
+	}
 }

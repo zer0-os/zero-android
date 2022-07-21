@@ -20,7 +20,7 @@ fun AppTopBar(
 	modifier: Modifier = Modifier,
 	network: Network?,
 	openDrawer: () -> Unit,
-    actions: @Composable RowScope.() -> Unit = {}
+	actions: @Composable RowScope.() -> Unit = {}
 ) {
 	CenterAlignedTopAppBar(
 		modifier = modifier,
@@ -45,8 +45,5 @@ fun AppTopBar(
 	)
 }
 
-@Preview
-@Composable
-fun AppTopBarPreview() = Preview {
-
-}
+@Preview @Composable
+fun AppTopBarPreview() = Preview {}

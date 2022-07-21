@@ -29,110 +29,106 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MessagesContent(
-    modifier: Modifier = Modifier,
-    userChannelInfo: Pair<String, Boolean>,
-    uiState: MessagesUiState
+	modifier: Modifier = Modifier,
+	userChannelInfo: Pair<String, Boolean>,
+	uiState: MessagesUiState
 ) {
-    val scrollState = rememberLazyListState()
-    val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior() }
-    val scope = rememberCoroutineScope()
+	val scrollState = rememberLazyListState()
+	val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior() }
+	val scope = rememberCoroutineScope()
 
-    Surface(modifier = modifier) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .background(AppTheme.colors.surfaceInverse)
-                    .nestedScroll(scrollBehavior.nestedScrollConnection)
-            ) {
-                Messages(
-                    modifier = Modifier.weight(1f),
-                    userChannelInfo = userChannelInfo,
-                    uiState = uiState,
-                    scrollState = scrollState,
-                    coroutineScope = scope
-                )
-
-            }
-        }
-    }
+	Surface(modifier = modifier) {
+		Box(modifier = Modifier.fillMaxSize()) {
+			Column(
+				Modifier.fillMaxSize()
+					.background(AppTheme.colors.surfaceInverse)
+					.nestedScroll(scrollBehavior.nestedScrollConnection)
+			) {
+				Messages(
+					modifier = Modifier.weight(1f),
+					userChannelInfo = userChannelInfo,
+					uiState = uiState,
+					scrollState = scrollState,
+					coroutineScope = scope
+				)
+			}
+		}
+	}
 }
 
 @Composable
 fun Messages(
-    modifier: Modifier = Modifier,
-    userChannelInfo: Pair<String, Boolean>,
-    uiState: MessagesUiState,
-    scrollState: LazyListState,
-    coroutineScope: CoroutineScope,
-    mediaSourceViewModel: MediaSourceViewModel = hiltViewModel()
+	modifier: Modifier = Modifier,
+	userChannelInfo: Pair<String, Boolean>,
+	uiState: MessagesUiState,
+	scrollState: LazyListState,
+	coroutineScope: CoroutineScope,
+	mediaSourceViewModel: MediaSourceViewModel = hiltViewModel()
 ) {
-    DisposableEffect(Unit) {
-        onDispose { mediaSourceViewModel.dispose() }
-    }
-    Box(modifier = modifier.padding(14.dp)) {
-        if (uiState is MessagesUiState.Success) {
-            val messages = uiState.messages
-            mediaSourceViewModel.configure(messages)
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                reverseLayout = true,
-                state = scrollState,
-                contentPadding =
-                WindowInsets.statusBars.add(WindowInsets(top = 90.dp)).asPaddingValues()
-            ) {
-                for (index in messages.indices) {
-                    val prevAuthor = messages.getOrNull(index - 1)?.author
-                    val nextAuthor = messages.getOrNull(index + 1)?.author
-                    val content = messages[index]
-                    val messageDate = content.createdAt.toDate()
-                    val nextMessageDate = (messages.getOrNull(index + 1)?.createdAt ?: 0).toDate()
-                    val isSameDay = nextMessageDate.isSameDay(messageDate)
-                    val isFirstMessageByAuthor = prevAuthor != content.author
-                    val isLastMessageByAuthor = nextAuthor != content.author
+	DisposableEffect(Unit) { onDispose { mediaSourceViewModel.dispose() } }
+	Box(modifier = modifier.padding(14.dp)) {
+		if (uiState is MessagesUiState.Success) {
+			val messages = uiState.messages
+			mediaSourceViewModel.configure(messages)
+			LazyColumn(
+				modifier = Modifier.fillMaxSize(),
+				reverseLayout = true,
+				state = scrollState,
+				contentPadding =
+				WindowInsets.statusBars.add(WindowInsets(top = 90.dp)).asPaddingValues()
+			) {
+				for (index in messages.indices) {
+					val prevAuthor = messages.getOrNull(index - 1)?.author
+					val nextAuthor = messages.getOrNull(index + 1)?.author
+					val content = messages[index]
+					val messageDate = content.createdAt.toDate()
+					val nextMessageDate = (messages.getOrNull(index + 1)?.createdAt ?: 0).toDate()
+					val isSameDay = nextMessageDate.isSameDay(messageDate)
+					val isFirstMessageByAuthor = prevAuthor != content.author
+					val isLastMessageByAuthor = nextAuthor != content.author
 
-                    item {
-                        if (!userChannelInfo.second) {
-                            DirectMessage(
-                                msg = content,
-                                isUserMe = content.author.id == userChannelInfo.first,
-                                isSameDay = isSameDay,
-                                isFirstMessageByAuthor = isFirstMessageByAuthor,
-                                isLastMessageByAuthor = isLastMessageByAuthor,
-                                mediaSourceViewModel = mediaSourceViewModel,
-                                onAuthorClick = {}
-                            )
-                        } else {
-                            ChannelMessage(
-                                msg = content,
-                                isUserMe = content.author.id == userChannelInfo.first,
-                                isFirstMessageByAuthor = isFirstMessageByAuthor,
-                                mediaSourceViewModel = mediaSourceViewModel,
-                                onAuthorClick = {}
-                            )
-                        }
-                    }
-                    if (!isSameDay) {
-                        item { DayHeader(messageDate.format("MMMM dd, yyyy")) }
-                    }
-                }
-            }
+					item {
+						if (!userChannelInfo.second) {
+							DirectMessage(
+								msg = content,
+								isUserMe = content.author.id == userChannelInfo.first,
+								isSameDay = isSameDay,
+								isFirstMessageByAuthor = isFirstMessageByAuthor,
+								isLastMessageByAuthor = isLastMessageByAuthor,
+								mediaSourceViewModel = mediaSourceViewModel,
+								onAuthorClick = {}
+							)
+						} else {
+							ChannelMessage(
+								msg = content,
+								isUserMe = content.author.id == userChannelInfo.first,
+								isFirstMessageByAuthor = isFirstMessageByAuthor,
+								mediaSourceViewModel = mediaSourceViewModel,
+								onAuthorClick = {}
+							)
+						}
+					}
+					if (!isSameDay) {
+						item { DayHeader(messageDate.format("MMMM dd, yyyy")) }
+					}
+				}
+			}
 
-            val jumpThreshold = with(LocalDensity.current) { JumpToBottomThreshold.toPx() }
-            val jumpToBottomButtonEnabled by remember {
-                derivedStateOf {
-                    scrollState.firstVisibleItemIndex != 0 ||
-                        scrollState.firstVisibleItemScrollOffset > jumpThreshold
-                }
-            }
-            JumpToBottom(
-                // Only show if the scroller is not at the bottom
-                enabled = jumpToBottomButtonEnabled,
-                onClicked = { coroutineScope.launch { scrollState.animateScrollToItem(0) } },
-                modifier = Modifier.align(Alignment.BottomCenter)
-            )
-        }
-    }
+			val jumpThreshold = with(LocalDensity.current) { JumpToBottomThreshold.toPx() }
+			val jumpToBottomButtonEnabled by remember {
+				derivedStateOf {
+					scrollState.firstVisibleItemIndex != 0 ||
+						scrollState.firstVisibleItemScrollOffset > jumpThreshold
+				}
+			}
+			JumpToBottom(
+				// Only show if the scroller is not at the bottom
+				enabled = jumpToBottomButtonEnabled,
+				onClicked = { coroutineScope.launch { scrollState.animateScrollToItem(0) } },
+				modifier = Modifier.align(Alignment.BottomCenter)
+			)
+		}
+	}
 }
 
 @Preview @Composable

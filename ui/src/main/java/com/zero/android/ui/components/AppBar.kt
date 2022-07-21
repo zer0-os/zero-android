@@ -11,12 +11,12 @@ import androidx.compose.ui.graphics.Color
 
 @Composable
 fun AppBar(
-    modifier: Modifier = Modifier,
-    scrollBehavior: TopAppBarScrollBehavior? = null,
-    color: Color? = null,
-    navIcon: @Composable () -> Unit,
-    title: @Composable () -> Unit,
-    actions: @Composable RowScope.() -> Unit = {}
+	modifier: Modifier = Modifier,
+	scrollBehavior: TopAppBarScrollBehavior? = null,
+	color: Color? = null,
+	navIcon: @Composable () -> Unit,
+	title: @Composable () -> Unit,
+	actions: @Composable RowScope.() -> Unit = {}
 ) {
 	Box(modifier = Modifier) {
 		SmallTopAppBar(
@@ -25,11 +25,12 @@ fun AppBar(
 			title = title,
 			scrollBehavior = scrollBehavior,
 			navigationIcon = navIcon,
-            colors = if (color != null) {
-                TopAppBarDefaults.smallTopAppBarColors(containerColor = color)
-            } else {
-                TopAppBarDefaults.smallTopAppBarColors()
-            }
+			colors =
+			if (color != null) {
+				TopAppBarDefaults.smallTopAppBarColors(containerColor = color)
+			} else {
+				TopAppBarDefaults.smallTopAppBarColors()
+			}
 		)
 	}
 }

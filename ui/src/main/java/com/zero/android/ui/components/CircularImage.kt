@@ -12,18 +12,18 @@ import coil.compose.AsyncImage
 
 @Composable
 fun ExtraSmallCircularImage(
-    modifier: Modifier = Modifier,
-    imageUrl: String? = null,
-    @DrawableRes placeHolder: Int,
-    contentDescription: String = ""
+	modifier: Modifier = Modifier,
+	imageUrl: String? = null,
+	@DrawableRes placeHolder: Int,
+	contentDescription: String = ""
 ) {
-    AsyncImage(
-        model = imageUrl,
-        placeholder = painterResource(placeHolder),
-        error = painterResource(placeHolder),
-        contentDescription = contentDescription,
-        modifier = modifier.size(24.dp).clip(CircleShape)
-    )
+	AsyncImage(
+		model = imageUrl,
+		placeholder = painterResource(placeHolder),
+		error = painterResource(placeHolder),
+		contentDescription = contentDescription,
+		modifier = modifier.size(24.dp).clip(CircleShape)
+	)
 }
 
 @Composable

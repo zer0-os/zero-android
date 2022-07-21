@@ -25,10 +25,11 @@ data class ApiUploadedMediaInfo(
 	@SerialName("version_id") val versionId: String,
 	val width: Int
 ) {
-    fun getDataMap(type: MessageType): Map<*, *> = mutableMapOf<String, Any>(
-        "url" to secureUrl,
-        "width" to width,
-        "height" to height,
-        "type" to type.serializedName
-    )
+	fun getDataMap(type: MessageType): Map<*, *> =
+		mutableMapOf<String, Any>(
+			"url" to secureUrl,
+			"width" to width,
+			"height" to height,
+			"type" to type.serializedName
+		)
 }

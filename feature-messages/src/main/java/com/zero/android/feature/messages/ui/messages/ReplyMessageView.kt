@@ -25,68 +25,65 @@ import com.zero.android.ui.theme.Typography
 
 @Composable
 fun ReplyMessage(
-    modifier: Modifier = Modifier.fillMaxWidth(),
-    message: Message,
-    showCloseButton: Boolean = true,
-    onCloseView: () -> Unit = {},
+	modifier: Modifier = Modifier.fillMaxWidth(),
+	message: Message,
+	showCloseButton: Boolean = true,
+	onCloseView: () -> Unit = {}
 ) {
-    Surface(modifier = if (showCloseButton) modifier.padding(6.dp) else modifier, color = Color.Transparent) {
-        Row(
-            modifier = modifier
-                .background(
-                    color = AppTheme.colors.surface.copy(alpha = 0.2f),
-                    shape = RoundedCornerShape(12.dp)
-                )
-                .padding(horizontal = 6.dp, vertical = 6.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            ExtraSmallCircularImage(
-                imageUrl = message.author.profileImage,
-                placeHolder = R.drawable.ic_user_profile_placeholder
-            )
-            Spacer(modifier = Modifier.size(8.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                message.author.name?.let {
-                    Text(
-                        text = it,
-                        color = AppTheme.colors.colorTextPrimary,
-                        style = Typography.labelLarge,
-                        fontWeight = FontWeight.Medium,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Spacer(modifier = Modifier.size(2.dp))
-                }
-                val replyMessage = if (message.message != null) {
-                    message.message!!
-                } else "${message.type.name} Message"
-                Text(
-                    text = replyMessage,
-                    color = AppTheme.colors.colorTextSecondary,
-                    style = Typography.labelLarge,
-                    fontWeight = FontWeight.Normal,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
-            Spacer(modifier = Modifier.size(8.dp))
-            message.fileUrl?.let {
-                AsyncImage(
-                    model = it,
-                    contentDescription = "",
-                    modifier = Modifier.size(60.dp)
-                )
-                Spacer(modifier = Modifier.size(8.dp))
-            }
-            if (showCloseButton) {
-                IconButton(onClick = onCloseView) {
-                    Icon(
-                        imageVector = Icons.Filled.Close,
-                        contentDescription = "",
-                        tint = Color.DarkGray
-                    )
-                }
-            }
-        }
-    }
+	Surface(
+		modifier = if (showCloseButton) modifier.padding(6.dp) else modifier,
+		color = Color.Transparent
+	) {
+		Row(
+			modifier =
+			modifier
+				.background(
+					color = AppTheme.colors.surface.copy(alpha = 0.2f),
+					shape = RoundedCornerShape(12.dp)
+				)
+				.padding(horizontal = 6.dp, vertical = 6.dp),
+			verticalAlignment = Alignment.CenterVertically
+		) {
+			ExtraSmallCircularImage(
+				imageUrl = message.author.profileImage,
+				placeHolder = R.drawable.ic_user_profile_placeholder
+			)
+			Spacer(modifier = Modifier.size(8.dp))
+			Column(modifier = Modifier.weight(1f)) {
+				message.author.name?.let {
+					Text(
+						text = it,
+						color = AppTheme.colors.colorTextPrimary,
+						style = Typography.labelLarge,
+						fontWeight = FontWeight.Medium,
+						maxLines = 1,
+						overflow = TextOverflow.Ellipsis
+					)
+					Spacer(modifier = Modifier.size(2.dp))
+				}
+				val replyMessage =
+					if (message.message != null) {
+						message.message!!
+					} else "${message.type.name} Message"
+				Text(
+					text = replyMessage,
+					color = AppTheme.colors.colorTextSecondary,
+					style = Typography.labelLarge,
+					fontWeight = FontWeight.Normal,
+					maxLines = 2,
+					overflow = TextOverflow.Ellipsis
+				)
+			}
+			Spacer(modifier = Modifier.size(8.dp))
+			message.fileUrl?.let {
+				AsyncImage(model = it, contentDescription = "", modifier = Modifier.size(60.dp))
+				Spacer(modifier = Modifier.size(8.dp))
+			}
+			if (showCloseButton) {
+				IconButton(onClick = onCloseView) {
+					Icon(imageVector = Icons.Filled.Close, contentDescription = "", tint = Color.DarkGray)
+				}
+			}
+		}
+	}
 }
