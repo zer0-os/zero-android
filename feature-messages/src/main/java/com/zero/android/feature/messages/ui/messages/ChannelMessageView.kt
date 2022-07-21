@@ -42,9 +42,7 @@ fun ChannelMessage(
 			.combinedClickable(
 				onClick = {},
 				onLongClick = {
-					if (isUserMe) {
-						MessageActionStateHandler.setSelectedMessage(msg)
-					}
+                    MessageActionStateHandler.setSelectedMessage(msg)
 				}
 			)
 	Row(

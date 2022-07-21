@@ -214,27 +214,29 @@ fun MessagesScreen(
 								)
 							}
 						}
-						if (actionMessage!!.type == MessageType.TEXT) {
-							IconButton(onClick = { MessageActionStateHandler.editTextMessage() }) {
-								Icon(
-									imageVector = Icons.Filled.Edit,
-									contentDescription = "cd_message_action_edit",
-									tint = Color.DarkGray
-								)
-							}
-						}
-						IconButton(
-							onClick = {
-								actionMessage?.let(onDeleteMessage)
-								MessageActionStateHandler.closeActionMode()
-							}
-						) {
-							Icon(
-								imageVector = Icons.Filled.Delete,
-								contentDescription = "cd_message_action_delete",
-								tint = Color.DarkGray
-							)
-						}
+						if (actionMessage!!.author.id == userChannelInfo.first) {
+                            if (actionMessage!!.type == MessageType.TEXT) {
+                                IconButton(onClick = { MessageActionStateHandler.editTextMessage() }) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Edit,
+                                        contentDescription = "cd_message_action_edit",
+                                        tint = Color.DarkGray
+                                    )
+                                }
+                            }
+                            IconButton(
+                                onClick = {
+                                    actionMessage?.let(onDeleteMessage)
+                                    MessageActionStateHandler.closeActionMode()
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Delete,
+                                    contentDescription = "cd_message_action_delete",
+                                    tint = Color.DarkGray
+                                )
+                            }
+                        }
 					} else {
 						IconButton(onClick = {}) {
 							Icon(

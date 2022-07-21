@@ -46,9 +46,7 @@ fun DirectMessage(
 			.combinedClickable(
 				onClick = {},
 				onLongClick = {
-					if (isUserMe) {
-						MessageActionStateHandler.setSelectedMessage(msg)
-					}
+                    MessageActionStateHandler.setSelectedMessage(msg)
 				}
 			)
 	) {
