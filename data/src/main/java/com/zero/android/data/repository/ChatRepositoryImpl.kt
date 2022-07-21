@@ -18,7 +18,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
@@ -63,18 +62,18 @@ constructor(
 		return chatService.getMessages(channel, id).map { messages -> messages.map { it.toModel() } }
 	}
 
-	override suspend fun send(channel: Channel, message: DraftMessage): Flow<Message> {
-		return if (message.type == MessageType.TEXT) {
-			chatService.send(channel, message).map {
+	override suspend fun send(channel: Channel, message: DraftMessage) {
+		if (message.type == MessageType.TEXT) {
+			chatService.send(channel, message).firstOrNull()?.let {
 				messageDao.upsert(it.toEntity())
-				it.toModel().also { appendNewChatMessage(it) }
+				it.toModel().also { message -> appendNewChatMessage(message) }
 			}
 		} else {
 			sendFileMessage(channel, message)
 		}
 	}
 
-	private suspend fun sendFileMessage(channel: Channel, message: DraftMessage): Flow<Message> {
+	private suspend fun sendFileMessage(channel: Channel, message: DraftMessage) {
 		val uploadInfo = chatMediaService.getUploadInfo()
 		val fileMessage =
 			if (uploadInfo.apiUrl.isNotEmpty() && uploadInfo.query != null) {
@@ -92,18 +91,15 @@ constructor(
 				Timber.e("Upload Info is required for file upload")
 				message
 			}
-		val newMessage =
-			chatService.send(channel, fileMessage).map {
-				messageDao.upsert(it.toEntity())
-				it.toModel().also { appendNewChatMessage(it) }
-			}
-		return newMessage
+
+		chatService.send(channel, fileMessage).map {
+			messageDao.upsert(it.toEntity())
+			it.toModel().also { message -> appendNewChatMessage(message) }
+		}
 	}
 
-	override suspend fun reply(channel: Channel, id: String, message: DraftMessage): Flow<Message> {
-		return send(channel, message.apply { parentMessageId = id }).also {
-			appendNewChatMessage(message = it.first())
-		}
+	override suspend fun reply(channel: Channel, id: String, message: DraftMessage) {
+		send(channel, message.apply { parentMessageId = id })
 	}
 
 	override suspend fun updateMessage(id: String, channelId: String, text: String) {

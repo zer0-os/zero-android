@@ -14,9 +14,9 @@ interface ChatRepository {
 
 	suspend fun getMessages(channel: Channel, id: String): Flow<List<Message>>
 
-	suspend fun send(channel: Channel, message: DraftMessage): Flow<Message>
+	suspend fun send(channel: Channel, message: DraftMessage)
 
-	suspend fun reply(channel: Channel, id: String, message: DraftMessage): Flow<Message>
+	suspend fun reply(channel: Channel, id: String, message: DraftMessage)
 
 	suspend fun updateMessage(id: String, channelId: String, text: String)
 
