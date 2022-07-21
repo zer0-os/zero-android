@@ -2,6 +2,7 @@ package com.zero.android.feature.channels.ui.channels
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -23,14 +24,17 @@ import com.zero.android.ui.components.NameInitialsView
 import com.zero.android.ui.theme.AppTheme
 
 @Composable
-fun ChannelSearchResult(channels: List<Channel>) {
+fun ChannelSearchResult(
+    channels: List<Channel>,
+    onClick: (Channel) -> Unit,
+) {
 	val categorisedChannels =
 		(channels as List<GroupChannel>).groupBy {
 			if (it.category.isNullOrEmpty()) "Other" else it.category
 		}
 	Column(modifier = Modifier.fillMaxSize()) {
 		Column(modifier = Modifier.fillMaxWidth().weight(1f)) {
-			categorisedChannels.forEach { entry -> entry.key?.let { ChannelSearchItem(it, entry.value) } }
+			categorisedChannels.forEach { entry -> entry.key?.let { ChannelSearchItem(it, entry.value, onClick) } }
 		}
 		Text(
 			text = "${channels.size} results found",
@@ -44,7 +48,11 @@ fun ChannelSearchResult(channels: List<Channel>) {
 }
 
 @Composable
-fun ChannelSearchItem(header: String, channels: List<GroupChannel>) {
+fun ChannelSearchItem(
+    header: String,
+    channels: List<GroupChannel>,
+    onClick: (Channel) -> Unit,
+) {
 	Column(modifier = Modifier.fillMaxWidth().padding(12.dp)) {
 		Row(
 			modifier = Modifier.fillMaxWidth(),
@@ -67,7 +75,7 @@ fun ChannelSearchItem(header: String, channels: List<GroupChannel>) {
 			items(
 				channels,
 				itemContent = { channel ->
-					Row(verticalAlignment = Alignment.CenterVertically) {
+					Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { onClick(channel) }) {
 						NameInitialsView(modifier = Modifier.size(32.dp), userName = channel.getTitle())
 						Spacer(modifier = Modifier.size(8.dp))
 						Text(

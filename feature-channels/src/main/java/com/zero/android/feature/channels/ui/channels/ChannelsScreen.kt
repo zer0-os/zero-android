@@ -108,7 +108,10 @@ fun ChannelsScreen(
 					}
 				}
 				if (isSearchResult) {
-					ChannelSearchResult(uiState.categoryChannelsUiState.channels)
+					ChannelSearchResult(uiState.categoryChannelsUiState.channels) {
+                        onSearchClosed()
+                        onChannelSelected(it)
+                    }
 				} else {
 					ChannelTabLayout(pagerState = pagerState, coroutineScope = coroutineScope, tabs = tabs)
 					ChannelPager(pagerState = pagerState, groupChannelUiState = uiState) {
