@@ -19,7 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.zero.android.common.extensions.format
 import com.zero.android.common.extensions.isSameDay
 import com.zero.android.common.extensions.toDate
-import com.zero.android.feature.messages.mediaPlayer.MediaSourceViewModel
+import com.zero.android.feature.messages.chatattachment.ChatAttachmentViewModel
 import com.zero.android.ui.components.DayHeader
 import com.zero.android.ui.components.JumpToBottom
 import com.zero.android.ui.theme.AppTheme
@@ -58,18 +58,18 @@ fun MessagesContent(
 
 @Composable
 fun Messages(
-	modifier: Modifier = Modifier,
-	userChannelInfo: Pair<String, Boolean>,
-	uiState: MessagesUiState,
-	scrollState: LazyListState,
-	coroutineScope: CoroutineScope,
-	mediaSourceViewModel: MediaSourceViewModel = hiltViewModel()
+    modifier: Modifier = Modifier,
+    userChannelInfo: Pair<String, Boolean>,
+    uiState: MessagesUiState,
+    scrollState: LazyListState,
+    coroutineScope: CoroutineScope,
+    chatAttachmentViewModel: ChatAttachmentViewModel = hiltViewModel()
 ) {
-	DisposableEffect(Unit) { onDispose { mediaSourceViewModel.dispose() } }
+	DisposableEffect(Unit) { onDispose { chatAttachmentViewModel.dispose() } }
 	Box(modifier = modifier.padding(14.dp)) {
 		if (uiState is MessagesUiState.Success) {
 			val messages = uiState.messages
-			mediaSourceViewModel.configure(messages)
+			chatAttachmentViewModel.configure(messages)
 			LazyColumn(
 				modifier = Modifier.fillMaxSize(),
 				reverseLayout = true,
@@ -95,7 +95,7 @@ fun Messages(
 								isSameDay = isSameDay,
 								isFirstMessageByAuthor = isFirstMessageByAuthor,
 								isLastMessageByAuthor = isLastMessageByAuthor,
-								mediaSourceViewModel = mediaSourceViewModel,
+								chatAttachmentViewModel = chatAttachmentViewModel,
 								onAuthorClick = {}
 							)
 						} else {
@@ -103,7 +103,7 @@ fun Messages(
 								msg = content,
 								isUserMe = content.author.id == userChannelInfo.first,
 								isFirstMessageByAuthor = isFirstMessageByAuthor,
-								mediaSourceViewModel = mediaSourceViewModel,
+								chatAttachmentViewModel = chatAttachmentViewModel,
 								onAuthorClick = {}
 							)
 						}

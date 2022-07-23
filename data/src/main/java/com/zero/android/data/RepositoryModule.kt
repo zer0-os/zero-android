@@ -8,6 +8,8 @@ import com.zero.android.data.repository.NetworkRepository
 import com.zero.android.data.repository.NetworkRepositoryImpl
 import com.zero.android.data.repository.UserRepository
 import com.zero.android.data.repository.UserRepositoryImpl
+import com.zero.android.data.repository.mediaplayer.MediaPlayerRepository
+import com.zero.android.data.repository.mediaplayer.MediaPlayerRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -24,4 +26,6 @@ interface RepositoryModule {
 	@Binds fun bindChannelRepository(channelRepository: ChannelRepositoryImpl): ChannelRepository
 
 	@Binds fun bindChatRepository(chatRepository: ChatRepositoryImpl): ChatRepository
+
+    @Binds fun bindMediaPlayerRepository(mediaPlayerRepository: MediaPlayerRepositoryImpl): MediaPlayerRepository
 }

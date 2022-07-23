@@ -46,7 +46,7 @@ fun HomeRoute(viewModel: HomeViewModel = hiltViewModel()) {
 		currentNetwork = currentNetwork,
 		networks = networks,
 		onNetworkSelected = viewModel::onNetworkSelected,
-		triggerChannelSearch = { viewModel.triggerChannelSearch(it) }
+		onTriggerSearch = { viewModel.triggerSearch(it) }
 	)
 }
 
@@ -60,7 +60,7 @@ fun HomeScreen(
 	currentNetwork: Network?,
 	networks: Result<List<Network>>,
 	onNetworkSelected: (Network) -> Unit,
-	triggerChannelSearch: (Boolean) -> Unit
+    onTriggerSearch: (Boolean) -> Unit
 ) {
 	val navController = rememberNavController()
 	val scaffoldState = rememberScaffoldState()
@@ -70,13 +70,13 @@ fun HomeScreen(
 	var showMenu by remember { mutableStateOf(false) }
 
 	navController.addOnDestinationChangedListener { _, destination, _ ->
-		triggerChannelSearch(false)
+        onTriggerSearch(false)
 		isRootDestination = HOME_DESTINATIONS.map { it.destination.route }.contains(destination.route)
 	}
 
 	val actionItems: @Composable RowScope.() -> Unit = {
 		if (currentScreen == ChannelsDestination || currentScreen == DirectChannelDestination) {
-			IconButton(onClick = { triggerChannelSearch(true) }, modifier = Modifier.size(32.dp)) {
+			IconButton(onClick = { onTriggerSearch(true) }, modifier = Modifier.size(32.dp)) {
 				Image(
 					painter = painterResource(R.drawable.ic_search),
 					contentDescription = stringResource(R.string.search_channels)

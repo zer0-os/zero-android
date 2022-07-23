@@ -1,4 +1,4 @@
-package com.zero.android.feature.messages.ui.messages
+package com.zero.android.feature.messages.ui.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
@@ -10,7 +10,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -18,7 +19,6 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -31,11 +31,11 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.zero.android.common.R
-import com.zero.android.ui.theme.AppTheme
+import com.zero.android.ui.components.CustomTextField
 import com.zero.android.ui.theme.Typography
 import com.zero.android.ui.util.BackHandler
 
-enum class InputSelector {
+private enum class InputSelector {
 	TEXT,
 	ATTACHMENT,
 	IMAGE,
@@ -143,10 +143,10 @@ private fun UserInputText(
 ) {
 	Box(modifier = modifier.semantics { keyboardShownProperty = keyboardShown }) {
 		var lastFocusState by remember { mutableStateOf(false) }
-		TextField(
+		CustomTextField(
 			value = textFieldValue.text,
 			onValueChange = { onTextChanged(TextFieldValue(it)) },
-			placeholder = { Text(stringResource(R.string.write_your_message)) },
+			placeholderText = stringResource(R.string.write_your_message),
 			textStyle = Typography.bodyMedium,
 			modifier =
 			Modifier.fillMaxWidth().align(Alignment.CenterStart).onFocusChanged { state ->
@@ -156,17 +156,6 @@ private fun UserInputText(
 				lastFocusState = state.isFocused
 			},
 			shape = RoundedCornerShape(24.dp),
-			colors =
-			TextFieldDefaults.textFieldColors(
-				textColor = AppTheme.colors.colorTextPrimary,
-				disabledTextColor = AppTheme.colors.colorTextSecondary,
-				focusedIndicatorColor = Color.Transparent,
-				unfocusedIndicatorColor = Color.Transparent,
-				disabledIndicatorColor = Color.Transparent,
-				placeholderColor = AppTheme.colors.colorTextSecondaryVariant,
-				cursorColor = AppTheme.colors.colorTextPrimary,
-				containerColor = Color(0xFF191919)
-			),
 			keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = ImeAction.Send),
 			keyboardActions = KeyboardActions(onSend = { onMessageSent(textFieldValue.text) })
 		)

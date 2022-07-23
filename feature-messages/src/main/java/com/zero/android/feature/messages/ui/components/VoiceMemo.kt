@@ -1,4 +1,4 @@
-package com.zero.android.feature.messages.ui.voicememo
+package com.zero.android.feature.messages.ui.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.zero.android.common.R
 import com.zero.android.common.extensions.convertDurationToString
-import com.zero.android.feature.messages.mediaPlayer.MediaSourceViewModel
+import com.zero.android.feature.messages.chatattachment.ChatAttachmentViewModel
 import com.zero.android.models.Message
 import com.zero.android.ui.components.ReverseTimer
 import com.zero.android.ui.theme.AppTheme
@@ -23,7 +23,7 @@ enum class VoiceMessageState {
 }
 
 @Composable
-fun VoiceMessage(message: Message, viewModel: MediaSourceViewModel) {
+fun VoiceMessage(message: Message, viewModel: ChatAttachmentViewModel) {
 	val mediaSourceProvider by
 	remember(message.id) { mutableStateOf(viewModel.getMediaSource(message)) }
 	val mediaFileState by mediaSourceProvider.currentFileState.collectAsState()

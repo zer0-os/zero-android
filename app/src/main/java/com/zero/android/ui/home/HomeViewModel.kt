@@ -5,7 +5,7 @@ import com.zero.android.common.navigation.NavDestination
 import com.zero.android.common.ui.Result
 import com.zero.android.common.ui.asResult
 import com.zero.android.common.ui.base.BaseViewModel
-import com.zero.android.data.manager.ChannelTriggerSearchManager
+import com.zero.android.common.usecases.SearchTriggerUseCase
 import com.zero.android.data.repository.NetworkRepository
 import com.zero.android.feature.feed.navigation.FeedDestination
 import com.zero.android.models.Network
@@ -21,7 +21,7 @@ class HomeViewModel
 @Inject
 constructor(
 	private val networkRepository: NetworkRepository,
-	private val channelSearchManager: ChannelTriggerSearchManager
+	private val searchTriggerUseCase: SearchTriggerUseCase
 ) : BaseViewModel() {
 
 	val currentScreen = MutableStateFlow<NavDestination>(FeedDestination)
@@ -66,7 +66,7 @@ constructor(
 		}
 	}
 
-	fun triggerChannelSearch(show: Boolean) {
-		ioScope.launch { channelSearchManager.triggerChannelSearch(show) }
+	fun triggerSearch(show: Boolean) {
+		ioScope.launch { searchTriggerUseCase.triggerSearch(show) }
 	}
 }

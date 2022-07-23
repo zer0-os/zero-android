@@ -3,7 +3,9 @@ package com.zero.android.common.extensions
 import java.text.SimpleDateFormat
 import java.util.*
 
-fun Long.toDate() = Date(this)
+fun Long.toDate(): Date = Calendar.getInstance().apply {
+    timeInMillis = this@toDate
+}.time
 
 fun Date.toMessageDateFormat(): String {
 	val currentCalendar = Calendar.getInstance()
@@ -42,7 +44,7 @@ fun Date.format(format: String, locale: Locale = Locale.ENGLISH): String {
 	return formatter.format(this)
 }
 
-fun Date.toCalendar() = Calendar.getInstance().apply { this.time = this@toCalendar }
+fun Date.toCalendar(): Calendar = Calendar.getInstance().apply { this.time = this@toCalendar }
 
 fun Date.isSameDay(date: Date): Boolean {
 	val cal1 = this.toCalendar()

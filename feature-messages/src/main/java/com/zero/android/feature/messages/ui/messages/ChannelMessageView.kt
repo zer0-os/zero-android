@@ -21,7 +21,10 @@ import com.zero.android.common.extensions.format
 import com.zero.android.common.extensions.toDate
 import com.zero.android.common.extensions.toMessageDateFormat
 import com.zero.android.feature.messages.helper.MessageActionStateHandler
-import com.zero.android.feature.messages.mediaPlayer.MediaSourceViewModel
+import com.zero.android.feature.messages.chatattachment.ChatAttachmentViewModel
+import com.zero.android.feature.messages.ui.components.ChatBubbleSpacing
+import com.zero.android.feature.messages.ui.components.MessageContent
+import com.zero.android.feature.messages.ui.components.ReplyMessage
 import com.zero.android.models.Member
 import com.zero.android.models.Message
 import com.zero.android.ui.components.SmallCircularImage
@@ -30,11 +33,11 @@ import com.zero.android.ui.theme.Gray
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ChannelMessage(
-	msg: Message,
-	isUserMe: Boolean,
-	isFirstMessageByAuthor: Boolean,
-	mediaSourceViewModel: MediaSourceViewModel,
-	onAuthorClick: (Member) -> Unit
+    msg: Message,
+    isUserMe: Boolean,
+    isFirstMessageByAuthor: Boolean,
+    chatAttachmentViewModel: ChatAttachmentViewModel,
+    onAuthorClick: (Member) -> Unit
 ) {
 	val currentSelectedMessage: Message? by MessageActionStateHandler.selectedMessage.collectAsState()
 	val modifier =
@@ -61,7 +64,7 @@ fun ChannelMessage(
 			isUserMe = isUserMe,
 			isFirstMessageByAuthor = isFirstMessageByAuthor,
 			authorClicked = onAuthorClick,
-			mediaSourceViewModel = mediaSourceViewModel
+			chatAttachmentViewModel = chatAttachmentViewModel
 		)
 	}
 }
@@ -70,12 +73,12 @@ private val ChatBubbleShape = RoundedCornerShape(4.dp, 12.dp, 12.dp, 12.dp)
 
 @Composable
 fun CMAuthorAndTextMessage(
-	modifier: Modifier = Modifier,
-	message: Message,
-	isUserMe: Boolean,
-	mediaSourceViewModel: MediaSourceViewModel,
-	isFirstMessageByAuthor: Boolean,
-	authorClicked: (Member) -> Unit
+    modifier: Modifier = Modifier,
+    message: Message,
+    isUserMe: Boolean,
+    chatAttachmentViewModel: ChatAttachmentViewModel,
+    isFirstMessageByAuthor: Boolean,
+    authorClicked: (Member) -> Unit
 ) {
 	val backgroundColorsList =
 		if (isUserMe) {
@@ -105,7 +108,7 @@ fun CMAuthorAndTextMessage(
 					MessageContent(
 						message = message,
 						authorClicked = authorClicked,
-						mediaSourceViewModel = mediaSourceViewModel
+						chatAttachmentViewModel = chatAttachmentViewModel
 					)
 				}
 			}

@@ -1,15 +1,16 @@
-package com.zero.android.feature.messages.mediaPlayer
+package com.zero.android.feature.messages.chatattachment
 
 import android.net.Uri
 import com.zero.android.common.extensions.downloadFile
 import com.zero.android.common.extensions.toUrl
-import com.zero.android.feature.messages.ui.voicememo.VoiceMessageState
+import com.zero.android.data.repository.mediaplayer.MediaPlayerRepository
+import com.zero.android.feature.messages.ui.components.VoiceMessageState
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.io.File
 import javax.inject.Inject
 
-data class MediaSourceProvider
+data class ChatAttachmentProvider
 @Inject
 constructor(
 	private val fileName: String?,

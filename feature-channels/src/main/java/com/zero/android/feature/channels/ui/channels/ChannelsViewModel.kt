@@ -4,7 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.zero.android.common.ui.Result
 import com.zero.android.common.ui.asResult
 import com.zero.android.common.ui.base.BaseViewModel
-import com.zero.android.data.manager.ChannelTriggerSearchManager
+import com.zero.android.common.usecases.SearchTriggerUseCase
 import com.zero.android.data.repository.ChannelRepository
 import com.zero.android.data.repository.NetworkRepository
 import com.zero.android.feature.channels.model.ChannelTab
@@ -23,7 +23,7 @@ class ChannelsViewModel
 constructor(
 	private val networkRepository: NetworkRepository,
 	private val channelRepository: ChannelRepository,
-	private val channelSearchManager: ChannelTriggerSearchManager
+	private val searchTriggerUseCase: SearchTriggerUseCase
 ) : BaseViewModel() {
 
 	private lateinit var network: Network
@@ -32,7 +32,7 @@ constructor(
 	private val _filteredChannels =
 		MutableStateFlow<Result<List<GroupChannel>?>>(Result.Success(null))
 
-	val showSearchBar: StateFlow<Boolean> = channelSearchManager.showSearchBar
+	val showSearchBar: StateFlow<Boolean> = searchTriggerUseCase.showSearchBar
 	val uiState: StateFlow<GroupChannelUiState> =
 		combine(_categories, _channels, _filteredChannels) {
 				categoriesResult,
@@ -108,7 +108,7 @@ constructor(
 	fun onSearchClosed() {
 		ioScope.launch {
 			_filteredChannels.emit(Result.Success(null))
-			channelSearchManager.triggerChannelSearch(false)
+            searchTriggerUseCase.triggerSearch(false)
 		}
 	}
 

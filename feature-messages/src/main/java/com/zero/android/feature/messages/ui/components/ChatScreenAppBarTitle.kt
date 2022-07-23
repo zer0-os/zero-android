@@ -1,4 +1,4 @@
-package com.zero.android.feature.messages.ui.messages
+package com.zero.android.feature.messages.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row

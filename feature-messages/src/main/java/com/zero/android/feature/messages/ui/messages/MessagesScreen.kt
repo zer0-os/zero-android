@@ -34,6 +34,9 @@ import com.zero.android.common.R
 import com.zero.android.common.extensions.getActivity
 import com.zero.android.common.extensions.toFile
 import com.zero.android.feature.messages.helper.MessageActionStateHandler
+import com.zero.android.feature.messages.ui.components.ChatScreenAppBarTitle
+import com.zero.android.feature.messages.ui.components.ReplyMessage
+import com.zero.android.feature.messages.ui.components.UserInputPanel
 import com.zero.android.feature.messages.ui.voicememo.MemoRecorderViewModel
 import com.zero.android.feature.messages.ui.voicememo.RecordMemoView
 import com.zero.android.feature.messages.util.MessageUtil

@@ -1,7 +1,8 @@
-package com.zero.android.feature.messages.mediaPlayer
+package com.zero.android.feature.messages.chatattachment
 
 import com.zero.android.common.extensions.isValidUrl
 import com.zero.android.common.ui.base.BaseViewModel
+import com.zero.android.data.repository.mediaplayer.MediaPlayerRepository
 import com.zero.android.models.Message
 import com.zero.android.models.enums.MessageType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -9,11 +10,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MediaSourceViewModel
+class ChatAttachmentViewModel
 @Inject
 constructor(private val mediaPlayerRepository: MediaPlayerRepository) : BaseViewModel() {
 
-	private val voiceMemoMediaSources = mutableMapOf<String, MediaSourceProvider>()
+	private val voiceMemoMediaSources = mutableMapOf<String, ChatAttachmentProvider>()
 	private var lastMediaId: String? = null
 
 	fun configure(messages: List<Message>) {
@@ -22,7 +23,7 @@ constructor(private val mediaPlayerRepository: MediaPlayerRepository) : BaseView
 				.filter { it.type == MessageType.AUDIO }
 				.forEach {
 					if (!voiceMemoMediaSources.containsKey(it.id)) {
-						val mediaSource = MediaSourceProvider(it.fileName, mediaPlayerRepository)
+						val mediaSource = ChatAttachmentProvider(it.fileName, mediaPlayerRepository)
 						voiceMemoMediaSources[it.id] = mediaSource
 					}
 				}
@@ -31,7 +32,7 @@ constructor(private val mediaPlayerRepository: MediaPlayerRepository) : BaseView
 
 	fun getMediaSource(message: Message) =
 		voiceMemoMediaSources.getOrPut(message.id) {
-			MediaSourceProvider(message.fileName, mediaPlayerRepository)
+			ChatAttachmentProvider(message.fileName, mediaPlayerRepository)
 		}
 
 	fun dispose() {

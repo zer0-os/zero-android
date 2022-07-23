@@ -1,4 +1,4 @@
-package com.zero.android.feature.messages.mediaPlayer
+package com.zero.android.data.repository.mediaplayer
 
 import android.content.Context
 import android.media.AudioAttributes
@@ -13,8 +13,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class MediaPlayerRepository @Inject constructor(@ApplicationContext private val context: Context) {
-	val baseFilePath by lazy { "${context.externalCacheDir?.absolutePath ?: ""}/Memos" }
+class MediaPlayerRepositoryImpl @Inject constructor(
+    @ApplicationContext private val context: Context,
+): MediaPlayerRepository {
+	override val baseFilePath by lazy { "${context.externalCacheDir?.absolutePath ?: ""}/Memos" }
 
 	init {
 		File(baseFilePath).apply {
@@ -27,7 +29,7 @@ class MediaPlayerRepository @Inject constructor(@ApplicationContext private val 
 	private var _recorder: MediaRecorder? = null
 	var recorderFilePath: String? = null
 
-	val mediaPlayer =
+	override val mediaPlayer =
 		MediaPlayer().apply {
 			setAudioAttributes(
 				AudioAttributes.Builder()
@@ -38,7 +40,7 @@ class MediaPlayerRepository @Inject constructor(@ApplicationContext private val 
 		}
 
 	@Throws(IOException::class)
-	fun startRecording() {
+	override fun startRecording() {
 		recorderFilePath = "$baseFilePath/Memo-${System.currentTimeMillis().div(1000)}"
 		recorderFilePath?.let {
 			_recorder =
@@ -57,7 +59,7 @@ class MediaPlayerRepository @Inject constructor(@ApplicationContext private val 
 	}
 
 	@Throws(IOException::class)
-	fun stopRecording() {
+	override fun stopRecording() {
 		_recorder?.apply {
 			stop()
 			reset()
@@ -66,7 +68,7 @@ class MediaPlayerRepository @Inject constructor(@ApplicationContext private val 
 		_recorder = null
 	}
 
-	fun prepareMediaPlayer(uri: Uri, onPlayBackComplete: () -> Unit) {
+	override fun prepareMediaPlayer(uri: Uri, onPlayBackComplete: () -> Unit) {
 		mediaPlayer.apply {
 			try {
 				stop()
@@ -78,7 +80,7 @@ class MediaPlayerRepository @Inject constructor(@ApplicationContext private val 
 		}
 	}
 
-	fun getFileDuration(file: File): String? {
+	override fun getFileDuration(file: File): String? {
 		val retriever = MediaMetadataRetriever()
 		retriever.setDataSource(context, Uri.fromFile(file))
 		val time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)

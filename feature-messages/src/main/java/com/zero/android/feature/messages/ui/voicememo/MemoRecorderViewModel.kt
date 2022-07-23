@@ -1,7 +1,7 @@
 package com.zero.android.feature.messages.ui.voicememo
 
 import com.zero.android.common.ui.base.BaseViewModel
-import com.zero.android.feature.messages.mediaPlayer.MediaPlayerRepository
+import com.zero.android.data.repository.mediaplayer.MediaPlayerRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -11,7 +11,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MemoRecorderViewModel
 @Inject
-constructor(private val mediaPlayerRepository: MediaPlayerRepository) : BaseViewModel() {
+constructor(private val mediaPlayerRepository: MediaPlayerRepositoryImpl) : BaseViewModel() {
 
 	private val _lastMemoPath = MutableStateFlow("")
 	val lastMemoPath
